@@ -1,0 +1,6 @@
+// 修改 element-plus 组件库的样式
+
+// 消除侧边栏与右侧的空隙
+#layout-aside .el-menu {
+  border-right: none;
+}
