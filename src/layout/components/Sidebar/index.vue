@@ -47,13 +47,13 @@ import {useRouter} from "vue-router";
 
 // 获取路由实例对象
 const router = useRouter();
-console.log("router:", router);
-// 获取路由列表的详细配置项
-const routers = router.getRoutes();
-console.log("routers:", routers);
+// console.log("router:", router);
+// // 获取路由列表的详细配置项
+// const routers = router.getRoutes();
+// console.log("routers:", routers);
 // 获取定义路由的配置项
 const routersOptions = router.options.routes
-console.log("routersOptions:", routersOptions);
+// console.log("routersOptions:", routersOptions);
 </script>
 
 <style lang="scss" scoped>
