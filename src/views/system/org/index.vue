@@ -150,7 +150,7 @@ const {
 function getOrgList() {
   loading.value = true;
   GetOrgListByPost(queryParams.value).then((res) => {
-    console.log("post请求结果res:", res);
+    // console.log("post请求结果res:", res);
     if (res.data.code === 200) {
       dataList.value = res.data.data.datalist;
       state.loading = false;
@@ -188,7 +188,7 @@ function handleQueryNameOptionsChange(val) {
  * */
 function handleQuery() {
   loading.value = true;
-  console.log("queryParam:", queryParams);
+  // console.log("queryParam:", queryParams);
   getOrgList();
   loading.value = false;
 }
@@ -206,7 +206,7 @@ function resetQuery() {
  * 新增机构
  * */
 function handleAdd(val) {
-  console.log("新增机构:", val);
+  // console.log("新增机构:", val);
   dialogVisible.value = true;
   orgFormTitle.value = "新增机构";
 }
@@ -215,8 +215,8 @@ function handleAdd(val) {
  * 修改机构
  * */
 function handleUpdate(val) {
-  console.log("修改机构:", val);
-  console.log("ogrForm:", ogrForm);
+  // console.log("修改机构:", val);
+  // console.log("ogrForm:", ogrForm);
   dialogVisible.value = true;
   orgFormTitle.value = "编辑机构";
 }
@@ -225,7 +225,7 @@ function handleUpdate(val) {
  * 提交表单
  * */
 function submitForm() {
-  console.log("ogrForm:", ogrForm);
+  // console.log("ogrForm:", ogrForm);
   dialogVisible.value = false;
 }
 

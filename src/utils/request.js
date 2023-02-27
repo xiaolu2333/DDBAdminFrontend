@@ -22,7 +22,7 @@ service.interceptors.request.use(
     "use strict";
     // 在发送请求之前做些什么
     // 比如：在请求头中添加 token 数据、请求参数处理、请求前的loading、请求前的权限验证等
-    console.log("config:", config);
+    // console.log("config:", config);
     return config;
   },
   function (error) {

@@ -90,10 +90,10 @@ let orgList = [
  */
 Mock.mock('/org/list', 'post', (options) => {
   "use strict";
-  console.log("打印请求相关信息：", options);
+  // console.log("打印请求相关信息：", options);
   // 使用JSON.parse(options.body)将请求体解析为一个对象
   const requestBody = JSON.parse(options.body);
-  console.log("post 请求体：", requestBody);
+  // console.log("post 请求体：", requestBody);
 
   const hasName = requestBody.hasOwnProperty('name');
   const hasStatus = requestBody.hasOwnProperty('status');
@@ -102,7 +102,7 @@ Mock.mock('/org/list', 'post', (options) => {
   const onlyHasStatus = !hasName && hasStatus;
   const bothNotExist = !hasName && !hasStatus;
   if (bothNotExist) {
-    console.log("name和status都没有");
+    // console.log("name和status都没有");
     return {
       code: 200,
       data: {
@@ -110,7 +110,7 @@ Mock.mock('/org/list', 'post', (options) => {
       },
     };
   } else if (onlyHasName) {
-    console.log("只有name");
+    // console.log("只有name");
     return {
       code: 200,
       data: {
@@ -118,7 +118,7 @@ Mock.mock('/org/list', 'post', (options) => {
       },
     };
   } else if (onlyHasStatus) {
-    console.log("只有status");
+    // console.log("只有status");
     return {
       code: 200,
       data: {
@@ -126,7 +126,7 @@ Mock.mock('/org/list', 'post', (options) => {
       },
     };
   } else if (bothExist) {
-    console.log("既有name又有status");
+    // console.log("既有name又有status");
     return {
       code: 200,
       data: {
@@ -138,13 +138,13 @@ Mock.mock('/org/list', 'post', (options) => {
 
 Mock.mock('/org/list', 'get', (options) => {
   "use strict";
-  console.log("打印请求相关信息：", options);
+  // console.log("打印请求相关信息：", options);
   // // 使用JSON.parse(options.params)将查询参数解析为一个对象
   // const requestBody = JSON.parse(options.params);
   // console.log("get 查询参数：", requestBody);
   // 使用JSON.parse(options.body)将查询参数解析为一个对象
   const requestBody = JSON.parse(options.body);
-  console.log("get 请求体：", requestBody);
+  // console.log("get 请求体：", requestBody);
 
   return {
     code: 200,
