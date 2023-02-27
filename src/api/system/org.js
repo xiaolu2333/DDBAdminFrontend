@@ -33,3 +33,20 @@ export async function GetOrgListByGet(queryType) {
     throw error;
   }
 }
+
+/**
+ * 获取机构树形结构数据
+ */
+export async function GetOrgTreeByPost(queryType) {
+  "use strict";
+  try {
+    return await service.request({
+      url: "/org/tree",
+      method: "post",
+      data: queryType,  // data 为 post 方法的请求体
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

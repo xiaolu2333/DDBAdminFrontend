@@ -153,3 +153,117 @@ Mock.mock('/org/list', 'get', (options) => {
     },
   };
 });
+
+Mock.mock('/org/tree', 'post', (options) => {
+  "use strict";
+
+  return {
+    code: 200,
+    data: [
+      {
+        id: 1,
+        name: '机构1',
+        code: 'JG1',
+        status: 0,
+        desc: "1111111111",
+        parentId: "root",
+        children: [
+          {
+            id: 2,
+            name: '机构2',
+            code: 'JG2',
+            status: 1,
+            desc: "1111111111",
+            parentId: 1,
+            children: [
+              {
+                id: 3,
+                name: '机构3',
+                code: 'JG3',
+                status: 0,
+                desc: "1111111111",
+                parentId: 2,
+                children: [
+                  {
+                    id: 4,
+                    name: '机构4',
+                    code: 'JG4',
+                    status: 1,
+                    desc: "1111111111",
+                    parentId: 3,
+                    children: []
+                  },
+                  {
+                    id: 5,
+                    name: '机构5',
+                    code: 'JG5',
+                    status: 0,
+                    desc: "1111111111",
+                    parentId: 3,
+                    children: []
+                  }
+                ]
+              },
+              {
+                id: 6,
+                name: '机构6',
+                code: 'JG6',
+                status: 1,
+                desc: "1111111111",
+                parentId: 2,
+                children: []
+              }
+            ]
+          },
+          {
+            id: 7,
+            name: '机构7',
+            code: 'JG7',
+            status: 0,
+            desc: "1111111111",
+            parentId: 1,
+            children: [
+              {
+                id: 8,
+                name: '机构8',
+                code: 'JG8',
+                status: 1,
+                desc: "1111111111",
+                parentId: 7,
+                children: []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 9,
+        name: '机构9',
+        code: 'JG9',
+        status: 0,
+        desc: "1111111111",
+        parentId: "root",
+        children: [
+          {
+            id: 10,
+            name: '机构10',
+            code: 'JG10',
+            status: 1,
+            desc: "1111111111",
+            parentId: 9,
+            children: []
+          }
+        ]
+      },
+      {
+        id: 11,
+        name: '机构11',
+        code: 'JG11',
+        status: 1,
+        desc: "1111111111",
+        parentId: "root",
+        children: []
+      },
+    ]
+  };
+});
