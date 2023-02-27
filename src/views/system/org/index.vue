@@ -55,7 +55,7 @@
 
     <!-- 新增或编辑机构对话框 -->
     <el-dialog v-model="dialogVisible" :title="orgFormTitle" draggable>
-      <el-form ref="Form" :model="orgForm" size="large">
+      <el-form :model="orgForm" ref="mainForm" size="large">
         <el-form-item label="name" prop="name">
           <el-input v-model="orgForm.name"/>
         </el-form-item>
@@ -64,8 +64,8 @@
         </el-form-item>
         <el-form-item label="status" prop="status">
           <el-select v-model="orgForm.status" placeholder="请选择状态">
-            <el-option label="启用" value="0"/>
-            <el-option label="禁用" value="1"/>
+            <el-option label="启用" value="1"/>
+            <el-option label="禁用" value="0"/>
           </el-select>
         </el-form-item>
         <el-form-item label="desc" prop="desc">
@@ -83,10 +83,12 @@
 
 </template>
 <script setup>
-import {onMounted, reactive, toRefs} from "vue";
+import { getCurrentInstance, onMounted, reactive, toRef, toRefs} from "vue";
 import {ElMessage} from "element-plus";
 
-import {GetOrgTreeByPost} from "@/api/system/org";
+import {GetOrgTreeByPost, SaveOrg} from "@/api/system/org";
+
+const { proxy } = getCurrentInstance();
 
 const state = reactive({
   loading: false,
@@ -201,14 +203,7 @@ const state = reactive({
 // ],
   queryParams: {},
   dialogVisible: false,
-  orgForm: {
-    id: null,
-    name: null,
-    parentId: null,
-    code: null,
-    status: null,
-    desc: null,
-  },
+  orgForm: {},
   orgFormTitle: "",
 })
 
@@ -241,6 +236,15 @@ function handleAdd(val) {
   if (currentNode.value.id) {
     dialogVisible.value = true;
     orgFormTitle.value = "新增机构";
+    console.log("点击机构的父节点:", parentNode.value);
+
+    // 填充基础表单
+    orgForm.value = {
+      // 随机整数ID
+      id: Math.floor(Math.random() * 1000000),
+      parentId: parentNode.value.id ? parentNode.value.id : "root",
+    }
+    console.log("新增机构基础表单:", orgForm.value);
   } else {
     ElMessage.error("请选择一个机构！")
   }
@@ -257,7 +261,14 @@ function handleUpdate(row) {
   console.log("handleUpdate", row);
   dialogVisible.value = true;
   orgFormTitle.value = "修改机构";
-  // 将当前行数据赋值给表单
+  // 还要像新增一样，预先填充基础表单
+    orgForm.value = {
+      // 随机整数ID
+      id: Math.floor(Math.random() * 1000000),
+      parentId: parentNode.value.id ? parentNode.value.id : "root",
+    }
+    console.log("新增机构基础表单:", orgForm.value);
+  // 然后将当前行数据赋值给表单
   orgForm.value = row;
 }
 
@@ -265,7 +276,18 @@ function handleUpdate(row) {
  * 提交表单
  * */
 function submitForm() {
-  console.log("submitForm");
+  // orgForm
+  console.log("orgForm:",orgForm);
+  SaveOrg(orgForm.value).then(response => {
+    console.log("response:",response);
+    if (response.data.code === 200) {
+      ElMessage.success("操作成功！");
+      dialogVisible.value = false;
+      handleQuery();
+    } else {
+      ElMessage.error(response.data.msg);
+    }
+  })
 }
 
 // 机构名称输入框 change事件
@@ -276,8 +298,9 @@ function handleQueryNameOptionsChange() {
 // 节点点击事件
 function handleNodeClick(row) {
   currentNode.value = row;
-  getParentNode(state.orgTree, row.id);
-
+  parentNode.value = getParentNode(state.orgTree, currentNode.value.id);
+  console.log("当前节点:", currentNode.value);
+  console.log("父节点:", parentNode.value);
 }
 
 // 高亮被点击行
@@ -287,6 +310,7 @@ function rowStyle({row}) {
   }
 }
 
+// 这里还有问题：后半部分的节点会被遍历到，但是不会被赋值给parentObj，导致parentObj为null
 // 获取被点击行的父级节点
 function getParentNode(treeData, id) {
   let parentObj = null;
@@ -318,8 +342,18 @@ function getParentNode(treeData, id) {
     }
   }
 
-  console.log("parentObj:", parentObj);
-  // return parentObj;
+  if (!parentObj) {
+    parentObj = {
+      id: "root",
+      name: "根节点",
+      code: "root",
+      status: 1,
+      desc: "根节点",
+      parentId: "root",
+    }
+    return parentObj;
+  }
+  return parentObj;
 }
 
 // 测试
@@ -458,6 +492,7 @@ function test() {
 onMounted(() => {
   test();
   handleQuery();
+  console.log("proxy", proxy);
 });
 </script>
 

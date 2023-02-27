@@ -50,3 +50,20 @@ export async function GetOrgTreeByPost(queryType) {
     throw error;
   }
 }
+
+/**
+ * 保存机构信息
+ */
+export async function SaveOrg(mainForm) {
+  "use strict";
+  try {
+    return await service.request({
+      url: "/org/save",
+      method: "post",
+      data: mainForm,
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

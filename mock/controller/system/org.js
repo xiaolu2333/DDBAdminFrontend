@@ -75,6 +75,113 @@ let orgList = [
   }
 ];
 
+let list = [
+  {
+    id: 1,
+    name: '机构1',
+    code: 'JG1',
+    status: 0,
+    desc: "1111111111",
+    parentId: "root",
+    children: [
+      {
+        id: 2,
+        name: '机构2',
+        code: 'JG2',
+        status: 1,
+        desc: "1111111111",
+        parentId: 1,
+        children: [
+          {
+            id: 3,
+            name: '机构3',
+            code: 'JG3',
+            status: 0,
+            desc: "1111111111",
+            parentId: 2,
+            children: [
+              {
+                id: 4,
+                name: '机构4',
+                code: 'JG4',
+                status: 1,
+                desc: "1111111111",
+                parentId: 3,
+                children: []
+              },
+              {
+                id: 5,
+                name: '机构5',
+                code: 'JG5',
+                status: 0,
+                desc: "1111111111",
+                parentId: 3,
+                children: []
+              }
+            ]
+          },
+          {
+            id: 6,
+            name: '机构6',
+            code: 'JG6',
+            status: 1,
+            desc: "1111111111",
+            parentId: 2,
+            children: []
+          }
+        ]
+      },
+      {
+        id: 7,
+        name: '机构7',
+        code: 'JG7',
+        status: 0,
+        desc: "1111111111",
+        parentId: 1,
+        children: [
+          {
+            id: 8,
+            name: '机构8',
+            code: 'JG8',
+            status: 1,
+            desc: "1111111111",
+            parentId: 7,
+            children: []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 9,
+    name: '机构9',
+    code: 'JG9',
+    status: 0,
+    desc: "1111111111",
+    parentId: "root",
+    children: [
+      {
+        id: 10,
+        name: '机构10',
+        code: 'JG10',
+        status: 1,
+        desc: "1111111111",
+        parentId: 9,
+        children: []
+      }
+    ]
+  },
+  {
+    id: 11,
+    name: '机构11',
+    code: 'JG11',
+    status: 1,
+    desc: "1111111111",
+    parentId: "root",
+    children: []
+  },
+];
+
 // /*
 //  * 模拟后端列表请求接口
 //  * version: 1
@@ -159,111 +266,89 @@ Mock.mock('/org/tree', 'post', (options) => {
 
   return {
     code: 200,
-    data: [
-      {
-        id: 1,
-        name: '机构1',
-        code: 'JG1',
-        status: 0,
-        desc: "1111111111",
-        parentId: "root",
-        children: [
-          {
-            id: 2,
-            name: '机构2',
-            code: 'JG2',
-            status: 1,
-            desc: "1111111111",
-            parentId: 1,
-            children: [
-              {
-                id: 3,
-                name: '机构3',
-                code: 'JG3',
-                status: 0,
-                desc: "1111111111",
-                parentId: 2,
-                children: [
-                  {
-                    id: 4,
-                    name: '机构4',
-                    code: 'JG4',
-                    status: 1,
-                    desc: "1111111111",
-                    parentId: 3,
-                    children: []
-                  },
-                  {
-                    id: 5,
-                    name: '机构5',
-                    code: 'JG5',
-                    status: 0,
-                    desc: "1111111111",
-                    parentId: 3,
-                    children: []
-                  }
-                ]
-              },
-              {
-                id: 6,
-                name: '机构6',
-                code: 'JG6',
-                status: 1,
-                desc: "1111111111",
-                parentId: 2,
-                children: []
-              }
-            ]
-          },
-          {
-            id: 7,
-            name: '机构7',
-            code: 'JG7',
-            status: 0,
-            desc: "1111111111",
-            parentId: 1,
-            children: [
-              {
-                id: 8,
-                name: '机构8',
-                code: 'JG8',
-                status: 1,
-                desc: "1111111111",
-                parentId: 7,
-                children: []
-              }
-            ]
-          }
-        ]
-      },
-      {
-        id: 9,
-        name: '机构9',
-        code: 'JG9',
-        status: 0,
-        desc: "1111111111",
-        parentId: "root",
-        children: [
-          {
-            id: 10,
-            name: '机构10',
-            code: 'JG10',
-            status: 1,
-            desc: "1111111111",
-            parentId: 9,
-            children: []
-          }
-        ]
-      },
-      {
-        id: 11,
-        name: '机构11',
-        code: 'JG11',
-        status: 1,
-        desc: "1111111111",
-        parentId: "root",
-        children: []
-      },
-    ]
+    data: list,
   };
 });
+
+Mock.mock('/org/save', 'post', (options) => {
+  const requestBody = JSON.parse(options.body);
+  console.log("打印请求相关信息：", options);
+  // 解析请求体
+  console.log("post 请求体：", requestBody);
+
+  // 获取请求体中的parentId
+  const parentId = requestBody.parentId;
+  console.log("parentId：", parentId);
+  // 根据parentId找到对应的父节点
+  const parent = findSelfAndChildrenNode(list, parentId);
+  console.log("提交到父节点：", parent);
+  // 保存到父节点的children中
+  parent.children.push(requestBody);
+
+  return {
+    code: 200,
+  };
+});
+
+// 根据id查找父节点
+function findParentNode(tree, id) {
+  let parentNode = null;
+
+  function traverse(node, targetId) {
+    if (node.id === targetId) {
+      return;
+    }
+
+    if (node.children && node.children.length > 0) {
+      for (let i = 0; i < node.children.length; i++) {
+        let child = node.children[i];
+
+        if (child.id === targetId) {
+          parentNode = node;
+          return;
+        }
+
+        traverse(child, targetId);
+      }
+    }
+  }
+
+  for (let i = 0; i < tree.length; i++) {
+    traverse(tree[i], id);
+
+    if (parentNode) {
+      break;
+    }
+  }
+
+  return parentNode;
+}
+// 根据id获取本身节点和所有子级节点
+function findSelfAndChildrenNode(tree, id) {
+  let selfAndChildrenNode = null;
+
+  function traverse(node, targetId) {
+    if (node.id === targetId) {
+      selfAndChildrenNode = node;
+      return;
+    }
+
+    if (node.children && node.children.length > 0) {
+      for (let i = 0; i < node.children.length; i++) {
+        let child = node.children[i];
+
+        traverse(child, targetId);
+      }
+    }
+  }
+
+  for (let i = 0; i < tree.length; i++) {
+    traverse(tree[i], id);
+
+    if (selfAndChildrenNode) {
+      break;
+    }
+  }
+
+  return selfAndChildrenNode;
+}
