@@ -64,6 +64,14 @@ const routes = [
         component: () => import("@/views/system/dept/index.vue"),
       },
       {
+        path: "/dict",
+        name: "Dict",
+        meta: {
+          title: "字典管理",
+        },
+        component: () => import("@/views/system/dict/index.vue"),
+      },
+      {
         path: "/user",
         name: "User",
         meta: {
