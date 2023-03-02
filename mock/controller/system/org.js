@@ -243,24 +243,6 @@ Mock.mock('/org/list', 'post', (options) => {
   }
 });
 
-Mock.mock('/org/list', 'get', (options) => {
-  "use strict";
-  // console.log("打印请求相关信息：", options);
-  // // 使用JSON.parse(options.params)将查询参数解析为一个对象
-  // const requestBody = JSON.parse(options.params);
-  // console.log("get 查询参数：", requestBody);
-  // 使用JSON.parse(options.body)将查询参数解析为一个对象
-  const requestBody = JSON.parse(options.body);
-  // console.log("get 请求体：", requestBody);
-
-  return {
-    code: 200,
-    data: {
-      datalist: orgList,
-    },
-  };
-});
-
 Mock.mock('/org/tree', 'post', (options) => {
   "use strict";
 
@@ -276,21 +258,65 @@ Mock.mock('/org/save', 'post', (options) => {
   // 解析请求体
   console.log("post 请求体：", requestBody);
 
+  // 如果parentId为root，则为根节点
+  if (requestBody.parentId === "root") {
+    let node = findSelfAndChildrenNode(list, requestBody.id);
+    if (node) {
+      // 如果存在，则更新
+      node = requestBody;
+      console.log("添加为根节点：", requestBody);
+      return {
+        code: 200,
+        msg: "更新成功",
+      };
+    } else {
+      requestBody.children = [];
+      console.log("添加为根节点：", requestBody);
+      // 如果不存在，则添加
+      list.push(requestBody);
+      return {
+        code: 200,
+        msg: "添加为根节点成功",
+      };
+    }
+  } else {
+
+    let node = findSelfAndChildrenNode(list, requestBody.id);
+    if (node) {
+      // 如果存在，则更新
+      node.id = requestBody.id;
+      node.name = requestBody.name;
+      node.code = requestBody.code;
+      node.status = requestBody.status;
+      node.desc = requestBody.desc;
+      node.children = [];
+      return {
+        code: 200,
+        msg: "更新成功",
+      };
+    }
+  }
+
   // 获取请求体中的parentId
   const parentId = requestBody.parentId;
   console.log("parentId：", parentId);
   // 根据parentId找到对应的父节点
   const parent = findSelfAndChildrenNode(list, parentId);
-  console.log("提交到父节点：", parent);
   // 保存到父节点的children中
-  parent.children.push(requestBody);
+  if (parent && parent.children) {
+    parent.children.push(requestBody);
+  } else {
+    // parent添加children属性
+    parent.setAttribute("children", []);
+    parent.children.push(requestBody);
+  }
 
   return {
     code: 200,
   };
 });
 
-// 根据id查找父节点
+// 根据id获取父级对象
 function findParentNode(tree, id) {
   let parentNode = null;
 
@@ -323,6 +349,7 @@ function findParentNode(tree, id) {
 
   return parentNode;
 }
+
 // 根据id获取本身节点和所有子级节点
 function findSelfAndChildrenNode(tree, id) {
   let selfAndChildrenNode = null;

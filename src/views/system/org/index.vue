@@ -45,6 +45,7 @@
       <el-table-column prop="name" label="Name"/>
       <el-table-column prop="id" label="Id"/>
       <el-table-column prop="parentId" label="ParentId"/>
+      <el-table-column prop="desc" label="Desc"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
           <el-button link type="success" @click="handleUpdate(scope.row)">修改</el-button>
@@ -83,12 +84,12 @@
 
 </template>
 <script setup>
-import { getCurrentInstance, onMounted, reactive, toRef, toRefs} from "vue";
+import {getCurrentInstance, onMounted, reactive, toRefs} from "vue";
 import {ElMessage} from "element-plus";
 
 import {GetOrgTreeByPost, SaveOrg} from "@/api/system/org";
 
-const { proxy } = getCurrentInstance();
+const {proxy} = getCurrentInstance();
 
 const state = reactive({
   loading: false,
@@ -227,31 +228,35 @@ function handleQuery() {
   })
 }
 
+function resetQuery() {
+  console.log("resetQuery");
+}
+
+/**
+ * 重置暂存数据
+ * */
+function resetForm() {
+  console.log("resetForm");
+  state.orgForm = {};
+  state.parentNode = {};
+  state.currentNode = {};
+}
+
 /**
  * 新增机构
  * */
 function handleAdd(val) {
   // console.log("新增机构:", val);
-  // 只有点击了机构节点才能新增机构（暂不支持添加根节点）
-  if (currentNode.value.id) {
-    dialogVisible.value = true;
-    orgFormTitle.value = "新增机构";
-    console.log("点击机构的父节点:", parentNode.value);
+  dialogVisible.value = true;
+  orgFormTitle.value = "新增机构";
 
-    // 填充基础表单
-    orgForm.value = {
-      // 随机整数ID
-      id: Math.floor(Math.random() * 1000000),
-      parentId: parentNode.value.id ? parentNode.value.id : "root",
-    }
-    console.log("新增机构基础表单:", orgForm.value);
-  } else {
-    ElMessage.error("请选择一个机构！")
+  // 填充基础表单
+  orgForm.value = {
+    // 随机整数ID
+    id: Math.floor(Math.random() * 1000000),
+    parentId: currentNode.value?.id ? currentNode.value.id : "root",
   }
-}
-
-function resetQuery() {
-  console.log("resetQuery");
+  console.log("新增机构基础表单:", orgForm.value);
 }
 
 /**
@@ -259,15 +264,14 @@ function resetQuery() {
  * */
 function handleUpdate(row) {
   console.log("handleUpdate", row);
+  // 去除children属性
+  delete row.children;
+  orgForm.value = row;
+
   dialogVisible.value = true;
   orgFormTitle.value = "修改机构";
-  // 还要像新增一样，预先填充基础表单
-    orgForm.value = {
-      // 随机整数ID
-      id: Math.floor(Math.random() * 1000000),
-      parentId: parentNode.value.id ? parentNode.value.id : "root",
-    }
-    console.log("新增机构基础表单:", orgForm.value);
+
+  console.log("新增机构基础表单:", orgForm.value);
   // 然后将当前行数据赋值给表单
   orgForm.value = row;
 }
@@ -277,15 +281,17 @@ function handleUpdate(row) {
  * */
 function submitForm() {
   // orgForm
-  console.log("orgForm:",orgForm);
+  console.log("orgForm:", orgForm);
   SaveOrg(orgForm.value).then(response => {
-    console.log("response:",response);
+    console.log("response:", response);
     if (response.data.code === 200) {
       ElMessage.success("操作成功！");
       dialogVisible.value = false;
       handleQuery();
+      resetForm();
     } else {
       ElMessage.error(response.data.msg);
+      resetForm();
     }
   })
 }
