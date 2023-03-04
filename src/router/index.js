@@ -1,6 +1,6 @@
 /* jshint esversion: 11 */
 
-import { createRouter, createWebHashHistory } from "vue-router";
+import {createRouter, createWebHashHistory} from "vue-router";
 
 const routes = [
   // 根路由
@@ -87,8 +87,27 @@ const routes = [
           title: "角色管理",
         },
         component: () => import("@/views/system/role/index.vue"),
+      },
+      {
+        path: "/test",
+        name: "Test",
+        component: () => import("@/views/system/test/index.vue"),
+        meta: {
+          title: "测试",
+        }
       }
     ],
+  },
+
+  // Data Admin
+  {
+    path: "/data",
+    name: "Data",
+    meta: {
+      title: "数据管理",
+    },
+    component: () => import("@/layout/index.vue"),
+    children: []
   },
 ];
 

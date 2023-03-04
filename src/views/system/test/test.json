@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "name": "机构1",
+    "code": "JG1",
+    "status": 1,
+    "parentCode": "",
+    "children": [
+      {
+        "id": 2,
+        "name": "机构2",
+        "code": "JG2",
+        "status": 1,
+        "parentCode": "JG1",
+        "children": [
+          {
+            "id": 3,
+            "name": "机构3",
+            "code": "JG3",
+            "status": 1,
+            "parentCode": "JG2",
+            "children": []
+          },
+          {
+            "id": 4,
+            "name": "机构4",
+            "code": "JG4",
+            "status": 1,
+            "parentCode": "JG2",
+            "children": [
+              {
+                "id": 7,
+                "name": "机构7",
+                "code": "JG7",
+                "status": 1,
+                "parentCode": "JG4",
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "机构5",
+    "code": "JG5",
+    "status": 1,
+    "parentCode": "",
+    "children": [
+      {
+        "id": 6,
+        "name": "机构6",
+        "code": "JG6",
+        "status": 1,
+        "parentCode": "JG5",
+        "children": []
+      }
+    ]
+  }
+]
