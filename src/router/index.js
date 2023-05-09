@@ -99,6 +99,25 @@ const routes = [
     ],
   },
 
+  // Menu
+  {
+    path: "/tools",
+    name: "Tools",
+    meta: {
+      title: "工具",
+    },
+    children: [
+      {
+        path: "/echarts",
+        name: "Echarts",
+        component: () => import("@/views/menu/tools/dashboard/index.vue"),
+        meta: {
+          title: "仪表盘",
+        }
+      }
+    ]
+  },
+
   // Data Admin
   {
     path: "/data",

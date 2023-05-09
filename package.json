@@ -15,7 +15,9 @@
     "sass": "^1.58.3",
     "sass-loader": "^13.2.0",
     "vue": "^3.2.45",
-    "vue-router": "^4.0.13"
+    "vue-router": "^4.0.13",
+    "vxe-table": "^4.3.12",
+    "xe-utils": "^3.5.7"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",
