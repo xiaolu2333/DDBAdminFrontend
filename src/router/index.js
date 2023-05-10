@@ -89,11 +89,11 @@ const routes = [
         component: () => import("@/views/system/role/index.vue"),
       },
       {
-        path: "/test",
-        name: "Test",
-        component: () => import("@/views/system/test/index.vue"),
+        path: "/tablePerms",
+        name: "tablePerms",
+        component: () => import("@/views/system/tablePerms/index.vue"),
         meta: {
-          title: "测试",
+          title: "数据表授权",
         }
       }
     ],
