@@ -11,5 +11,6 @@ const props = defineProps<{ count: number }>();
 const times = ref(2);
 const result = computed(() => props.count * times.value);
 
+// defineExpose(props)将props暴露给父组件，父组件可以通过ref调用
 defineExpose(props);
 </script>

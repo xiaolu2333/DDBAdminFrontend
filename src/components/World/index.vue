@@ -27,6 +27,7 @@ const props = withDefaults(
 const name = computed(() => props.username);
 
 const error = computed(() => {
+  // props.username.trim().length < 7 将检查props.username长度是否小于7，如果小于7，返回true，否则返回false
   return props.username.trim().length < 7;
 });
 </script>
