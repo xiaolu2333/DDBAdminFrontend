@@ -102,18 +102,25 @@ const selectChangeEvent1: VxeTableEvents.CheckboxChange = ({checked}) => {
   console.log(checked ? '勾选事件' : '取消事件', records)
 
   state.records = records
-  if (records) {
-    console.log('选中')
-    // 将state.tableData中的tableName为records中的tableName的项的select置为true
-    state.tableData.forEach(item => {
-      records.forEach(record => {
-        if (item.tableName === record.tableName) {
-          item.select = true
-        }
-      })
-    })
-  }
-  console.log('state.tableData：', state.tableData)
+  // if (records) {
+  //   console.log('选中')
+  //   // 将state.tableData中的tableName为records中的tableName的项的select置为true
+  //   state.tableData.forEach(item => {
+  //     records.forEach(record => {
+  //       if (item.tableName === record.tableName) {
+  //         if (item.select)
+  //           item.select = true
+  //         if (item.insert)
+  //           item.insert = true
+  //         if (item.delete)
+  //           item.delete = true
+  //         if (item.update)
+  //           item.update = true
+  //       }
+  //     })
+  //   })
+  // }
+  // console.log('state.tableData：', state.tableData)
 }
 
 // 提交
