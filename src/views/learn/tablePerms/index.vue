@@ -222,6 +222,15 @@ const tooltipConfig = reactive<VxeTablePropTypes.TooltipConfig>({
 })
 
 
+// 监听名为 "my_channel" 的广播频道
+const myChannel = new BroadcastChannel("my_channel");
+// 监听该频道并处理消息
+myChannel.onmessage = function (event) {
+  alert("接收到消息: " + event.data); // "Hello World!
+  console.log(event);
+};
+
+
 onMounted(() => {
   convertOtToSt()
 

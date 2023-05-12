@@ -115,6 +115,14 @@ const routes = [
         meta: {
             title: "打开新窗口",
         }
+      },
+      {
+        path: "/learning/broadcast",
+        name: "broadcast",
+        component: () => import("@/views/learn/broadcast/index.vue"),
+        meta: {
+            title: "广播",
+        }
       }
     ]
   },
