@@ -92,6 +92,7 @@ const routes = [
   },
 
   {
+
     path: "/learning",
     name: "Learning",
     meta: {
@@ -107,6 +108,14 @@ const routes = [
           title: "数据表授权",
         }
       },
+      {
+        path: "/learning/openWindow",
+        name: "openWindow",
+        component: () => import("@/views/learn/openWindow/index.vue"),
+        meta: {
+            title: "打开新窗口",
+        }
+      }
     ]
   },
 

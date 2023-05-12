@@ -85,11 +85,13 @@
 </template>
 <script setup>
 import {getCurrentInstance, onMounted, reactive, toRefs} from "vue";
+import {useRoute} from "vue-router";
 import {ElMessage} from "element-plus";
 
 import {GetOrgTreeByPost, SaveOrg} from "@/api/system/org";
 
 const {proxy} = getCurrentInstance();
+const route = useRoute();
 
 const state = reactive({
   loading: false,
@@ -499,6 +501,8 @@ onMounted(() => {
   test();
   handleQuery();
   console.log("proxy", proxy);
+
+  console.log(route.query, "我的作品编辑器")
 });
 </script>
 
