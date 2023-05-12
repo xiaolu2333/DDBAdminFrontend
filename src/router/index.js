@@ -88,15 +88,26 @@ const routes = [
         },
         component: () => import("@/views/system/role/index.vue"),
       },
+    ],
+  },
+
+  {
+    path: "/learning",
+    name: "Learning",
+    meta: {
+        title: "学习",
+    },
+    component: () => import("@/layout/index.vue"),
+    children: [
       {
-        path: "/tablePerms",
+        path: "/learning/tablePerms",
         name: "tablePerms",
-        component: () => import("@/views/system/tablePerms/index.vue"),
+        component: () => import("@/views/learn/tablePerms/index.vue"),
         meta: {
           title: "数据表授权",
         }
-      }
-    ],
+      },
+    ]
   },
 
   // Menu
