@@ -12,7 +12,7 @@ import axios from "axios";
 
 // 创建实例
 const service = axios.create({
-  baseURL: '/', // api 的 base_url
+  baseURL: 'http://127.0.0.1:8000', // api 的 base_url
   timeout: 5000,
 });
 

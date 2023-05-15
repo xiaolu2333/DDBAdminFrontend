@@ -123,6 +123,14 @@ const routes = [
         meta: {
             title: "广播",
         }
+      },
+      {
+        path: "/learning/saveLocalInVXETable",
+        name: "saveLocalInVXETable",
+        component: () => import("@/views/learn/saveLocalInVXETable/index.vue"),
+        meta: {
+            title: "VXETable局部更新",
+        }
       }
     ]
   },
