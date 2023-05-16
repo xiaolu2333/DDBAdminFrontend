@@ -131,6 +131,14 @@ const routes = [
         meta: {
             title: "VXETable局部更新",
         }
+      },
+      {
+        name: "pagination",
+        path: "/learning/pagination",
+        component: () => import("@/views/learn/pagination/index.vue"),
+        meta: {
+            title: "分页",
+        }
       }
     ]
   },
@@ -156,13 +164,22 @@ const routes = [
 
   // Data Admin
   {
-    path: "/data",
-    name: "Data",
+    path: "/dataManage",
+    name: "DataManage",
     meta: {
       title: "数据管理",
     },
     component: () => import("@/layout/index.vue"),
-    children: []
+    children: [
+      {
+        path: "/dataManage/dataTree",
+        name: "DataTree",
+        component: () => import("@/views/dataManage/dataTree/index.vue"),
+        meta: {
+            title: "数据树",
+        }
+      }
+    ]
   },
 ];
 
