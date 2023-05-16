@@ -7,6 +7,7 @@ import router from './router';
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
+import echarts from '../src/views/learn/useEcharts/myEcharts'
 
 import '../mock/index.js';
 
@@ -15,7 +16,6 @@ const app = createApp(App);
 
 import VXETable from 'vxe-table'
 import 'vxe-table/lib/style.css'
-
 function useTable(app) {
     app.use(VXETable)
 
@@ -36,7 +36,11 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component);
 }
 
+// 挂载vxe-table
 app.use(useTable);
+// 挂载echarts
+// Vue.prototype.$echarts = echarts;//vue2的挂载方式
+app.config.globalProperties.$echarts = echarts;//vue3的挂载方式
 
 // 挂载Vue应用实例
 app.mount('#app');

@@ -139,6 +139,14 @@ const routes = [
         meta: {
             title: "分页",
         }
+      },
+      {
+        name: "useEcharts",
+        path: "/learning/useEcharts",
+        component: () => import("@/views/learn/useEcharts/index.vue"),
+        meta: {
+            title: "使用Echarts",
+        }
       }
     ]
   },
