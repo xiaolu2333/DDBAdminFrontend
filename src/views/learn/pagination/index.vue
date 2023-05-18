@@ -1,5 +1,12 @@
 <template>
   <div class='container'>
+    <!--    <ul-->
+    <!--        v-infinite-scroll="load"-->
+    <!--        :infinite-scroll-disabled='loading'-->
+    <!--        class="infinite-list" style="overflow: auto">-->
+    <!--      <li v-for="i in dbExtendedInfo.usageDynamic" :key="i" class="infinite-list-item">{{ i.user }}</li>-->
+    <!--    </ul>-->
+
     <div class='management-dynamic'>
       <p style='font-size: 15px; font-weight: bolder'>管理操作动态</p>
       <vxe-table
@@ -27,39 +34,39 @@
     </div>
     <div class='usage-dynamic' style='margin-top: 30px'>
       <p style='font-size: 15px; font-weight: bolder'>使用操作动态</p>
-      <ul style='overflow: auto'>
-        <li
-            v-for='item in dbExtendedInfo.usageDynamic'
-            :key='item.time'
-            style='padding: 5px'
-        >
-          <hr/>
-          <div style='margin-top: 10px'>
-            <el-row>
-              <el-col :span='1'>
-                <el-icon style="margin-top: 3px" size="20">
-                  <User/>
-                </el-icon>
-              </el-col>
-              <el-col :span='23'>
-                <div style="font-size: 15px">
-                  <p>{{ item.user }}</p>
-                  <p v-html="highlightKeyWord(item.operation)" style="margin-top: 10px"></p>
-                </div>
-                <p style="margin-top: 10px; color: #c0c5ce">{{ showFormattedTime(item.time) }}</p>
-              </el-col>
-            </el-row>
-          </div>
-        </li>
-      </ul>
       <div
+          style='margin-top: 10px'
           v-infinite-scroll='loadNextPage'
-          :infinite-scroll-disabled='loading'
-          style='text-align: center; margin-top: 10px'
+          :infinite-scroll-disabled='isLoading'
       >
-        <p v-if='loading' style='color: #87bdff'>加载中......</p>
-        <!--                  <p v-if='hasMore && loading'>加载中......</p>-->
-        <!--                  <p v-else>暂无更多数据！</p>-->
+        <ul style='overflow: auto'
+        >
+          <li
+              v-for='item in dbExtendedInfo.usageDynamic'
+              :key='item.time'
+              style='padding: 5px'
+          >
+            <hr/>
+            <div style='margin-top: 10px'>
+              <el-row>
+                <el-col :span='1'>
+                  <el-icon style="margin-top: 3px" size="20">
+                    <User/>
+                  </el-icon>
+                </el-col>
+                <el-col :span='23'>
+                  <div style="font-size: 15px">
+                    <p>{{ item.user }}</p>
+                    <p v-html="highlightKeyWord(item.operation)" style="margin-top: 10px"></p>
+                  </div>
+                  <p style="margin-top: 10px; color: #c0c5ce">{{ showFormattedTime(item.time) }}</p>
+                </el-col>
+              </el-row>
+            </div>
+          </li>
+        </ul>
+        <p v-if='!isLoading' style='text-align: center; color: #4983ff'>加载中......</p>
+        <p v-else>暂无更多数据！</p>
       </div>
     </div>
   </div>
@@ -71,6 +78,30 @@ import {useRoute} from 'vue-router'
 import {onMounted, reactive, toRefs} from 'vue'
 import {ElMessage} from 'element-plus'
 import {getPageData, getScrollPageData} from "../../../api/learn/pagination.js";
+
+import {ref} from 'vue'
+
+const count = ref(0)
+const load = () => {
+  // count.value += 3
+  console.log('load')
+
+  // if (loading.value) return
+  state.isLoading = true
+  getScrollPageData({
+    "pageIndex": state.pageNumber,
+    "pageSize": state.pageSize,
+  })
+      .then((response) => {
+        console.log('response', response)
+        state.dbExtendedInfo.usageDynamic.push(...response.data.dataList)
+        state.isLoading = false
+        state.pageNumber++
+        // state.hasMore = (response.data.dataList.length < state.pageSize)
+        console.log('state.loading', state.isLoading)
+      })
+}
+
 
 // 使用动态操作关键字
 const KEYWORD = ['导入', '导出', '创建', '删除', '修改', '查询', '注销', '连接', '断开', '申请'];
@@ -103,7 +134,7 @@ const state = reactive({
   // 滚动加载
   pageNumber: 1,
   pageSize: 10,
-  loading: false,
+  isLoading: false,
   hasMore: false
 })
 const {
@@ -111,7 +142,7 @@ const {
   tablePage,
   pageNumber,
   pageSize,
-  loading,
+  isLoading,
   hasMore
 } = toRefs(state)
 
@@ -174,8 +205,12 @@ async function handleMdPageChange({currentPage, pageSize}) {
  * 获取使用操作动态
  */
 const loadNextPage = async () => {
-  if (loading.value) return
-  state.loading = true
+  console.log('loadNextPage')
+  console.log("刚进入时 isLoading: ", isLoading.value)
+  console.log("state.pageNumber: ", state.pageNumber)
+
+  if (isLoading.value) return
+  state.isLoading = true
 
   // // 模拟后端数据
   // setTimeout(() => {
@@ -186,7 +221,7 @@ const loadNextPage = async () => {
   //           time: (new Date()).toLocaleString()
   //         })
   //         state.pageNumber++
-  //         // state.loading = false
+  //         state.loading = false
   //       }
   //     },
   //     2000
@@ -195,16 +230,18 @@ const loadNextPage = async () => {
   // 保留！
   // 异步请求数据
   await getScrollPageData({
-    "pageIndex": state.pageNumber += 1,
+    "pageIndex": state.pageNumber,
     "pageSize": state.pageSize,
   })
       .then((response) => {
         console.log('response', response)
         state.dbExtendedInfo.usageDynamic.push(...response.data.dataList)
         state.pageNumber += 1
-        state.loading = false
-        state.hasMore = (response.data.dataList.length < state.pageSize)
+        state.isLoading = (response.data.dataList.length < state.pageSize)
+        console.log("执行查询后 isLoading: ", isLoading.value)
       })
+
+  console.log("查询之外 isLoading: ", isLoading.value)
 }
 
 /**
@@ -250,5 +287,25 @@ onMounted(() => {
 
 </script>
 
-<style scoped lang="less">
+<style scoped>
+/*.infinite-list {*/
+/*  height: 300px;*/
+/*  padding: 0;*/
+/*  margin: 0;*/
+/*  list-style: none;*/
+/*}*/
+
+/*.infinite-list .infinite-list-item {*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*  height: 50px;*/
+/*  background: var(--el-color-primary-light-9);*/
+/*  margin: 10px;*/
+/*  color: var(--el-color-primary);*/
+/*}*/
+
+/*.infinite-list .infinite-list-item + .list-item {*/
+/*  margin-top: 10px;*/
+/*}*/
 </style>
