@@ -14,7 +14,7 @@ import {ElMessage, ElMessageBox} from 'element-plus'
 // 创建实例
 const service = axios.create({
     baseURL: 'http://127.0.0.1:8000', // api 的 base_url
-    timeout: 5000,
+    timeout: 30000,
 });
 
 // 创建请求拦截器

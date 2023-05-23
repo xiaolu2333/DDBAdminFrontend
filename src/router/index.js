@@ -154,6 +154,14 @@ const routes = [
         meta: {
             title: "使用Echarts",
         }
+      },
+      {
+        name: "udFile",
+        path: "/learning/udFile",
+        component: () => import("@/views/learn/udFile/index.vue"),
+        meta: {
+            title: "前后端文件交互",
+        }
       }
     ]
   },
