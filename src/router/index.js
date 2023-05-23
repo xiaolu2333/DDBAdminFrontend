@@ -162,6 +162,14 @@ const routes = [
         meta: {
             title: "前后端文件交互",
         }
+      },
+      {
+        name: "customDirective",
+        path: "/learning/customDirective",
+        component: () => import("@/views/learn/customDirective/index.vue"),
+        meta: {
+            title: "自定义指令",
+        }
       }
     ]
   },
