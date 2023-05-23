@@ -9,7 +9,6 @@ import 'element-plus/dist/index.css';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 import echarts from '../src/views/learn/useEcharts/myEcharts'
 
-import '../mock/index.js';
 
 // 创建Vue应用实例
 const app = createApp(App);

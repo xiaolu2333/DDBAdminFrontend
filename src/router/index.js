@@ -51,7 +51,7 @@ const routes = [
         path: "/organization",
         name: "Organization",
         meta: {
-          title: "机构管理",
+          title: "机构信息管理",
         },
         component: () => import("@/views/system/org/index.vue"),
       },
@@ -59,7 +59,7 @@ const routes = [
         path: "/department",
         name: "Department",
         meta: {
-          title: "部门管理",
+          title: "部门信息管理",
         },
         component: () => import("@/views/system/dept/index.vue"),
       },
@@ -75,7 +75,7 @@ const routes = [
         path: "/user",
         name: "User",
         meta: {
-          title: "用户管理",
+          title: "部门用户管理",
         },
         component: () => import("@/views/system/user/index.vue"),
         hidden: true,
@@ -92,7 +92,6 @@ const routes = [
   },
 
   {
-
     path: "/learning",
     name: "Learning",
     meta: {
@@ -130,6 +129,14 @@ const routes = [
         component: () => import("@/views/learn/saveLocalInVXETable/index.vue"),
         meta: {
             title: "VXETable局部更新",
+        }
+      },
+      {
+        path: "/learning/sortableInVXETable",
+        name: "sortableInVXETable",
+        component: () => import("@/views/learn/sortableInVXETable/index.vue"),
+        meta: {
+            title: "VXETable排序",
         }
       },
       {

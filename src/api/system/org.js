@@ -1,69 +1,41 @@
-/* jshint esversion: 6 */
-
 import service from "@/utils/request";
 
 /**
- * 机构列表获取API
+ * 获取机构数据列表
  */
-export async function GetOrgListByPost(queryType) {
-  "use strict";
-  try {
-    return await service.request({
-      method: "post",
-      url: "/org/list",
-      data: queryType,  // data 为 post 方法的请求体
-    });
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
-
-export async function GetOrgListByGet(queryType) {
-  "use strict";
-  try {
-    return await service.request({
-      method: "get",
-      url: "/org/list",
-      // params: queryType,  // params 为 get 方法的查询字符串
-      data: queryType,  // 也可以在 get 方法的请求体中添加数据
-    });
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+export async function GetOrgList() {
+    try {
+        return await service.request({
+            url: "/framework/organizations/getOrganizationList",
+            method: "get",
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 /**
- * 获取机构树形结构数据
+ * 获取机构数据详情
  */
-export async function GetOrgTreeByPost(queryType) {
-  "use strict";
-  try {
+export async function GetOrgDetail(id) {
     return await service.request({
-      url: "/org/tree",
-      method: "post",
-      data: queryType,  // data 为 post 方法的请求体
+        url: "/framework/organizations/getOrganization/" + id,
+        method: "get",
     });
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
 }
 
 /**
  * 保存机构信息
  */
-export async function SaveOrg(mainForm) {
-  "use strict";
-  try {
-    return await service.request({
-      url: "/org/save",
-      method: "post",
-      data: mainForm,
-    });
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+export async function CreateOrg(formData) {
+    "use strict";
+    try {
+        return await service.request({
+            url: "/framework/organizations/createOrganization",
+            method: "post",
+            data: formData,
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
