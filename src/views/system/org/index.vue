@@ -61,8 +61,8 @@
     <template #footer>
       <el-row>
         <el-col :span="12" style="text-align: left!important;">
-          <el-button @click="closeDialog1" :icon="WarningFilled"/>
-          <el-button @click="closeDialog1" :icon="QuestionFilled"/>
+          <el-button :icon="WarningFilled"/>
+          <el-button :icon="QuestionFilled"/>
         </el-col>
         <el-col :span="12">
           <el-button type='primary' @click='submitForm' :icon="Checked">确定</el-button>
@@ -156,51 +156,44 @@ function closeDialog() {
 
 
 /************************ utils ************************/
-function test(list: any[]): any[] {
-  const originalArray = list
-  const targetArray = [];
-  // 将原始数组中根节点的项添加到目标数组中
-  originalArray.forEach(item => {
-    if (item.parentCode === "0") {
-      targetArray.push({
-        ...item,
-        children: []
-      });
+function formatData(data) {
+  let result = [];
+  let map = {};
+  data.forEach(function (item) {
+    map[item.id] = item;
+    item.children = [];
+  });
+  data.forEach(function (item) {
+    if (item.parentCode !== "0") {
+      map[item.parentCode].children.push(item);
+    } else {
+      result.push(item);
     }
   });
-  // 递归函数，在根节点下添加子节点
-  const addChildren = (parent, array) => {
-    array.forEach(item => {
-      if (item.parentCode === parent.code) {
-        parent.children.push({
-          ...item,
-          children: []
-        });
-        addChildren(parent.children[parent.children.length - 1], array);
-      }
-    });
-  }
-  // 对于每个根节点，添加子节点
-  targetArray.forEach(item => {
-    addChildren(item, originalArray);
-  });
-  console.log(targetArray); // 输出转换后的目标数组
-  return targetArray
+  return result;
 }
-
 
 /**
  * 将 tableData 构造为树形结构，设置机构选项
  */
 function loadOrgOptions() {
-  let tempList = []
   GetOrgList().then(res => {
-    tempList = res.data.dataList
+    let temp = formatData(res.data.dataList)
+    console.log(temp);
+    state.orgOptions = [
+      {
+        id: 0,
+        name: "根机构",
+        code: "0",
+        parentCode: "-1",
+        enabled: true,
+        createTime: "2023-05-23 02:41:39",
+        updateTime: "2023-05-23 02:41:39",
+        children: temp
+      }
+    ];
+    console.log(state.orgOptions);
   })
-
-  let treeData = test(tempList)
-
-  console.log('treeData:', treeData)
 }
 
 function getList() {
