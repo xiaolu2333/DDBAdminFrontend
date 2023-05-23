@@ -31,3 +31,17 @@ export async function DownloadFile() {
     throw error;
   }
 }
+
+
+export async function UploadFormFile(formData) {
+  try {
+    return await service.request({
+      method: "post",
+      url: "/test_app/upload_form_file",
+      data: formData,
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
