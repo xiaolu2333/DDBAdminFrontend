@@ -170,6 +170,14 @@ const routes = [
         meta: {
             title: "自定义指令",
         }
+      },
+      {
+        name: "useElTree",
+        path: "/learning/useElTree",
+        component: () => import("@/views/learn/useElTree/index.vue"),
+        meta: {
+            title: "使用ElTree",
+        }
       }
     ]
   },
