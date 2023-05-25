@@ -8,6 +8,7 @@
     </el-button-group>
     <el-table
         ref="xTreeRef"
+        row-key="id"
         highlight-current-row
         :data="tableData"
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
@@ -40,7 +41,7 @@
             v-model="formData.parentCode"
             placeholder='选择上级机构'
             :data="orgOptions"
-            :props="{ value: 'parentCode', label: 'name' }"
+            :props="{ children: 'children', value: 'parentCode', label: 'name' }"
             filterable
             check-strictly
         />
@@ -156,6 +157,7 @@ function closeDialog() {
 
 
 /************************ utils ************************/
+// 构造机构树
 function formatData(data) {
   let result = [];
   let map = {};
@@ -170,7 +172,21 @@ function formatData(data) {
       result.push(item);
     }
   });
+  console.log("result:", result);
   return result;
+}
+
+// 为机构树节点属性：如果有子节点，则添加 hasChildren 属性为 true，否则为 false
+function formatTree(data) {
+  data.forEach(item => {
+    if (item.children.length > 0) {
+      item.hasChildren = true;
+      formatTree(item.children);
+    } else {
+      item.hasChildren = false;
+    }
+  });
+  return data;
 }
 
 /**
@@ -179,7 +195,6 @@ function formatData(data) {
 function loadOrgOptions() {
   GetOrgList().then(res => {
     let temp = formatData(res.data.dataList)
-    console.log(temp);
     state.orgOptions = [
       {
         id: 0,
@@ -187,8 +202,8 @@ function loadOrgOptions() {
         code: "0",
         parentCode: "-1",
         enabled: true,
-        createTime: "2023-05-23 02:41:39",
-        updateTime: "2023-05-23 02:41:39",
+        createTime: "",
+        updateTime: "",
         children: temp
       }
     ];
@@ -199,7 +214,8 @@ function loadOrgOptions() {
 function getList() {
   // 获取机构列表
   GetOrgList().then(res => {
-    state.tableData = res.data.dataList
+    state.tableData = formatData(res.data.dataList)
+    console.log("tableData:", state.tableData)
   })
 }
 
