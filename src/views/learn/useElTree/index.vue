@@ -1,34 +1,33 @@
 <template>
   <div>
     <el-card style="height: 50vh; width: 50vw">
-      <p>设置【数据库操作员及权限】</p>
+      <p>用户授权</p>
       <el-scrollbar style="height: 40vh;">
         <el-tree
             ref='userTreeRef'
             node-key='id'
             :data='userOptions'
-            :check='checkedChange'
-            show-checkbox
-            :props="{ children: 'nodes', label: 'text', value: 'id', disabled: 'disabled'}"
+            :props="{ children: 'nodes', label: 'text', disabled: ''}"
             :expand-on-click-node='false'
             default-expand-all
         >
           <template #default="{ node, data }">
-            <span>{{ node.label }}</span>
-            <span class="custom-tree-node" v-if="node.data.type === 'user'" style="margin-left: 20px">
-              <!--            <span>{{ show(node, data) }}</span>-->
-              <span>
-                <el-button size="small" type="primary" @click="testAuth(data)">授权</el-button>
-              </span>
-            </span>
+            <span style="width: 150px">{{ node.label }}</span>
+            <el-button
+                v-if="node.data.type === 'user'"
+                size="small" type="primary" style="margin-left: 20px"
+                @click="tableAuth(data)"
+            >授权
+            </el-button>
             <span class="custom-tree-node" v-if="node.data.type === 'table'">
-            <span style="margin-left: 20px;">
-              <el-checkbox :checked="tableHasPerm(data,'select')" disabled>s</el-checkbox>
-              <el-checkbox :checked="tableHasPerm(data,'insert')" disabled>i</el-checkbox>
-              <el-checkbox :checked="tableHasPerm(data,'delete')" disabled>d</el-checkbox>
-              <el-checkbox :checked="tableHasPerm(data,'update')" disabled>u</el-checkbox>
+                <p style="margin-left: 20px">
+                  <template v-for="perm in ['select', 'insert', 'delete', 'update']">
+                <el-checkbox v-if="tableHasPerm(data, perm)" :key="perm" :checked="true" disabled>
+                  {{ perm }}
+                </el-checkbox>
+              </template>
+                </p>
             </span>
-          </span>
           </template>
         </el-tree>
       </el-scrollbar>
@@ -120,7 +119,7 @@ const {
 
 
 /********************************* tree事件 *********************************/
-function testAuth(data: any) {
+function tableAuth(data: any) {
   console.log('testAuth:', data)
   state.dialogVisible = true
 }
@@ -199,7 +198,7 @@ function init() {
       selectable: false,
       objId: "1630049073618747392",
       id: "90",
-      text: "XXX院",
+      text: "XXX",
       state: {
         expanded: true,
         checked: false
@@ -216,7 +215,7 @@ function init() {
           selectable: false,
           objId: "1631225273292685312",
           id: "122",
-          text: "122室",
+          text: "1室",
           state: {
             expanded: true,
             checked: false
@@ -231,7 +230,7 @@ function init() {
           selectable: false,
           objId: "1631193361920557056",
           id: "123",
-          text: "123室",
+          text: "1室",
           state: {
             expanded: true,
             checked: false
@@ -248,7 +247,7 @@ function init() {
               selectable: false,
               objId: "1631493107470041088",
               id: "9012_124_02",
-              text: "数据样机团队",
+              text: "XXX团队",
               state: {
                 expanded: true,
                 checked: false
@@ -263,7 +262,7 @@ function init() {
               selectable: false,
               objId: "1631492491435835392",
               id: "9012_124_01",
-              text: "数值仿真团队",
+              text: "XXX团队",
               state: {
                 expanded: true,
                 checked: false
@@ -277,7 +276,7 @@ function init() {
           selectable: false,
           objId: "1631193986762801152",
           id: "124",
-          text: "124室",
+          text: "4室",
           state: {
             expanded: true,
             checked: false
@@ -294,7 +293,7 @@ function init() {
               selectable: true,
               objId: "1661184566850748416",
               id: "SHJKGLYB",
-              text: "数据库管理员B",
+              text: "xxx管理员B",
               state: {
                 expanded: false,
                 checked: true
@@ -315,6 +314,7 @@ function init() {
                 {text: 't1', perms: 'select,update', id: 't1', type: 'table', disabled: true},
                 {text: 't2', perms: 'select,delete', id: 't2', type: 'table', disabled: true},
                 {text: 't3', perms: 'select,insert', id: 't3', type: 'table', disabled: true},
+                // {text: '', perms: '', id: '', type: 'table-s', disabled: false},
               ]
             }
           ],
@@ -322,7 +322,7 @@ function init() {
           selectable: false,
           objId: "1648975184708762648",
           id: "125",
-          text: "125室",
+          text: "5室",
           state: {
             expanded: true,
             checked: false
@@ -336,7 +336,7 @@ function init() {
       selectable: false,
       objId: "1631193361920557056",
       id: "9012",
-      text: "XXX所",
+      text: "XXX",
       state: {
         expanded: true,
         checked: false
