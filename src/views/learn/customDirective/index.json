@@ -1,0 +1,128 @@
+[
+  {
+    "name": "新增本地库",
+    "isLocal": -1000,
+    "status": -1000,
+    "roles": [
+      "hasDbSysAdmin"
+    ]
+  },
+  {
+    "name": "新增跨域库",
+    "isLocal": -1000,
+    "status": -1000,
+    "roles": [
+      "hasDbSysAdmin"
+    ]
+  },
+  {
+    "name": "修改",
+    "isLocal": -1000,
+    "status": -1000,
+    "roles": [
+      "hasCreator"
+    ]
+  },
+  {
+    "name": "删除",
+    "isLocal": -1000,
+    "status": 0,
+    "roles": [
+      "hasCreator"
+    ]
+  },
+  {
+    "name": "详情",
+    "isLocal": -1000,
+    "status": -1000,
+    "roles": [
+      "hasCreator",
+      "hasDbSysAdmin"
+    ]
+  },
+  {
+    "name": "初始化为中心库",
+    "isLocal": -1,
+    "status": 1,
+    "hasCreator": true,
+    "hasDbSysAdmin": false,
+    "hasDbAdmin": false,
+    "hasDbOperator": false,
+    "hasCenterAdmin": false,
+    "hasSubAdmin": false
+  },
+  {
+    "name": "业务授权",
+    "isLocal": -1,
+    "status": 1,
+    "hasCreator": true,
+    "hasDbSysAdmin": false,
+    "hasDbAdmin": false,
+    "hasDbOperator": false,
+    "hasCenterAdmin": false,
+    "hasSubAdmin": false
+  },
+  {
+    "name": "分级角色用户授权",
+    "isLocal": -1,
+    "status": 1,
+    "hasCreator": false,
+    "hasDbSysAdmin": true,
+    "hasDbAdmin": true,
+    "hasDbOperator": false,
+    "hasCenterAdmin": false,
+    "hasSubAdmin": false
+  },
+  {
+    "name": "提交注册",
+    "isLocal": -1000,
+    "status": [
+      0,
+      3
+    ],
+    "hasCreator": false,
+    "hasDbSysAdmin": true,
+    "hasDbAdmin": true,
+    "hasDbOperator": false,
+    "hasCenterAdmin": false,
+    "hasSubAdmin": false
+  },
+  {
+    "name": "提交卸载",
+    "isLocal": -1,
+    "status": 1,
+    "hasCreator": false,
+    "hasDbSysAdmin": true,
+    "hasDbAdmin": true,
+    "hasDbOperator": false,
+    "hasCenterAdmin": false,
+    "hasSubAdmin": false
+  },
+  {
+    "name": "表共享",
+    "isLocal": -1,
+    "status": 1,
+    "hasCreator": false,
+    "hasDbSysAdmin": true,
+    "hasDbAdmin": true,
+    "hasDbOperator": false,
+    "hasCenterAdmin": false,
+    "hasSubAdmin": false
+  },
+  {
+    "name": "发布数据库",
+    "isLocal": -1,
+    "status": 1,
+    "hasCreator": false,
+    "hasDbSysAdmin": true,
+    "hasDbAdmin": true,
+    "hasDbOperator": false,
+    "hasCenterAdmin": false,
+    "hasSubAdmin": false
+  }
+]
+
+
+
+
+
