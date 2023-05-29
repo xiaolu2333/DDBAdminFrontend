@@ -1,88 +1,73 @@
 [
   {
-    "name": "新增本地库",
-    "isLocal": -2,
-    "status": -1,
-    "roles": [
-      "hasDbSysAdmin"
-    ]
-  },
-  {
     "name": "新增跨域库",
-    "isLocal": -2,
-    "status": -1,
+    "isLocal": [
+      -1,
+      0,
+      1,
+      2,
+      3
+    ],
+    "status": [
+      -2,
+      -1,
+      0,
+      1,
+      2,
+      3
+    ],
     "roles": [
       "hasDbSysAdmin"
     ]
   },
   {
-    "name": "修改",
-    "isLocal": -2,
-    "status": -1,
+    "name": "新增本地库",
+    "isLocal": [
+      -2
+    ],
+    "status": [
+      -2
+    ],
+    "roles": [
+      "hasDbSysAdmin"
+    ]
+  },
+  {
+    "name": "编辑",
+    "isLocal": [
+      0,
+      1,
+      2
+    ],
+    "status": [
+      0,
+      1,
+      3
+    ],
     "roles": [
       "hasDbSysAdmin"
     ]
   },
   {
     "name": "删除",
-    "isLocal": -2,
-    "status": -1,
+    "isLocal": [
+      -2
+    ],
+    "status": [
+      -2
+    ],
     "roles": [
       "hasDbSysAdmin"
     ]
   },
   {
     "name": "详情",
-    "isLocal": -2,
-    "status": -1,
-    "roles": [
-      "hasDbSysAdmin"
-    ]
-  },
-  {
-    "name": "初始化为中心库",
-    "isLocal": -1,
-    "status": 1,
-    "roles": [
-      "hasDbSysAdmin"
-    ]
-  },
-  {
-    "name": "业务授权",
-    "isLocal": 3,
-    "status": 1,
-    "roles": [
-      "hasDbSysAdmin"
-    ]
-  },
-  {
-    "name": "分级角色用户授权",
-    "isLocal": -1,
-    "status": 1,
-    "roles": [
-      "hasDbSysAdmin"
-    ]
-  },
-  {
-    "name": "提交注册",
-    "isLocal": 2,
-    "status": 0,
-    "roles": [
-      "hasDbSysAdmin"
-    ]
-  },
-  {
-    "name": "表共享",
-    "isLocal": 2,
-    "status": 1,
-    "roles": [
-      "hasDbSysAdmin"
-    ]
-  },
-  {
-    "name": "发布数据库",
-    "isLocal": 2,
-    "status": 1,
+    "isLocal": [
+      -2
+    ],
+    "status": [
+      -2
+    ],
     "roles": [
       "hasDbSysAdmin"
     ]

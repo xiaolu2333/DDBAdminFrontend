@@ -24,15 +24,6 @@
           <el-button v-perm="['qx:xq:00068']" type="primary">详情</el-button>
         </el-card>
       </el-col>
-      <el-col :span="7">
-        <el-card>
-          <p>（配置文件权限信息格式）</p>
-          <el-button v-btn="[getRoles()]" type="primary">新增本地库</el-button>
-          <el-button v-btn="[getRoles()]" type="success">编辑</el-button>
-          <el-button v-btn="[getRoles()]" type="danger">删除</el-button>
-          <el-button v-btn="[getRoles()]" type="primary">详情</el-button>
-        </el-card>
-      </el-col>
       <el-col :span="12">
         <el-card>
           <p>（配置文件权限信息格式）</p>
@@ -42,57 +33,24 @@
             <p>数据库类型 islocal: -2-不限 -1-本地/域内 0-本地库 1-域内库 2-跨域库 3-中心库</p>
             <el-button-group>
               <el-button
-                  v-btn2="[getRole('hasDbSysAdmin'), getStatus(-2), getIsLocal(-1)]" type="primary"
+                  v-btn2="[getRole('hasDbSysAdmin'), [0], [2]]" type="primary"
               >新增跨域库
               </el-button>
               <el-button
-                  v-btn2="[getRole('hasDbAdmin'), getStatus(-2), getIsLocal(-1)]"
+                  v-btn2="[getRole('hasDbAdmin'), [0], [2]]"
                   type="primary">新增本地库
               </el-button>
               <el-button
-                  v-btn2="[getRole('hasDbSysAdmin'), getStatus(-2), getIsLocal(-1)]"
+                  v-btn2="[getRole('hasDbSysAdmin'), [0,1,2], [0,1,3]]"
                   type="success">编辑
               </el-button>
               <el-button
-                  v-btn2="[getRole('hasDbSysAdmin'), getStatus(-2), getIsLocal(-1)]"
+                  v-btn2="[getRole('hasDbSysAdmin'), [0], [2]]"
                   type="danger">删除
               </el-button>
               <el-button
-                  v-btn2="[getRole('hasDbSysAdmin'), getStatus(-2), getIsLocal(-1)]"
+                  v-btn2="[getRole('hasDbSysAdmin'), [0], [2]]"
                   type="primary">详情
-              </el-button>
-            </el-button-group>
-            <el-button-group>
-              <el-button
-                  v-btn2="[getRole('hasDbSysAdmin'), getStatus(-1), getIsLocal(1)]"
-                  type="primary">
-                初始化为中心库
-              </el-button>
-              <el-button
-                  v-btn2="[getRole('hasDbSysAdmin'), getStatus(3), getIsLocal(-1)]"
-                  type="primary">
-                初始化为中心库
-              </el-button>
-              <el-button
-                  v-btn2="[getRole('hasDbSysAdmin'), getStatus(3), getIsLocal(1)]"
-                  type="primary">业务授权
-              </el-button>
-              <el-button
-                  v-btn2="[getRole('hasDbSysAdmin'), getStatus(-1), getIsLocal(1)]"
-                  type="primary">
-                分级角色用户授权
-              </el-button>
-              <el-button
-                  v-btn2="[getRole('hasDbSysAdmin'), getStatus(2), getIsLocal(0)]"
-                  type="primary">提交注册
-              </el-button>
-              <el-button
-                  v-btn2=""
-                  type="primary">表共享
-              </el-button>
-              <el-button
-                  v-btn2="[getRole('hasDbSysAdmin')]"
-                  type="primary">发布数据库
               </el-button>
             </el-button-group>
           </el-card>
@@ -160,48 +118,12 @@ const getRoles = () => {
 }
 import btnPerms from './index.json'
 
-console.log("btnPerms:", btnPerms)
-const vBtn = {
-  mounted(el, binding) {
-    binding.value = binding.value || [];
-    console.log("binding.value:", binding.value[0].toString())
-
-    if (binding.value) {
-      // 获取el-button元素的子元素span
-      const span = el.getElementsByTagName('span')[0];
-      // 获取span元素的文本
-      const text = span.innerText;
-      // console.log("text:", text)
-
-      const hasPerm = btnPerms?.some(perm =>
-          // 检查perm中名 name 按钮的 roles 属性值是否包含 binding.value
-          perm.name === text && perm.roles.some(role => binding.value.includes(role))
-      )
-      // console.log("hasPerm:", hasPerm)
-
-      if (!hasPerm) {
-        el.classList.add('is-disabled');
-        el.setAttribute('disabled', 'disabled');
-      }
-    } else {
-      throw new Error("need perms! Like v-perm=\"['sys:user:add','sys:user:edit']\"");
-    }
-  },
-};
-
-
 const getRole = (role) => {
   return role
 }
-const getStatus = (status) => {
-  return status
-}
-const getIsLocal = (isLocal) => {
-  return isLocal
-}
 const vBtn2 = {
   mounted(el, binding) {
-    binding.value = binding.value || ["", -1000, -1000];
+    binding.value = binding.value || ["", [-1], [-1]];
     console.log("binding.value:", binding.value)
 
     if (binding.value.length === 3) {
@@ -213,9 +135,10 @@ const vBtn2 = {
       // 判断按钮是否有权限：按钮名称、所需角色、数据库类型、数据库状态
       const hasPerm = btnPerms?.some(perm =>
           perm.name === text &&
-          perm.roles.some(role => btnRole.includes(role)) &&
-          perm.isLocal === dbIsLocal &&
-          perm.status === dbStatus
+          // perm.isLocal.some(type => dbIsLocal.includes(type)) &&
+          // perm.status.some(status => dbStatus.includes(status))
+          dbIsLocal.every((el) => perm.isLocal.includes(el)) &&
+          dbStatus.every((el) => perm.status.includes(el))
       )
 
       if (!hasPerm) {
