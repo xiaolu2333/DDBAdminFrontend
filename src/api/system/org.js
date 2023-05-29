@@ -19,8 +19,9 @@ export async function GetOrgList() {
  */
 export async function GetOrgDetail(id) {
     return await service.request({
-        url: "/framework/organizations/getOrganization/" + id,
+        url: "/framework/organizations/getOrganization",
         method: "get",
+        params: { id: id },
     });
 }
 
@@ -34,6 +35,39 @@ export async function CreateOrg(formData) {
             url: "/framework/organizations/createOrganization",
             method: "post",
             data: formData,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+/**
+ * 更新机构信息
+ */
+export async function UpdateOrg(formData) {
+    "use strict";
+    try {
+        return await service.request({
+            url: "/framework/organizations/updateOrganization",
+            method: "post",
+            data: formData,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+/**
+ * 删除机构信息
+ */
+export async function DeleteOrg(id) {
+    "use strict";
+    try {
+        return await service.request({
+            url: "/framework/organizations/deleteOrganization",
+            method: "post",
+            data: { id: id },
         });
     } catch (error) {
         console.log(error);

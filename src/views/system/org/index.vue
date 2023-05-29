@@ -82,7 +82,7 @@ import {
   Plus, Delete, Edit, Document, Checked, WarningFilled, QuestionFilled
 } from '@element-plus/icons-vue'
 
-import {GetOrgList, GetOrgDetail, CreateOrg} from '../../../api/system/org.js'
+import {GetOrgList, GetOrgDetail, CreateOrg, UpdateOrg, DeleteOrg} from '../../../api/system/org.js'
 
 interface OrgData {
   id?: number,
@@ -148,31 +148,97 @@ function handleCreate() {
 
 // 修改
 function handleUpdate() {
+  loadOrgOptions()
+  state.dialog = {
+    title: '新增机构',
+    visible: true,
+  }
+
+  // 获取详情
+  GetOrgDetail(state.selectedRow.id).then(res => {
+    console.log("res:", res)
+    state.formData = res.data.data
+  }).catch(err => {
+    console.log("err:", err)
+  })
 }
 
 async function submitForm() {
-  await CreateOrg(state.formData).then(res => {
-    console.log("res:", res)
-    ElMessage.success('创建成功')
-    state.dialog.visible = false
-    state.formData = {
-      parentCode: "1",
-    } as OrgData
+  if (state.formData.id) {
+    // 修改
+    await UpdateOrg(state.formData).then(res => {
+      console.log("res:", res)
+      ElMessage.success('修改成功')
+      state.dialog.visible = false
+      state.formData = {
+        parentCode: "1",
+      } as OrgData
 
-    // 刷新表格
-    getList()
-  }).catch(err => {
-    console.log("err:", err)
-    ElMessage.error('创建失败')
-  })
+      // 刷新表格
+      init()
+    }).catch(err => {
+      console.log("err:", err)
+      ElMessage.error('修改失败')
+    })
+  } else {
+    await CreateOrg(state.formData).then(res => {
+      console.log("res:", res)
+      ElMessage.success('创建成功')
+      state.dialog.visible = false
+      state.formData = {
+        parentCode: "1",
+      } as OrgData
+
+      // 刷新表格
+      init()
+    }).catch(err => {
+      console.log("err:", err)
+      ElMessage.error('创建失败')
+    })
+  }
 }
 
 // 删除
 function handleDelete() {
+  ElMessageBox.confirm('此操作将永久删除该机构, 是否继续?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    DeleteOrg(state.selectedRow.id).then(res => {
+      console.log("res:", res)
+      ElMessage.success('删除成功')
+      state.dialog.visible = false
+      state.formData = {
+        parentCode: "1",
+      } as OrgData
+
+      // 刷新表格
+      init()
+    }).catch(err => {
+      console.log("err:", err)
+      ElMessage.error('删除失败')
+    })
+  }).catch(() => {
+    ElMessage.info('已取消删除')
+  })
 }
 
 // 详情
 function handleRead() {
+  loadOrgOptions()
+  state.dialog = {
+    title: '新增机构',
+    visible: true,
+  }
+
+  // 获取详情
+  GetOrgDetail(state.selectedRow.id).then(res => {
+    console.log("res:", res)
+    state.formData = res.data.data
+  }).catch(err => {
+    console.log("err:", err)
+  })
 }
 
 /**
@@ -242,7 +308,7 @@ function loadOrgOptions() {
   })
 }
 
-function getList() {
+function init() {
   // 获取机构列表
   GetOrgList().then(res => {
     state.tableData = formatData(res.data.dataList)
@@ -251,6 +317,6 @@ function getList() {
 }
 
 onMounted(async () => {
-  getList()
+  init()
 })
 </script>
