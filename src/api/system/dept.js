@@ -3,11 +3,12 @@ import service from "@/utils/request";
 /**
  * 获取部门数据列表
  */
-export async function GetDeptList() {
+export async function GetDeptList(orgId) {
     try {
         return await service.request({
-            url: "/framework/department/getDepartmentList",
+            url: "/framework/departments/getDepartmentList",
             method: "get",
+            params: { orgId: orgId },
         });
     } catch (error) {
         console.log(error);
@@ -19,7 +20,7 @@ export async function GetDeptList() {
  */
 export async function GetDeptDetail(id) {
     return await service.request({
-        url: "/framework/department/getDepartment",
+        url: "/framework/departments/getDepartment",
         method: "get",
         params: { id: id },
     });
@@ -32,7 +33,7 @@ export async function CreateDept(formData) {
     "use strict";
     try {
         return await service.request({
-            url: "/framework/department/createDepartment",
+            url: "/framework/departments/createDepartment",
             method: "post",
             data: formData,
         });
@@ -49,7 +50,7 @@ export async function UpdateDept(formData) {
     "use strict";
     try {
         return await service.request({
-            url: "/framework/department/updateDepartment",
+            url: "/framework/departments/updateDepartment",
             method: "post",
             data: formData,
         });
@@ -65,7 +66,7 @@ export async function DeleteDept(id) {
     "use strict";
     try {
         return await service.request({
-            url: "/framework/department/deleteDepartment",
+            url: "/framework/departments/deleteDepartment",
             method: "post",
             data: { id: id },
         });

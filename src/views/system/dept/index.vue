@@ -20,33 +20,21 @@
 
       <!-- 部门数据 -->
       <el-col :span='20' :xs='18'>
-        <!--        <el-card>-->
-        <!--          <VxeTable-->
-        <!--              :columns='columns'-->
-        <!--              :data='deptList'-->
-        <!--              :default-expand-all='true'-->
-        <!--              :highlight-current-row='true'-->
-        <!--              :stripe='true'-->
-        <!--              :row-key='"id"'-->
-        <!--              :selection='false'-->
-        <!--              :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"-->
-        <!--              :loading='loading'-->
-        <!--              @row-click='handleDeptNodeClick'-->
-        <!--          >-->
-        <!--            <template #operate='data'>-->
-        <!--              <el-button-->
-        <!--                  type='primary'-->
-        <!--                  link-->
-        <!--                  @click.stop='handleUpdate(data.row)'-->
-        <!--              >-->
-        <!--                编辑-->
-        <!--              </el-button>-->
-        <!--              <el-button type='danger' link @click.stop='handleDelete(data.row)'>-->
-        <!--                删除-->
-        <!--              </el-button>-->
-        <!--            </template>-->
-        <!--          </VxeTable>-->
-        <!--        </el-card>-->
+        <el-card>
+          <vxe-table
+              :loading='loading'
+              align="center"
+              :data="deptList"
+              :tree-config="{transform: true, rowField: 'id', parentField: 'parentCode'}"
+          >
+            <vxe-column field="name" title="name"></vxe-column>
+            <vxe-column field="code" title="code"></vxe-column>
+            <vxe-column field="parentCode" title="parentCode"></vxe-column>
+            <vxe-column field="enabled" title="enabled"></vxe-column>
+            <vxe-column field="createTime" title="createTime"></vxe-column>
+            <vxe-column field="updateTime" title="updateTime"></vxe-column>
+          </vxe-table>
+        </el-card>
       </el-col>
     </el-row>
   </div>
@@ -57,6 +45,7 @@ import {h, onMounted, reactive, ref, toRefs} from 'vue'
 import {ElForm, ElMessage, ElMessageBox, ElTag} from 'element-plus'
 
 import {GetOrgList} from '../../../api/system/org.js'
+import {GetDeptList, GetDeptDetail, CreateDept, UpdateDept, DeleteDept} from '../../../api/system/dept.js'
 
 const orgTreeRef = ref('orgTreeRef')
 const dataFormRef = ref(ElForm)
@@ -77,7 +66,7 @@ const state = reactive({
   orgTree: [],
   clickedOrg: {},
   // 表格树数据
-  deptTree: [] as DeptData[],
+  deptList: [] as DeptData[],
   rules: {
     name: [{required: true, message: '部门名称不能为空', trigger: 'blur'}],
     code: [{required: true, message: '部门代码不能为空', trigger: 'blur'}],
@@ -98,11 +87,16 @@ const {
 function handleOrgNodeClick(data) {
   console.log("handleOrgNodeClick:", data)
   state.clickedOrg = data
-  // // 获取部门列表
-  // GetDeptList({org_id: data.id}).then(res => {
-  //   state.deptTree = res.data.dataList
-  //   console.log("deptTree:", state.deptTree)
-  // })
+
+  // 获取部门列表
+  state.deptList = []
+  GetDeptList(data.id).then(res => {
+    res.data?.dataList.forEach(item => {
+      item.children = []
+      state.deptList.push(item)
+    })
+    console.log("deptList:", state.deptList)
+  })
 }
 
 
