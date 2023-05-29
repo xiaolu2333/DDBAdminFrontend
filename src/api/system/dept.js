@@ -1,20 +1,75 @@
-/* jshint esversion: 6 */
-
 import service from "@/utils/request";
 
 /**
- * 获取部门树形结构数据
+ * 获取部门数据列表
  */
-export async function GetDeptTreeByPost(queryType) {
-  "use strict";
-  try {
+export async function GetDeptList() {
+    try {
+        return await service.request({
+            url: "/framework/department/getDepartmentList",
+            method: "get",
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+/**
+ * 获取部门数据详情
+ */
+export async function GetDeptDetail(id) {
     return await service.request({
-      url: "/dept/tree",
-      method: "post",
-      data: queryType,  // data 为 post 方法的请求体
+        url: "/framework/department/getDepartment",
+        method: "get",
+        params: { id: id },
     });
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+}
+
+/**
+ * 保存部门信息
+ */
+export async function CreateDept(formData) {
+    "use strict";
+    try {
+        return await service.request({
+            url: "/framework/department/createDepartment",
+            method: "post",
+            data: formData,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+/**
+ * 更新部门信息
+ */
+export async function UpdateDept(formData) {
+    "use strict";
+    try {
+        return await service.request({
+            url: "/framework/department/updateDepartment",
+            method: "post",
+            data: formData,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+/**
+ * 删除部门信息
+ */
+export async function DeleteDept(id) {
+    "use strict";
+    try {
+        return await service.request({
+            url: "/framework/department/deleteDepartment",
+            method: "post",
+            data: { id: id },
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }

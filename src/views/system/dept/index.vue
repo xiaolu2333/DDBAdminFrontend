@@ -1,377 +1,150 @@
 <template>
-  <el-card>
-    <div slot="header">
-      <el-tree-select
-          :data="orgTree"
-          :props="{
-        children: 'children',
-        label: 'name',
-        value: 'name'
-      }"
-          placeholder="请选择机构"
-          @node-click="handleOrgClick"
-          default-expand-all
-          v-model="currentOrg.name"
-      />
-      <el-button
-          type="primary"
-          icon="el-icon-plus"
-          @click="handleAddDept"
-          v-if="state.currentOrg.name"
-      >新增部门
-      </el-button>
-      <el-button
-          type="success"
-          icon="el-icon-edit"
-          @click="handleEditDept"
-          v-if="state.currentOrg.name && state.currentDept.name"
-          :disabled="!state.currentDept.name"
-      >编辑部门
-      </el-button>
-      <el-button
-          type="danger"
-          icon="el-icon-delete"
-          @click="handleDeleteDept"
-          v-if="state.currentOrg.name && state.currentDept.name"
-          :disabled="!state.currentDept.name"
-      >删除部门
-      </el-button>
-    </div>
-    <el-table
-        row-key="id"
-        default-expand-all
-        :data="deptTree"
-        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-        :loading="loading"
-        :row-style="rowStyle"
-        @row-click="handleDeptClick"
-        v-if="state.currentOrg.name"
-    >
-      <el-table-column
-          prop="name"
-          label="部门名称"
-      />
-      <el-table-column
-          prop="code"
-          label="部门编码"
-      />
-      <el-table-column
-          prop="name"
-          label="部门抿成"
-      />
-      <el-table-column
-          prop="code"
-          label="部门代码"
-      />
-      <el-table-column
-          prop="status"
-          label="部门状态"
-      >
-        <template #default="{row}">
-          <el-tag v-if="row.status === 0" type="success">启用</el-tag>
-          <el-tag v-else type="danger">禁用</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column
-          prop="desc"
-          label="部门描述"
-      />
-      <el-table-column
-          prop="parentId"
-          label="父级代码"
-      />
-    </el-table>
+  <div class='app-container'>
+    <el-row :gutter='5'>
+      <!-- 机构树 -->
+      <el-col :span='4' :xs='6'>
+        <el-card shadow='never'>
+          <template #header>
+            <span>组织机构信息</span>
+          </template>
+          <el-tree
+              ref='orgTreeRef'
+              :data='orgTree'
+              :props="{ children: 'children', label: 'name' }"
+              :default-expand-all='true'
+              :expand-on-click-node='false'
+              @node-click='handleOrgNodeClick'
+          />
+        </el-card>
+      </el-col>
 
-    <el-dialog
-        :title="state.dialog.title"
-        :visible="state.dialog.visible"
-    >
-      <el-form
-          :model="state.form"
-          :rules="state.rules"
-          ref="mainForm"
-      >
-        <el-form-item label="部门名称" prop="name">
-          <el-input v-model="state.deptForm.name"/>
-        </el-form-item>
-        <el-form-item label="部门编码" prop="code">
-          <el-input v-model="state.deptForm.code"/>
-        </el-form-item>
-        <el-form-item label="部门状态" prop="status">
-          <el-radio label="0">禁用</el-radio>
-          <el-radio label="1">启用</el-radio>
-        </el-form-item>
-        <el-form-item label="部门描述" prop="desc">
-          <el-input v-model="state.deptForm.desc"/>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-  </el-card>
-
+      <!-- 部门数据 -->
+      <el-col :span='20' :xs='18'>
+        <!--        <el-card>-->
+        <!--          <VxeTable-->
+        <!--              :columns='columns'-->
+        <!--              :data='deptList'-->
+        <!--              :default-expand-all='true'-->
+        <!--              :highlight-current-row='true'-->
+        <!--              :stripe='true'-->
+        <!--              :row-key='"id"'-->
+        <!--              :selection='false'-->
+        <!--              :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"-->
+        <!--              :loading='loading'-->
+        <!--              @row-click='handleDeptNodeClick'-->
+        <!--          >-->
+        <!--            <template #operate='data'>-->
+        <!--              <el-button-->
+        <!--                  type='primary'-->
+        <!--                  link-->
+        <!--                  @click.stop='handleUpdate(data.row)'-->
+        <!--              >-->
+        <!--                编辑-->
+        <!--              </el-button>-->
+        <!--              <el-button type='danger' link @click.stop='handleDelete(data.row)'>-->
+        <!--                删除-->
+        <!--              </el-button>-->
+        <!--            </template>-->
+        <!--          </VxeTable>-->
+        <!--        </el-card>-->
+      </el-col>
+    </el-row>
+  </div>
 </template>
-<script setup>
-import {reactive, toRefs} from "vue";
+
+<script setup lang='ts'>
+import {h, onMounted, reactive, ref, toRefs} from 'vue'
+import {ElForm, ElMessage, ElMessageBox, ElTag} from 'element-plus'
+
+import {GetOrgList} from '../../../api/system/org.js'
+
+const orgTreeRef = ref('orgTreeRef')
+const dataFormRef = ref(ElForm)
+
+interface DeptData {
+  id: number,
+  name: string,
+  code: string,
+  parentCode: string,
+  enabled: boolean,
+  org_id: number,
+  createTime?: string,
+  updateTime?: string,
+}
 
 const state = reactive({
-  loading: true,
-  currentOrg: {},
-  parentDept: {},
-  currentDept: {},
-  orgTree: [
-    {
-      id: 1,
-      name: '机构1',
-      code: 'JG1',
-      status: 0,
-      desc: "1111111111",
-      parentId: "root",
-      children: [
-        {
-          id: 2,
-          name: '机构2',
-          code: 'JG2',
-          status: 1,
-          desc: "1111111111",
-          parentId: 1,
-          children: [
-            {
-              id: 3,
-              name: '机构3',
-              code: 'JG3',
-              status: 0,
-              desc: "1111111111",
-              parentId: 2,
-              children: [
-                {
-                  id: 4,
-                  name: '机构4',
-                  code: 'JG4',
-                  status: 1,
-                  desc: "1111111111",
-                  parentId: 3,
-                  children: []
-                },
-                {
-                  id: 5,
-                  name: '机构5',
-                  code: 'JG5',
-                  status: 0,
-                  desc: "1111111111",
-                  parentId: 3,
-                  children: []
-                }
-              ]
-            },
-            {
-              id: 6,
-              name: '机构6',
-              code: 'JG6',
-              status: 1,
-              desc: "1111111111",
-              parentId: 2,
-              children: []
-            }
-          ]
-        },
-        {
-          id: 7,
-          name: '机构7',
-          code: 'JG7',
-          status: 0,
-          desc: "1111111111",
-          parentId: 1,
-          children: [
-            {
-              id: 8,
-              name: '机构8',
-              code: 'JG8',
-              status: 1,
-              desc: "1111111111",
-              parentId: 7,
-              children: []
-            }
-          ]
-        }
-      ]
-    },
-    {
-      id: 9,
-      name: '机构9',
-      code: 'JG9',
-      status: 0,
-      desc: "1111111111",
-      parentId: "root",
-      children: [
-        {
-          id: 10,
-          name: '机构10',
-          code: 'JG10',
-          status: 1,
-          desc: "1111111111",
-          parentId: 9,
-          children: []
-        }
-      ]
-    },
-    {
-      id: 11,
-      name: '机构11',
-      code: 'JG11',
-      status: 1,
-      desc: "1111111111",
-      parentId: "root",
-      children: []
-    },
-  ],
-  deptTree: [
-    {
-      id: 1,
-      name: "部门1",
-      code: "BM1",
-      status: 0,
-      desc: "1111111111",
-      parentId: "root",
-      children: [
-        {
-          id: 2,
-          name: "部门2",
-          code: "BM2",
-          status: 1,
-          desc: "1111111111",
-          parentId: 1,
-          children: [
-            {
-              id: 3,
-              name: "部门3",
-              code: "BM3",
-              status: 0,
-              desc: "1111111111",
-              parentId: 2,
-              children: [
-                {
-                  id: 4,
-                  name: "部门4",
-                  code: "BM4",
-                  status: 1,
-                  desc: "1111111111",
-                  parentId: 3,
-                  children: []
-                },
-                {
-                  id: 5,
-                  name: "部门5",
-                  code: "BM5",
-                  status: 0,
-                  desc: "1111111111",
-                  parentId: 3,
-                  children: []
-                }
-              ]
-            },
-            {
-              id: 6,
-              name: "部门6",
-              code: "BM6",
-              status: 1,
-              desc: "1111111111",
-              parentId: 2,
-              children: []
-            }
-          ]
-        },
-        {
-          id: 7,
-          name: "部门7",
-          code: "BM7",
-          status: 0,
-          desc: "1111111111",
-          parentId: 1,
-          children: [
-            {
-              id: 8,
-              name: "部门8",
-              code: "BM8",
-              status: 1,
-              desc: "1111111111",
-              parentId: 7,
-              children: []
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  deptForm: {},
-  dialog: {
-    title: "",
-    visible: false,
-  },
+  loading: false,
+  orgTree: [],
+  clickedOrg: {},
+  // 表格树数据
+  deptTree: [] as DeptData[],
+  rules: {
+    name: [{required: true, message: '部门名称不能为空', trigger: 'blur'}],
+    code: [{required: true, message: '部门代码不能为空', trigger: 'blur'}],
+    sortNum: [{required: true, message: '显示排序不能为空', trigger: 'blur'}]
+  }
 })
 
 const {
   loading,
-  currentOrg,
-  parentDept,
-  currentDept,
   orgTree,
-  deptTree,
-  deptForm,
-  dialog,
-} = toRefs(state);
+  clickedOrg,
+  deptList,
+  rules,
+} = toRefs(state)
 
-// 机构树点击事件
-const handleOrgClick = (current, parent) => {
-  console.log(current, parent);
-  state.parentNode = parent;
-  state.currentNode = current;
-  state.loading = false;
+
+/************************ tree ************************/
+function handleOrgNodeClick(data) {
+  console.log("handleOrgNodeClick:", data)
+  state.clickedOrg = data
+  // // 获取部门列表
+  // GetDeptList({org_id: data.id}).then(res => {
+  //   state.deptTree = res.data.dataList
+  //   console.log("deptTree:", state.deptTree)
+  // })
 }
 
-// 展示选中的机构
-function showSelectedOrg() {
-  console.log("showSelectedOrg", state.currentNode);
+
+/************************ utils ************************/
+// 构造机构树
+function formatData(data) {
+  let result = [];
+  let map = {};
+  data.forEach(function (item) {
+    map[item.id] = item;
+    item.children = [];
+  });
+  data.forEach(function (item) {
+    if (item.parentCode !== "0") {
+      map[item.parentCode]?.children.push(item);
+    } else {
+      result.push(item);
+    }
+  });
+  console.log("result:", result);
+  return result;
 }
 
-// 部门树点击事件
-const handleDeptClick = (row) => {
-  console.log("deptClick", row);
-  state.currentDept = row;
+
+/************************ init ************************/
+
+
+function init() {
+  // 获取机构列表
+  GetOrgList().then(res => {
+    state.orgTree = formatData(res.data.dataList)
+    console.log("orgTree:", state.orgTree)
+  })
 }
 
-// 高亮被点击部门
-function rowStyle({row}) {
-  if (state.currentDept === row) {
-    return "background: #85bff9; color: #aa2626; cursor: pointer";
-  }
-}
-
-// 新增部门
-function handleAddDept() {
-  console.log("handleAddDept");
-  state.dialog = {
-    title: "新增部门",
-    visible: true,
-  }
-}
-
-// 修改部门
-function handleEditDept() {
-  console.log("handleEditDept");
-  state.dialog = {
-    title: "修改部门",
-    visible: true,
-  }
-}
-
-// 提交表单
-function handleSubmit() {
-  console.log("handleSubmit");
-
-}
-
-// 删除部门
-function handleDeleteDept() {
-  console.log("handleDeleteDept");
-}
-
+onMounted(async () => {
+  init()
+})
 </script>
+
+<style scoped>
+.isCurrent {
+  background-color: #f8fdff;
+}
+</style>
