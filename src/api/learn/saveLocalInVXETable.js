@@ -3,10 +3,10 @@ import service from "@/utils/request.js";
 /**
  * 获取测试数据
  */
-export async function GetTestData() {
+export function GetTestData() {
     "use strict";
     try {
-        return await service.request({
+        return service.request({
             method: "get",
             url: "/test_app/index",
             // params: params,  // params 为 get 方法的查询字符串

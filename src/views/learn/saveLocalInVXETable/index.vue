@@ -17,7 +17,10 @@
       ref="xTable"
       :loading="loading"
       :data="tableData"
-      :edit-config="{trigger: 'click', mode: 'cell', showStatus: true}">
+      :row-config="{isHover: true, isCurrent:true}"
+      :edit-config="{trigger: 'click', mode: 'cell', showStatus: true}"
+      @current-change="currentChangeEvent"
+  >
     <vxe-column type="checkbox" width="60"></vxe-column>
     <vxe-column type="seq" width="60"></vxe-column>
     <vxe-column field="name" title="Name" :edit-render="{autofocus: '.myinput'}">
@@ -51,7 +54,7 @@ import {GetTestData, DirectUpdate, SaveTheUpdate} from "../../../api/learn/saveL
 
 
 const loading = ref(false)
-const tableData = ref(null)
+const tableData = ref<any[]>(null)
 
 const xTable = ref<VxeTableInstance>();
 
@@ -138,11 +141,25 @@ const getUpdateEvent = () => {
 }
 
 
+/**
+ * 获取当前选中的行
+ */
+// 表格当前选中行数据
+const curRow: any = ref();
+const currentChangeEvent = () => {
+  const $table: any = xTable.value;
+  curRow.value = $table.getCurrentRecord();
+}
+
+
 onMounted(() => {
   GetTestData().then(response => {
-    console.log(response)
-    tableData.value = response.data
+    console.log('response:', response)
+    tableData.value = response.data.dataList
+  }).catch(error => {
+    console.log(error)
   })
+
 })
 </script>
 

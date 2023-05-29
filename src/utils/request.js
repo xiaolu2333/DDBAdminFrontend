@@ -42,10 +42,10 @@ service.interceptors.response.use(
         // 对响应数据做点什么
         // 比如：根据响应状态码，做不同的响应处理
         if (response) {
-            const {code, message} = response.data
+            const {code, msg} = response.data
             if (code === 200) {
                 return Promise.resolve(response);
-            } else if (message === "连接超时！") {
+            } else if (msg === "连接超时！") {
                 return Promise.reject(response);
             } else {
                 // 响应数据为二进制流处理(数据导出)
@@ -54,10 +54,10 @@ service.interceptors.response.use(
                 }
 
                 ElMessage({
-                    message: message || '系统出错',
+                    message: msg || '系统出错',
                     type: 'error'
                 })
-                return Promise.reject(new Error(message || 'Error'))
+                return Promise.reject(new Error('Error'))
             }
         } else {
             return Promise.reject(response);
