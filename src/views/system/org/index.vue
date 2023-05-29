@@ -41,10 +41,12 @@
             v-model="formData.parentCode"
             placeholder='选择上级机构'
             :data="orgOptions"
-            :props="{ children: 'children', value: 'parentCode', label: 'name' }"
+            :props="{ children: 'children', value: 'code', label: 'name' }"
             filterable
             check-strictly
-        />
+            @change="handleOrgParentChange"
+        >
+        </el-tree-select>
       </el-form-item>
       <el-form-item label="机构名称" prop='name' label-width='140px'>
         <el-input v-model="formData.name"/>
@@ -75,7 +77,7 @@
 
 <script lang="ts" setup>
 import {onMounted, ref, reactive, toRefs} from 'vue'
-import {VXETable, VxeTableInstance} from 'vxe-table'
+import {ElForm, ElMessage, ElMessageBox} from 'element-plus'
 import {
   Plus, Delete, Edit, Document, Checked, WarningFilled, QuestionFilled
 } from '@element-plus/icons-vue'
@@ -100,7 +102,9 @@ const state = reactive({
     title: '',
     visible: false,
   },
-  formData: {} as OrgData,
+  formData: {
+    parentCode: "0"
+  } as OrgData,
   rules: {
     name: [
       {required: true, message: '请输入名称', trigger: 'blur'},
@@ -117,8 +121,18 @@ const {
 } = toRefs(state)
 
 /************************ table ************************/
+// tree table 行点击事件
 function handleRowClick(row: OrgData, column: any, event: any) {
   state.selectedRow = row
+  console.log("row:", row)
+}
+
+
+/************************ tree ************************/
+// tree select 节点点击事件
+function handleOrgParentChange(value: any) {
+  console.log("value:", value)
+  state.formData.parentCode = value
 }
 
 
@@ -136,7 +150,21 @@ function handleCreate() {
 function handleUpdate() {
 }
 
-function submitForm() {
+async function submitForm() {
+  await CreateOrg(state.formData).then(res => {
+    console.log("res:", res)
+    ElMessage.success('创建成功')
+    state.dialog.visible = false
+    state.formData = {
+      parentCode: "1",
+    } as OrgData
+
+    // 刷新表格
+    getList()
+  }).catch(err => {
+    console.log("err:", err)
+    ElMessage.error('创建失败')
+  })
 }
 
 // 删除
@@ -152,7 +180,9 @@ function handleRead() {
  */
 function closeDialog() {
   dialog.value.visible = false
-  state.formData = {} as OrgData
+  state.formData = {
+    parentCode: "0",
+  } as OrgData
 }
 
 
@@ -167,7 +197,7 @@ function formatData(data) {
   });
   data.forEach(function (item) {
     if (item.parentCode !== "0") {
-      map[item.parentCode].children.push(item);
+      map[item.parentCode]?.children.push(item);
     } else {
       result.push(item);
     }
@@ -176,37 +206,38 @@ function formatData(data) {
   return result;
 }
 
-// 为机构树节点属性：如果有子节点，则添加 hasChildren 属性为 true，否则为 false
-function formatTree(data) {
-  data.forEach(item => {
-    if (item.children.length > 0) {
-      item.hasChildren = true;
-      formatTree(item.children);
-    } else {
-      item.hasChildren = false;
-    }
-  });
-  return data;
-}
+// // 为机构树节点属性：如果有子节点，则添加 hasChildren 属性为 true，否则为 false
+// function formatTree(data) {
+//   data.forEach(item => {
+//     if (item.children.length > 0) {
+//       item.hasChildren = true;
+//       formatTree(item.children);
+//     } else {
+//       item.hasChildren = false;
+//     }
+//   });
+//   return data;
+// }
 
 /**
  * 将 tableData 构造为树形结构，设置机构选项
  */
 function loadOrgOptions() {
   GetOrgList().then(res => {
-    let temp = formatData(res.data.dataList)
     state.orgOptions = [
       {
         id: 0,
         name: "根机构",
         code: "0",
-        parentCode: "-1",
+        parentCode: "0",
         enabled: true,
         createTime: "",
         updateTime: "",
-        children: temp
+        children: []
       }
-    ];
+    ]
+    // 将 tableData 作为 orgOptions 中的 children
+    state.orgOptions[0].children = formatData(res.data.dataList)
     console.log(state.orgOptions);
   })
 }
