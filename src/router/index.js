@@ -140,6 +140,14 @@ const routes = [
         }
       },
       {
+        path: "/learning/mergeInVXETable",
+        name: "mergeInVXETable",
+        component: () => import("@/views/learn/mergeInVXETable/index.vue"),
+        meta: {
+            title: "VXETable合并",
+        }
+      },
+      {
         name: "pagination",
         path: "/learning/pagination",
         component: () => import("@/views/learn/pagination/index.vue"),
@@ -213,7 +221,7 @@ const routes = [
       {
         path: "/dataManage/dataTree",
         name: "DataTree",
-        component: () => import("@/views/dataManage/dataTree/index.vue"),
+        // component: () => import("@/views/dataManage/dataTree/index.vue"),
         meta: {
             title: "数据树",
         }
