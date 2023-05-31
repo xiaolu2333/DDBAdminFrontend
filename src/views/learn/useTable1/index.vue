@@ -34,7 +34,6 @@
       :header-align="'center'"
       :height="430"
       :row-config="{isHover: true, isCurrent:true}"
-      :tooltip-config="tooltipConfig"
       align="center"
       empty-text="暂无数据！"
       @current-change="currentChangeEvent"
@@ -181,9 +180,6 @@ const {
  */
 function handleSchemaChange(data) {
   createTableDataBySchemaName(data.value)
-
-  // let temp = getLatestData()
-  // state.tableData = temp.filter(item => item.schema === data.value)
 }
 
 
@@ -213,17 +209,9 @@ const submit = () => {
     id: temp.id,
     tableData: temp.tableData,
     schemas: temp.schemas,
-    name: '',
-    password: '',
-  }
-
-  if (state.useForm) {
-    data.name = dbUserForm.value.name
-    data.password = dbUserForm.value.password
-  } else {
-    data.name = ""
-    data.password = ""
-  }
+    name: state.useForm ? dbUserForm.value.name : '',
+    password: state.useForm ? dbUserForm.value.password : '',
+  };
 
   console.log('data:', data)
 }
@@ -303,40 +291,17 @@ function formatSubmitData() {
   state.data = getLatestData()
 
   // 去除data中的id
-  state.data.forEach(item => {
-    delete item.id
-  })
-  let schemas = ""
-  let result = [] as any[]
-  state.data.forEach(item => {
-    let obj = {
-      tablename: item.schema + '.' + item.tablename,
-      perms: '',
-    }
-    item.perms = ''
-    if (item.select) {
-      obj.perms += 'select,'
-    }
-    if (item.insert) {
-      obj.perms += 'insert,'
-    }
-    if (item.delete) {
-      obj.perms += 'delete,'
-    }
-    if (item.update) {
-      obj.perms += 'update,'
-    }
-    // 去除最后一个逗号
-    obj.perms = obj.perms.substring(0, obj.perms.length - 1)
-    result.push(obj)
-  })
-
-  // 获取 state.data 中所有元素中不重复的schema
-  state.data.forEach(item => {
-    if (!schemas.includes(item.schema)) {
-      schemas += item.schema + ','
-    }
-  })
+  const result = state.data.map(item => {
+    const {schema, tablename, select, insert, delete: del, update} = item;
+    return {
+      tablename: `${schema}.${tablename}`,
+      perms: [select && 'select', insert && 'insert', del && 'delete', update && 'update']
+          .filter(Boolean)
+          .join(','),
+    };
+  });
+  const schemas = [...new Set(state.data.map(item => item.schema))].join(',');
+  state.data = state.data.map(({id, ...rest}) => rest);
 
   return {
     id: props.dialogData.id,
