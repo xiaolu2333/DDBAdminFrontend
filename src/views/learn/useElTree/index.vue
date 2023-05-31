@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card style="height: 50vh; width: 50vw">
-      <p>用户授权</p>
+      <p>【数据库操作员】授权——阶段一</p>
       <el-scrollbar style="height: 40vh;">
         <el-tree
             ref='userTreeRef'
@@ -12,11 +12,13 @@
             default-expand-all
         >
           <template #default="{ node, data }">
-            <span style="width: 150px">{{ node.label }}</span>
-            <el-button
-                v-if="node.data.type === 'user'"
-                size="small" type="primary" style="margin-left: 20px"
-                @click="tableAuth(data)"
+            <p v-if="node.data.type === 'schema'">
+              schema: {{ node.label }}
+            </p>
+            <p style="width: 250px" v-else>{{ node.label }}</p>
+            <el-button v-if="node.data.type === 'user'"
+                       size="small" type="primary" style="margin-left: 20px"
+                       @click="tableAuth(data)"
             >授权
             </el-button>
             <span class="custom-tree-node" v-if="node.data.type === 'table'">
@@ -36,7 +38,7 @@
   </div>
 
   <el-dialog
-      title="表授权"
+      title="【数据库操作员】授权——阶段二"
       :close-on-click-modal="false"
       :draggable="true"
       v-model="dialogVisible"
@@ -97,7 +99,7 @@
 <script lang="ts" setup>
 import {onMounted, reactive, ref, toRefs, watch} from "vue";
 import {ElForm, ElMessage, ElTree} from 'element-plus'
-import {Checked, QuestionFilled, WarningFilled} from '@element-plus/icons-vue'
+import {Checked, QuestionFilled, WarningFilled, Grid} from '@element-plus/icons-vue'
 
 
 // 授权用户树
@@ -302,19 +304,27 @@ function init() {
               parentId: "125",
               deptCode: "125",
               userCode: "SHJKGLYB",
-
-              // 用户节点的nodes属性，必须
               nodes: [
-                // id: 表id，必须
-                // text: 表名，必须
-                // disabled: 只能为true，必须
-                // perms: 表权限，必须
-                // type: 节点类型，必须
-                // 其他属性可自定义
-                {text: 't1', perms: 'select,update', id: 't1', type: 'table', disabled: true},
-                {text: 't2', perms: 'select,delete', id: 't2', type: 'table', disabled: true},
-                {text: 't3', perms: 'select,insert', id: 't3', type: 'table', disabled: true},
-                // {text: '', perms: '', id: '', type: 'table-s', disabled: false},
+                {
+                  text: 'public-a',
+                  id: 'public-a',
+                  type: 'schema',
+                  nodes: [
+                    {text: 't11111111111111', perms: 'select,update', id: 't1', type: 'table', disabled: true},
+                    {text: 't2', perms: 'select,delete', id: 't2', type: 'table', disabled: true},
+                    {text: 't3', perms: 'select,insert', id: 't3', type: 'table', disabled: true},
+                  ]
+                },
+                {
+                  text: 'public-b',
+                  id: 'public-b',
+                  type: 'schema',
+                  nodes: [
+                    {text: 't4', perms: 'select,update', id: 't4', type: 'table', disabled: true},
+                    {text: 't5', perms: 'select,delete', id: 't5', type: 'table', disabled: true},
+                    {text: 't6', perms: 'select,insert', id: 't6', type: 'table', disabled: true},
+                  ]
+                }
               ]
             }
           ],

@@ -186,6 +186,14 @@ const routes = [
         meta: {
             title: "使用ElTree",
         }
+      },
+      {
+        name: "useTable1",
+        path: "/learning/useTable1",
+        component: () => import("@/views/learn/useTable1/index.vue"),
+        meta: {
+            title: "使用Table1",
+        }
       }
     ]
   },
