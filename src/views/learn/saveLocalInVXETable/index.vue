@@ -35,9 +35,9 @@
     </vxe-column>
     <vxe-column title="操作" width="300">
       <template #default="{ row }">
-        <vxe-button @click="handleDirectUpdate(row)">直接更新</vxe-button>
+        <vxe-button @click="handleDirectUpdate(row)">点击status更新</vxe-button>
         <template v-if="$refs.xTable.isUpdateByRow(row)">
-          <vxe-button @click="saveTheUpdate(row)" :loading="row.loading">编辑更新</vxe-button>
+          <vxe-button @click="saveTheUpdate(row)" :loading="row.loading">更新编辑</vxe-button>
         </template>
       </template>
     </vxe-column>
@@ -68,13 +68,18 @@ const handleDirectUpdate = (row: any) => {
   console.log('row:', row)
   const $table = xTable.value
   row.loading = true
+  let data = {
+    id: row.id,
+    name: row.name,
+    status: row.status
+  }
   const dataForm = {
-    data: row
+    data: data
   }
   DirectUpdate(dataForm).then(response => {
     console.log('response:', response)
     row.loading = false
-    row.status = response.data.data.status
+    tableData.value.find(item => item.id === row.id).status = response.data.data.status
     // 保存完成后将行恢复到初始状态，避免触发 $table.isUpdateByRow(row) === true
     $table.reloadRow(row, {})
     VXETable.modal.message({content: '保存成功！', status: 'success'})
@@ -88,10 +93,18 @@ const saveTheUpdate = (row: any) => {
   const $table = xTable.value
   if ($table.isUpdateByRow(row)) {
     row.loading = true
-    SaveTheUpdate(row).then(response => {
+    let data = {
+      id: row.id,
+      name: row.name,
+      status: row.status
+    }
+    const dataForm = {
+      data: data
+    }
+    SaveTheUpdate(dataForm).then(response => {
       console.log('response:', response)
       row.loading = false
-      row.status = response.data.data.status
+      tableData.value.find(item => item.id === row.id).status = response.data.data.status
       // 保存完成后将行恢复到初始状态，避免触发 $table.isUpdateByRow(row) === true
       $table.reloadRow(row, {})
       VXETable.modal.message({content: '保存成功！', status: 'success'})
