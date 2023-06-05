@@ -20,24 +20,41 @@
 
       <!-- 部门数据 -->
       <el-col :span='20' :xs='18'>
-        <el-card>
-          <vxe-table
-              ref="xTreeRef"
-              :loading='loading'
-              align="center"
-              :data="deptTree"
-              :column-config="{resizable: true}"
-              :tree-config="{}"
-              @toggle-tree-expand="toggleExpandChangeEvent"
-          >
-            <vxe-column field="name" title="name"></vxe-column>
-            <vxe-column field="code" title="code"></vxe-column>
-            <vxe-column field="parentCode" title="parentCode"></vxe-column>
-            <vxe-column field="enabled" title="enabled"></vxe-column>
-            <vxe-column field="createTime" title="createTime"></vxe-column>
-            <vxe-column field="updateTime" title="updateTime"></vxe-column>
-          </vxe-table>
-        </el-card>
+        <!--        <el-card>-->
+        <!--          <template #header>-->
+        <!--            <span v-if="clickedOrg.name">机构【{{ clickedOrg.name }}】</span>-->
+        <!--          </template>-->
+        <vxe-toolbar>
+          <template #buttons>
+            <vxe-button status="primary" @click="insertEvent">新增</vxe-button>
+            <vxe-button status="danger" @click="$refs.xTable1.removeCheckboxRow()">删除选中</vxe-button>
+            <!--      <vxe-button status="success" :icon="Checked" @click="saveEvent">保存</vxe-button>-->
+          </template>
+        </vxe-toolbar>
+        <vxe-table
+            ref="xTreeRef"
+            :loading='loading'
+            align="center"
+            :data="deptTree"
+            :column-config="{resizable: true}"
+            :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+            @change="currentChangeEvent"
+            border
+            show-header-overflow
+            show-overflow
+            :row-config="{height: 100, isCurrent:true, isHover:true}"
+            empty-text="暂无数据！"
+            @current-change="currentChangeEvent"
+        >
+          <vxe-column type="seq" width="60"/>
+          <vxe-column field="name" title="name"></vxe-column>
+          <vxe-column field="code" title="code"></vxe-column>
+          <vxe-column field="parentCode" title="parentCode"></vxe-column>
+          <vxe-column field="enabled" title="enabled"></vxe-column>
+          <vxe-column field="createTime" title="createTime"></vxe-column>
+          <vxe-column field="updateTime" title="updateTime"></vxe-column>
+        </vxe-table>
+        <!--        </el-card>-->
       </el-col>
     </el-row>
   </div>
@@ -46,7 +63,7 @@
 <script setup lang='ts'>
 import {h, onMounted, reactive, ref, toRefs} from 'vue'
 import {ElForm, ElMessage, ElMessageBox, ElTag} from 'element-plus'
-import { VXETable, VxeTableInstance } from 'vxe-table'
+import {VXETable, VxeTableInstance} from 'vxe-table'
 
 import {GetOrgList} from '../../../api/system/org.js'
 import {GetDeptList, GetDeptDetail, CreateDept, UpdateDept, DeleteDept} from '../../../api/system/dept.js'
@@ -70,6 +87,7 @@ const state = reactive({
   loading: false,
   orgTree: [],
   clickedOrg: {},
+  curRow: {} as DeptData,
   // 表格树数据
   deptList: [] as DeptData[],
   deptTree: [] as DeptData[],
@@ -84,6 +102,7 @@ const {
   loading,
   orgTree,
   clickedOrg,
+  curRow,
   deptList,
   deptTree,
   rules,
@@ -108,14 +127,19 @@ function handleOrgNodeClick(data) {
 }
 
 
+/************************ table ************************/
 const xTreeRef = ref<VxeTableInstance>()
-const toggleExpandChangeEvent = (params: any) => {
-  const $table = xTreeRef.value
-  if ($table) {
-    const { row, expanded } = params
-    console.log('节点展开事件', expanded, '获取父节点：', $table.getParentRow(row))
-  }
+// 行选中事件
+const currentChangeEvent = () => {
+  const $table: any = xTreeRef.value;
+  curRow.value = $table.getCurrentRecord();
+  // 获取当前行信息
+  GetDeptDetail(curRow.value.id).then(res => {
+    console.log("res:", res.data)
+    ElMessage.success("获取部门信息成功！")
+  })
 }
+
 /************************ utils ************************/
 // 构造机构树
 function formatData(data) {
