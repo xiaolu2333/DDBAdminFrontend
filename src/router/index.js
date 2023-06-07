@@ -229,7 +229,7 @@ const routes = [
       {
         path: "/dataManage/dataTree",
         name: "DataTree",
-        // component: () => import("@/views/dataManage/dataTree/index.vue"),
+        component: () => import("@/views/dataManage/dataTree/index.vue"),
         meta: {
             title: "数据树",
         }
