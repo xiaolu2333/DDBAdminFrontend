@@ -3,8 +3,8 @@ import service from "@/utils/request.js";
 /**
  * 获取树结构数据
  */
-export async function GetDataTree() {
-    return await service.request({
+export function GetDataTree() {
+    return service.request({
         url: "/data_management/data_tree_manage/index/",
         method: "get",
     });

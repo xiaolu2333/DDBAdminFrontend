@@ -3,10 +3,15 @@
     <el-row :gutter="20">
       <el-col :span="6">
         <el-card>
-          <p>11111</p>
+          <el-switch
+              v-model="isComplete"
+              size="large"
+              active-text="完整"
+              inactive-text="简易"
+          />
           <el-tree
               :data="treeData"
-              :props="{label: 'name', children: 'children'}"
+              :props="defaultProps"
               @node-click="handleNodeClick"
           />
         </el-card>
@@ -21,20 +26,21 @@
 </template>
 
 <script lang="ts" setup>
-import {onMounted, toRefs} from "vue";
+import {onMounted, toRefs, reactive} from "vue";
 
 import {GetDataTree, CreateNode} from '../../../api/dataManage/dataTree.js'
 
 
-const state = {
+const state = reactive({
+  isComplete: true,
   treeData: [] as any[],
   defaultProps: {
     children: 'children',
     label: 'name',
-    value: 'name',
   }
-}
+})
 const {
+  isComplete,
   treeData,
   defaultProps,
 } = toRefs(state)
