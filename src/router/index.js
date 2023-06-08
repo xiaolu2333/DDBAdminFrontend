@@ -233,6 +233,22 @@ const routes = [
         meta: {
             title: "数据树",
         }
+      },
+      {
+        path: "/dataManage/registerCenter",
+        name: "RegisterCenter",
+        component: () => import("@/views/dataManage/registerCenter/index.vue"),
+        meta: {
+            title: "注册中心",
+        }
+      },
+      {
+        path: "/dataManage/configCenter",
+        name: "ConfigCenter",
+        component: () => import("@/views/dataManage/configCenter/index.vue"),
+        meta: {
+            title: "配置中心",
+        }
       }
     ]
   },
