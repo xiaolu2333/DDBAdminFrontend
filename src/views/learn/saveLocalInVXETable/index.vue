@@ -181,6 +181,864 @@ onMounted(() => {
 </style>
 
 
+
+
+<!--<template>-->
+<!--  <el-tabs-->
+<!--      v-model="activeName"-->
+<!--      type="card"-->
+<!--      class="demo-tabs"-->
+<!--      @tab-click="handleClick"-->
+<!--  >-->
+<!--    <el-tab-pane label="pgbouncer.ini" name="first" style="width:100%">-->
+<!--      <el-card>-->
+<!--        <template #header>-->
+<!--          <el-switch-->
+<!--              v-model="previewMode"-->
+<!--              active-text="表格模式" inactive-text="文件模式"-->
+<!--              style="margin-right: 20px"-->
+<!--              @change="changePreviewMode"-->
+<!--          />-->
+<!--          <el-button type="primary" @click="syncAllItem">同步所有配置项至文件</el-button>-->
+<!--          <el-button type="primary" @click="loadAllItem">加载</el-button>-->
+<!--        </template>-->
+<!--        <div v-show="previewMode === false" class="pgBouncerIniText">-->
+<!--          <el-scrollbar style="height: 80vh">-->
+<!--            <el-card>-->
+<!--              {{ pgBouncerIniText }}-->
+<!--            </el-card>-->
+<!--          </el-scrollbar>-->
+<!--          &lt;!&ndash;          <iframe :src="pgBouncerIniText" class="filename" width="100%" height="600"></iframe>&ndash;&gt;-->
+<!--        </div>-->
+<!--        <div v-show="previewMode === true">-->
+<!--          <el-card text-align="center" style="width: 100%">-->
+<!--            <template #header>-->
+<!--              <span>【database】</span>-->
+<!--            </template>-->
+<!--            <vxe-table-->
+<!--                border-->
+<!--                show-overflow-->
+<!--                keep-source-->
+<!--                align="center"-->
+<!--                :data="showDatabasesList"-->
+<!--            >-->
+<!--              <vxe-column type="seq" width="60"/>-->
+<!--              <vxe-column field="name" title="name" sortable>-->
+<!--                <template #default="scope">-->
+<!--                  {{ scope.row.name }}-->
+<!--                </template>-->
+<!--              </vxe-column>-->
+<!--              <vxe-column field="host" title="host">-->
+<!--                <template #default="scope">-->
+<!--                  {{ scope.row.host }}-->
+<!--                </template>-->
+<!--              </vxe-column>-->
+<!--              <vxe-column field="port" title="port">-->
+<!--                <template #default="scope">-->
+<!--                  {{ scope.row.port }}-->
+<!--                </template>-->
+<!--              </vxe-column>-->
+<!--              <vxe-column field="dbName" title="dbName">-->
+<!--                <template #default="scope">-->
+<!--                  {{ scope.row.dbName }}-->
+<!--                </template>-->
+<!--              </vxe-column>-->
+<!--              <vxe-column field="connectQuery" title="connectQuery">-->
+<!--                <template #default="scope">-->
+<!--                  {{ scope.row.connectQuery }}-->
+<!--                </template>-->
+<!--              </vxe-column>-->
+<!--            </vxe-table>-->
+<!--          </el-card>-->
+<!--          <br/>-->
+
+<!--          <el-card>-->
+<!--            <template #header>-->
+<!--              <span>【pgbouncer】</span>-->
+<!--            </template>-->
+<!--            <div>-->
+<!--              <vxe-table-->
+<!--                  border-->
+<!--                  :data="showPgbouncerItem2"-->
+<!--                  align="center"-->
+<!--                  height="650"-->
+<!--              >-->
+<!--                <vxe-column type="seq" width="60"/>-->
+<!--                <vxe-column field="key" title="key">-->
+<!--                  <template #edit="scope">-->
+<!--                    {{ scope.row.key }}-->
+<!--                  </template>-->
+<!--                </vxe-column>-->
+<!--                <vxe-column field="value" title="value">-->
+<!--                  <template #edit="scope">-->
+<!--                    {{ scope.row.value }}-->
+<!--                  </template>-->
+<!--                </vxe-column>-->
+<!--              </vxe-table>-->
+<!--            </div>-->
+<!--          </el-card>-->
+<!--        </div>-->
+<!--      </el-card>-->
+<!--    </el-tab-pane>-->
+<!--    <el-tab-pane label="编辑配置" name="second">-->
+<!--      <el-row :gutter="20">-->
+<!--        <el-col :span="6">-->
+<!--          <el-card>-->
+<!--            <el-button type="primary" @click="syncDatabaseItem">同步database配置项</el-button>-->
+<!--            <el-button type="primary" @click="syncPgbouncerItem">同步pgbouncer配置项</el-button>-->
+<!--          </el-card>-->
+<!--          <el-card shadow="never" class="editconfig">-->
+<!--            <el-tree-->
+<!--                ref="dbTreeRef"-->
+<!--                :data="dbTreeData"-->
+<!--                :props="{ label: 'name', value: 'id'}"-->
+<!--                :expand-on-click-node="false"-->
+<!--                default-expand-all-->
+<!--                @node-click="handleDbNodeClick"-->
+<!--            >-->
+<!--              <template #default="{node}">-->
+<!--                <div style="width: 120px;">-->
+<!--                  <el-row>-->
+<!--                    <el-col :span="3">-->
+<!--                      <svg-icon name="database" size="16" style="margin-top: 3px"/>-->
+<!--                    </el-col>-->
+<!--                    <el-col :span="2"/>-->
+<!--                    <el-col :span="19">-->
+<!--                      <div style="text-align:left">-->
+<!--                        {{ node.label }}-->
+<!--                      </div>-->
+<!--                    </el-col>-->
+<!--                  </el-row>-->
+<!--                </div>-->
+<!--              </template>-->
+<!--            </el-tree>-->
+<!--          </el-card>-->
+<!--        </el-col>-->
+
+<!--        <el-col :span="18">-->
+<!--          <el-card>-->
+<!--            <el-row>-->
+<!--              <el-col :span="22">-->
+<!--                <el-button type="primary" style="margin: auto auto 10px auto">-->
+<!--                  正在编辑【{{ selectedDb.name }}】配置项-->
+<!--                </el-button>-->
+<!--                &lt;!&ndash;                  <el-tooltip&ndash;&gt;-->
+<!--                &lt;!&ndash;                      class="box-item"&ndash;&gt;-->
+<!--                &lt;!&ndash;                      effect="dark"&ndash;&gt;-->
+<!--                &lt;!&ndash;                      content="下发需要数据处于非编辑状态"&ndash;&gt;-->
+<!--                &lt;!&ndash;                      placement="top-start"&ndash;&gt;-->
+<!--                &lt;!&ndash;                  >&ndash;&gt;-->
+<!--                &lt;!&ndash;                    <el-button&ndash;&gt;-->
+<!--                &lt;!&ndash;                        type="primary" :icon="ArrowDownBold" :disabled="sqlShowDistribute"&ndash;&gt;-->
+<!--                &lt;!&ndash;                        @click="distribute(0)">下发&ndash;&gt;-->
+<!--                &lt;!&ndash;                    </el-button>&ndash;&gt;-->
+<!--                &lt;!&ndash;                  </el-tooltip>&ndash;&gt;-->
+<!--                <el-divider direction="vertical"/>-->
+<!--              </el-col>-->
+<!--              <el-col :span="1">-->
+<!--                <el-tooltip-->
+<!--                    class="box-item"-->
+<!--                    effect="dark"-->
+<!--                    content="帮助"-->
+<!--                    placement="top-start"-->
+<!--                >-->
+<!--                  <el-icon size="26" @click="showVisble = true">-->
+<!--                    <QuestionFilled/>-->
+<!--                  </el-icon>-->
+<!--                </el-tooltip>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
+<!--            <el-scrollbar class="editconfig-scoll">-->
+<!--              <el-card text-align="center" style="width: 100%">-->
+<!--                <template #header>-->
+<!--                  <span>【database】</span>-->
+<!--                  <vxe-button-->
+<!--                      v-show="useDatabaseItemAddBtn" status="primary"-->
+<!--                      @click="insertEvent()">新增-->
+<!--                  </vxe-button>-->
+<!--                </template>-->
+<!--                <vxe-table-->
+<!--                    border-->
+<!--                    show-overflow-->
+<!--                    keep-source-->
+<!--                    ref="xTable"-->
+<!--                    align="center"-->
+<!--                    :data="showDatabasesItem"-->
+<!--                    :row-config="{isHover: true, isCurrent:true}"-->
+<!--                    :edit-config="{trigger: 'click', mode: 'cell', showStatus: true}"-->
+<!--                    @current-change="databaseItemChangeEvent"-->
+<!--                >-->
+<!--                  <vxe-column-->
+<!--                      field="name" title="name" sortable-->
+<!--                      :edit-render="{autofocus: '.myinput'}">-->
+<!--                    <template #edit="scope">-->
+<!--                      <input-->
+<!--                          type="text" class="myinput" v-model="scope.row.name"-->
+<!--                          @input="DatabaseItem.updateStatus(scope)"/>-->
+<!--                    </template>-->
+<!--                  </vxe-column>-->
+<!--                  <vxe-column field="host" title="host">-->
+<!--                    <template #edit="scope">-->
+<!--                      {{ scope.row.host }}-->
+<!--                    </template>-->
+<!--                  </vxe-column>-->
+<!--                  <vxe-column-->
+<!--                      field="port" title="port"-->
+<!--                      :edit-render="{autofocus: '.myinput'}"-->
+<!--                  >-->
+<!--                    <template #edit="scope">-->
+<!--                      <input-->
+<!--                          type="text" class="myinput" v-model="scope.row.port"-->
+<!--                          @input="xTable.updateStatus(scope)"/>-->
+<!--                    </template>-->
+<!--                  </vxe-column>-->
+<!--                  <vxe-column-->
+<!--                      field="dbName" title="dbName"-->
+<!--                      :edit-render="{autofocus: '.myinput'}">-->
+<!--                    <template #edit="scope">-->
+<!--                      <input-->
+<!--                          type="text" class="myinput" v-model="scope.row.dbName"-->
+<!--                          @input="xTable.updateStatus(scope)"/>-->
+<!--                    </template>-->
+<!--                  </vxe-column>-->
+<!--                  <vxe-column field="connectQuery" title="connectQuery" :edit-render="{autofocus: '.myinput'}">-->
+<!--                    <template #edit="scope">-->
+<!--                      <input-->
+<!--                          type="text" class="myinput" v-model="scope.row.connectQuery"-->
+<!--                          @input="xTable.updateStatus(scope)"/>-->
+<!--                    </template>-->
+<!--                  </vxe-column>-->
+<!--                  <vxe-column title="操作" width="200">-->
+<!--                    <template #default="{ row }">-->
+<!--                      <vxe-button status="danger" @click="deleteDatabaseItem(row)">删除</vxe-button>-->
+<!--                      <vxe-button-->
+<!--                          v-if="xTable.isUpdateByRow(row)"-->
+<!--                          status="success"-->
+<!--                          @click="saveDatabaseItemUpdate(row)"-->
+<!--                          :loading="row.loading">保存编辑-->
+<!--                      </vxe-button>-->
+<!--                      <vxe-button-->
+<!--                          v-if="!xTable.isUpdateByRow(row) && xTable.getInsertRecords().length === 1"-->
+<!--                          status="success"-->
+<!--                          @click="saveDatabaseItemInsert(row)"-->
+<!--                          :loading="row.loading">保存新增-->
+<!--                      </vxe-button>-->
+<!--                    </template>-->
+<!--                  </vxe-column>-->
+<!--                </vxe-table>-->
+<!--              </el-card>-->
+<!--              <br/>-->
+
+<!--              <el-card>-->
+<!--                <template #header>-->
+<!--                  <span>【pgbouncer】</span>-->
+<!--                  <vxe-button-->
+<!--                      status="success"-->
+<!--                      @click="savePgbouncerItemUpdate2">保存修改-->
+<!--                  </vxe-button>-->
+<!--                </template>-->
+<!--                <div>-->
+<!--                  <vxe-table-->
+<!--                      border-->
+<!--                      show-overflow-->
+<!--                      keep-source-->
+<!--                      ref="xTable2"-->
+<!--                      :data="showPgbouncerItem2"-->
+<!--                      :edit-config="{trigger: 'click', mode: 'cell', showStatus: true}"-->
+<!--                      align="center"-->
+<!--                      height="600"-->
+<!--                  >-->
+<!--                    <vxe-column type="seq" width="60"/>-->
+<!--                    <vxe-column field="key" title="key">-->
+<!--                      <template #edit="scope">-->
+<!--                        <span v-if="scope.row.key === 'id'">1111</span>-->
+<!--                      </template>-->
+<!--                    </vxe-column>-->
+<!--                    <vxe-column field="value" title="value" :edit-render="{autofocus: '.myinput'}">-->
+<!--                      <template #edit="scope">-->
+<!--                        <input-->
+<!--                            type="text" class="myinput" v-model="scope.row.value"-->
+<!--                            @input="xTable2.updateStatus(scope)"/>-->
+<!--                      </template>-->
+<!--                    </vxe-column>-->
+<!--                    &lt;!&ndash;                    <vxe-column title="操作" width="100">&ndash;&gt;-->
+<!--                    &lt;!&ndash;                      <template #default="{ row }">&ndash;&gt;-->
+<!--                    &lt;!&ndash;                        <template v-if="xTable2.isUpdateByRow(row)">&ndash;&gt;-->
+<!--                    &lt;!&ndash;                          <vxe-button status="success" @click="savePgbouncerItemUpdate(row)" :loading="row.loading">保存&ndash;&gt;-->
+<!--                    &lt;!&ndash;                          </vxe-button>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                        </template>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                      </template>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                    </vxe-column>&ndash;&gt;-->
+<!--                  </vxe-table>-->
+<!--                </div>-->
+<!--              </el-card>-->
+<!--            </el-scrollbar>-->
+<!--          </el-card>-->
+<!--        </el-col>-->
+<!--      </el-row>-->
+<!--    </el-tab-pane>-->
+<!--  </el-tabs>-->
+<!--</template>-->
+
+
+<!--<script lang="ts" setup>-->
+<!--import {onBeforeUnmount, onMounted, reactive, ref, toRefs} from 'vue'-->
+<!--import type {TabsPaneContext} from 'element-plus'-->
+<!--import {ElMessage} from 'element-plus'-->
+
+<!--import {VXETable, VxeTableInstance} from 'vxe-table'-->
+<!--import {QuestionFilled} from '@element-plus/icons-vue'-->
+
+<!--import {DBInfo} from '@/api/dbManage/registerCenter/types'-->
+<!--import {-->
+<!--  getBouncerFile,-->
+<!--  getBouncerDatabase,-->
+<!--  getBouncerPgbouncer,-->
+<!--  getDbTree,-->
+<!--  getBouncerDatabaseById,-->
+<!--  deleteBouncerDatabaseById,-->
+<!--  saveBouncerDatabaseById,-->
+<!--  saveBouncerPgbouncer,-->
+<!--  syncBouncer,-->
+<!--  loadingBouncer,-->
+<!--  syncBouncerPgbouncer,-->
+<!--  syncBouncerDatabase,-->
+<!--} from '@/api/system/configManage'-->
+
+<!--const activeName = ref('first')-->
+<!--const timer = ref(null)-->
+
+<!--interface DatabaseItem {-->
+<!--  dbid: string-->
+<!--  id: string-->
+<!--  name: string-->
+<!--  host: string-->
+<!--  port: number-->
+<!--  dbName: string-->
+<!--  connectQuery: string-->
+<!--}-->
+
+<!--const state = reactive({-->
+<!--  // 当前激活的tab名-->
+<!--  activeTab: 'first',-->
+<!--  // pgbouncer预览模式，默认表格模式-->
+<!--  previewMode: true,-->
+<!--  pgBouncerIniText: '',-->
+<!--  // 展示的所有Database配置项-->
+<!--  showDatabasesList: [] as any[],-->
+<!--  // 可编辑的的Database配置项-->
+<!--  showDatabasesItem: [] as DatabaseItem[],-->
+<!--  // 可编辑的的pgbouncer配置项-->
+<!--  showPgbouncerItem: [] as any[],-->
+<!--  // 展示的pgbouncer配置项-->
+<!--  showPgbouncerItem2: [] as any[],-->
+<!--  PgbouncerItemId: '-1' as string,-->
+
+<!--  // 数据库树数据-->
+<!--  dbTreeData: [] as DBInfo[],-->
+<!--  // 选中的数据库-->
+<!--  selectedDb: {} as DBInfo,-->
+<!--  useDatabaseItemAddBtn: false,-->
+<!--  usePgbouncerItemAddBtn: false,-->
+<!--})-->
+<!--const {-->
+<!--  activeTab,-->
+<!--  previewMode,-->
+<!--  pgBouncerIniText,-->
+<!--  showDatabasesList,-->
+<!--  showDatabasesItem,-->
+<!--  showPgbouncerItem2,-->
+<!--  // usersData,-->
+<!--  showPgbouncerItem,-->
+<!--  PgbouncerItemId,-->
+<!--  dbTreeData,-->
+<!--  selectedDb,-->
+<!--  useDatabaseItemAddBtn-->
+<!--} = toRefs(state)-->
+
+<!--const xTable = ref<VxeTableInstance>();-->
+<!--const xTable2 = ref<VxeTableInstance>();-->
+<!--const DatabaseItem = ref<VxeTableInstance>();-->
+<!--const PgbouncerItem = ref<VxeTableInstance>();-->
+
+
+<!--/***************************** tab 事件 ******************************/-->
+<!--const handleClick = (tab: TabsPaneContext) => {-->
+<!--  if (tab.paneName === 'second') {-->
+<!--    // 获取编辑页树形数据-->
+<!--    getDbTree().then(({data}) => {-->
+<!--      for (let i = 0; i < data.length; i++) {-->
+<!--        if (data[i].isLocal === 0) {-->
+<!--          data[i].name = data[i].name + "(ip:" + data[i].ip + ")" + "&#45;&#45;本地库"-->
+<!--        } else if (data[i].isLocal === 1) {-->
+<!--          data[i].name = data[i].name + "(ip:" + data[i].ip + ")" + "&#45;&#45;域内库"-->
+<!--        } else if (data[i].isLocal === 2) {-->
+<!--          data[i].name = data[i].name + "(ip:" + data[i].ip + ")" + "&#45;&#45;域外库"-->
+<!--        }-->
+<!--      }-->
+<!--      state.dbTreeData = data-->
+<!--    })-->
+<!--  }-->
+<!--  if (tab.paneName === 'first') {-->
+<!--    init()-->
+<!--  }-->
+<!--}-->
+
+<!--function goToEditTab(row: any) {-->
+<!--  state.selectedDb = state.dbTreeData.filter((item: any) => item.name === row.name)[0]-->
+
+<!--  const tabs = ['first', 'second']-->
+<!--  activeName.value = tabs[1]-->
+<!--}-->
+
+<!--/**-->
+<!-- * 开关预览模式-->
+<!-- */-->
+<!--function changePreviewMode(val: any) {-->
+<!--  state.previewMode = val-->
+<!--  if (!state.previewMode) {-->
+<!--    // 获取pgbouncer配置文件-->
+<!--    getBouncerFile().then((res) => {-->
+<!--      state.pgBouncerIniText = res.data-->
+<!--    })-->
+<!--  }-->
+<!--}-->
+
+<!--/**-->
+<!-- * 同步所有配置项-->
+<!-- */-->
+<!--const syncAllItem = () => {-->
+<!--  syncBouncer().then((res) => {-->
+<!--    console.log('syncBouncer res:', res)-->
+<!--    if (res.code === 200) {-->
+<!--      ElMessage.success('同步成功')-->
+<!--    }-->
+<!--  })-->
+<!--}-->
+
+<!--/**-->
+<!-- * 加载所有配置项-->
+<!-- */-->
+<!--const loadAllItem = () => {-->
+<!--  ElMessage.warning('功能开发中...')-->
+<!--}-->
+
+<!--/**-->
+<!-- * 同步database配置项-->
+<!-- */-->
+<!--const syncDatabaseItem = () => {-->
+<!--  syncBouncerDatabase().then((res) => {-->
+<!--    console.log('syncBouncerDatabase res:', res)-->
+<!--    if (res.code === 200) {-->
+<!--      ElMessage.success('同步成功')-->
+<!--    }-->
+<!--  })-->
+<!--}-->
+
+<!--/**-->
+<!-- * 同步pgbouncer配置项-->
+<!-- */-->
+<!--const syncPgbouncerItem = () => {-->
+<!--  syncBouncerPgbouncer().then((res) => {-->
+<!--    console.log('syncBouncerPgbouncer res:', res)-->
+<!--    if (res.code === 200) {-->
+<!--      ElMessage.success('同步成功')-->
+<!--    }-->
+<!--  })-->
+<!--}-->
+
+
+<!--/***************************** tree事件 ******************************/-->
+<!--const handleDbNodeClick = (data: any) => {-->
+<!--  state.showDatabasesItem = []-->
+<!--  state.selectedDb = data-->
+
+<!--  getBouncerDatabaseById(state.selectedDb.id).then((res) => {-->
+<!--    // console.log('DatabaseItem res:', res)-->
+<!--    if (res.data === null) {-->
+<!--      state.showDatabasesItem = []-->
+<!--      state.useDatabaseItemAddBtn = true-->
+<!--    } else {-->
+<!--      let temp = {-->
+<!--        name: res.data.name,-->
+<!--        host: res.data.host,-->
+<!--        port: res.data.port,-->
+<!--        dbName: res.data.dbname,-->
+<!--        connectQuery: res.data.connect_query,-->
+<!--        id: res.data.id,-->
+<!--        dbid: res.data.dbid-->
+<!--      }-->
+<!--      state.showDatabasesItem.push(temp)-->
+<!--      state.useDatabaseItemAddBtn = false-->
+<!--    }-->
+<!--    console.log('state.showDatabasesItem:', state.showDatabasesItem)-->
+<!--  })-->
+<!--}-->
+
+
+<!--/***************************** Table 事件 ******************************/-->
+<!--/**-->
+<!-- * 获取当前选中的行-->
+<!-- */-->
+<!--// 表格当前选中行数据-->
+<!--const curRow: any = ref();-->
+<!--const databaseItemChangeEvent = () => {-->
+<!--  const $table: any = DatabaseItem.value;-->
+<!--  curRow.value = $table.getCurrentRecord();-->
+<!--}-->
+
+<!--/**-->
+<!-- * 删除DatabaseItem-->
+<!-- */-->
+<!--const deleteDatabaseItem = async (row: any) => {-->
+<!--  const $table = xTable.value-->
+
+<!--  if ($table) {-->
+<!--    const type = await VXETable.modal.confirm('您确定要删除该数据?')-->
+
+<!--    const insertRecords = $table.getInsertRecords()-->
+<!--    insertRecords.forEach((item: any) => {-->
+<!--      if (item === row) {-->
+<!--        $table.remove(item)-->
+<!--      }-->
+<!--    })-->
+
+<!--    if (type === 'confirm') {-->
+<!--      deleteBouncerDatabaseById(state.showDatabasesItem[0].id).then((res) => {-->
+<!--        // console.log('deleteBouncerDatabase res:', res)-->
+<!--        $table.remove(row)-->
+<!--        state.showDatabasesItem = []-->
+<!--        state.useDatabaseItemAddBtn = true-->
+<!--      })-->
+<!--    }-->
+<!--  }-->
+<!--}-->
+
+<!--/**-->
+<!-- * 新增 DatabaseItem-->
+<!-- */-->
+<!--const insertEvent = async (row?: any) => {-->
+<!--  const $table = xTable.value-->
+<!--  if ($table) {-->
+<!--    const record = {-->
+<!--      name: "",-->
+<!--      host: state.selectedDb.ip,-->
+<!--      port: 5432,-->
+<!--      dbName: state.selectedDb.databaseName,-->
+<!--      connectQuery: "",-->
+<!--      id: "",-->
+<!--      dbid: state.selectedDb.id-->
+<!--    }-->
+<!--    const {row: newRow} = await $table.insertAt(record, row)-->
+<!--  }-->
+<!--}-->
+
+
+<!--/**-->
+<!-- * 保存DatabaseItem更新-->
+<!-- */-->
+<!--const saveDatabaseItemUpdate = (row: any) => {-->
+<!--  const $table = xTable.value-->
+<!--  if ($table.isUpdateByRow(row)) {-->
+<!--    row.loading = true-->
+
+<!--    let updateRecords = $table.getUpdateRecords()-->
+<!--    let record = {-->
+<!--      dbid: state.selectedDb.id,-->
+<!--      id: updateRecords[0].id,-->
+<!--      name: updateRecords[0].name,-->
+<!--      host: updateRecords[0].host,-->
+<!--      port: updateRecords[0].port,-->
+<!--      dbName: updateRecords[0].dbName,-->
+<!--      connectQuery: updateRecords[0].connectQuery,-->
+<!--    }-->
+
+<!--    saveBouncerDatabaseById(record).then(response => {-->
+<!--      // console.log('response:', response)-->
+<!--      row.loading = false-->
+
+<!--      // 保存完成后将行恢复到初始状态，避免触发 $table.isUpdateByRow(row) === true-->
+<!--      $table.reloadRow(row, {})-->
+<!--      VXETable.modal.message({content: '保存成功！', status: 'success'})-->
+<!--    }).catch(error => {-->
+<!--      console.log(error)-->
+<!--    })-->
+<!--  } else {-->
+<!--    VXETable.modal.message({content: '数据未改动！', status: 'info'})-->
+<!--  }-->
+<!--  row.loading = false-->
+<!--}-->
+
+<!--/**-->
+<!-- * 保存DatabaseItem新增-->
+<!-- */-->
+<!--const saveDatabaseItemInsert = (row: any) => {-->
+<!--  const $table = xTable.value-->
+<!--  let record = {-->
+<!--    dbid: state.selectedDb.id,-->
+<!--    id: row.id,-->
+<!--    name: row.name,-->
+<!--    host: row.host,-->
+<!--    port: row.port,-->
+<!--    dbName: row.dbName,-->
+<!--    connectQuery: row.connectQuery,-->
+<!--  }-->
+<!--  // console.log('待新增：', record)-->
+
+<!--  // // 保存完成后将行恢复到初始状态，避免触发 $table.isUpdateByRow(row) === true-->
+<!--  $table.reloadRow(row, record)-->
+
+<!--  saveBouncerDatabaseById(record).then(response => {-->
+<!--    // console.log('response:', response)-->
+<!--    row.loading = false-->
+<!--    // 保存完成后将行恢复到初始状态，避免触发 $table.isUpdateByRow(row) === true-->
+<!--    $table.reloadRow(row, record)-->
+
+<!--    state.showDatabasesItem = []-->
+<!--    state.showDatabasesItem.push(record)-->
+<!--    state.useDatabaseItemAddBtn = false-->
+<!--    VXETable.modal.message({content: '保存成功！', status: 'success'})-->
+
+<!--  }).catch(error => {-->
+<!--    console.log(error)-->
+<!--  })-->
+<!--}-->
+
+<!--/**-->
+<!-- * PgbouncerItem局部更新-->
+<!-- */-->
+<!--const savePgbouncerItemUpdate = (row: any) => {-->
+<!--  const $table = xTable2.value-->
+<!--  if ($table.isUpdateByRow(row)) {-->
+<!--    row.loading = true-->
+
+<!--    let updateRecords = $table.getUpdateRecords()-->
+<!--    let temp = state.showPgbouncerItem-->
+<!--    temp[updateRecords[0].key] = updateRecords[0].value-->
+<!--    // 以temp中key为属性名，value为属性值，组成对象-->
+<!--    let record = {}-->
+<!--    temp.forEach((item: any) => {-->
+<!--      record[item.key] = item.value-->
+<!--    })-->
+
+<!--    record['id'] = state.PgbouncerItemId-->
+<!--    record['dbid'] = state.selectedDb.id-->
+
+<!--    // console.log('待提交：', record)-->
+
+<!--    saveBouncerPgbouncer(record).then(response => {-->
+<!--      // console.log('response:', response)-->
+<!--      row.loading = false-->
+
+<!--      // 保存完成后将行恢复到初始状态，避免触发 $table.isUpdateByRow(row) === true-->
+<!--      $table.reloadRow(row, {})-->
+<!--      VXETable.modal.message({content: '保存成功！', status: 'success'})-->
+<!--    }).catch(error => {-->
+<!--      console.log(error)-->
+<!--    })-->
+<!--  } else {-->
+<!--    VXETable.modal.message({content: '数据未改动！', status: 'info'})-->
+<!--  }-->
+<!--  row.loading = false-->
+<!--}-->
+
+<!--/**-->
+<!-- * PgbouncerItem全部更新-->
+<!-- */-->
+<!--const savePgbouncerItemUpdate2 = () => {-->
+<!--  const $table = xTable2.value-->
+<!--  if ($table) {-->
+<!--    const updateRecords = $table.getUpdateRecords()-->
+
+<!--    let record = {}-->
+<!--    // 以showPgbouncerItem2中key为属性名，value为属性值，组成对象-->
+<!--    state.showPgbouncerItem2.forEach((item: any) => {-->
+<!--      record[item.key] = item.value-->
+<!--    })-->
+<!--    // 更新-->
+<!--    updateRecords.forEach((item: any) => {-->
+<!--      record[item.key] = item.value-->
+<!--    })-->
+
+<!--    record['id'] = state.PgbouncerItemId-->
+
+<!--    console.log('待保存：', record)-->
+
+<!--    saveBouncerPgbouncer(record).then(response => {-->
+<!--      // console.log('response:', response)-->
+
+<!--      // 保存完成后将行恢复到初始状态，避免触发 $table.isUpdateByRow(row) === true-->
+<!--      updateRecords.forEach((item: any) => {-->
+<!--        $table.reloadRow(item, {})-->
+<!--      })-->
+
+<!--      // 获取pgbouncer配置项-->
+<!--      getBouncerPgbouncer().then((res) => {-->
+<!--        if (res.data === null) {-->
+<!--          state.showPgbouncerItem2 = [-->
+<!--            {key: 'admin_users', value: ''},-->
+<!--            {key: 'auth_file', value: ''},-->
+<!--            {key: 'auth_type', value: ''},-->
+<!--            {key: 'client_tls_ca_file', value: ''},-->
+<!--            {key: 'client_tls_cert_file', value: ''},-->
+<!--            {key: 'client_tls_ciphers', value: ''},-->
+<!--            {key: 'client_tls_key_file', value: ''},-->
+<!--            {key: 'client_tls_sslmode', value: ''},-->
+<!--            {key: 'ignore_startup_parameters', value: ''},-->
+<!--            {key: 'listen_addr', value: ''},-->
+<!--            {key: 'listen_port', value: ''},-->
+<!--            {key: 'logfile', value: ''},-->
+<!--            {key: 'pidfile', value: ''},-->
+<!--            {key: 'max_client_conn', value: ''},-->
+<!--            {key: 'pool_mode', value: ''},-->
+<!--          ]-->
+<!--        } else {-->
+<!--          state.showPgbouncerItem2 = [-->
+<!--            {key: 'admin_users', value: res.data.admin_users},-->
+<!--            {key: 'auth_file', value: res.data.auth_file},-->
+<!--            {key: 'auth_type', value: res.data.auth_type},-->
+<!--            {key: 'client_tls_ca_file', value: res.data.client_tls_ca_file},-->
+<!--            {key: 'client_tls_cert_file', value: res.data.client_tls_cert_file},-->
+<!--            {key: 'client_tls_ciphers', value: res.data.client_tls_ciphers},-->
+<!--            {key: 'client_tls_key_file', value: res.data.client_tls_key_file},-->
+<!--            {key: 'client_tls_sslmode', value: res.data.client_tls_sslmode},-->
+<!--            {key: 'ignore_startup_parameters', value: res.data.ignore_startup_parameters},-->
+<!--            {key: 'listen_addr', value: res.data.listen_addr},-->
+<!--            {key: 'listen_port', value: res.data.listen_port},-->
+<!--            {key: 'logfile', value: res.data.logfile},-->
+<!--            {key: 'max_client_conn', value: res.data.max_client_conn},-->
+<!--            {key: 'pidfile', value: res.data.pidfile},-->
+<!--            {key: 'pool_mode', value: res.data.pool_mode},-->
+<!--          ]-->
+<!--          state.PgbouncerItemId = res.data.id-->
+<!--          console.log('state.PgbouncerItemId:', state.PgbouncerItemId)-->
+<!--        }-->
+<!--        // console.log('state.showPgbouncerItem2:', state.showPgbouncerItem2)-->
+<!--      })-->
+
+<!--      // state.showPgbouncerItem = [-->
+<!--      //   {key: 'admin_users', value: record['admin_users']},-->
+<!--      //   {key: 'auth_file', value: record['auth_file']},-->
+<!--      //   {key: 'auth_type', value: record['auth_type']},-->
+<!--      //   {key: 'client_tls_ca_file', value: record['client_tls_ca_file']},-->
+<!--      //   {key: 'client_tls_cert_file', value: record['client_tls_cert_file']},-->
+<!--      //   {key: 'client_tls_ciphers', value: record['client_tls_ciphers']},-->
+<!--      //   {key: 'client_tls_key_file', value: record['client_tls_key_file']},-->
+<!--      //   {key: 'client_tls_sslmode', value: record['client_tls_sslmode']},-->
+<!--      //   {key: 'ignore_startup_parameters', value: record['ignore_startup_parameters']},-->
+<!--      //   {key: 'listen_addr', value: record['listen_addr']},-->
+<!--      //   {key: 'listen_port', value: record['listen_port']},-->
+<!--      //   {key: 'logfile', value: record['logfile']},-->
+<!--      //   {key: 'max_client_conn', value: record['max_client_conn']},-->
+<!--      //   {key: 'pidfile', value: record['pidfile']},-->
+<!--      //   {key: 'pool_mode', value: record['pool_mode']},-->
+<!--      // ]-->
+<!--      //-->
+<!--      VXETable.modal.message({content: '保存成功！', status: 'success'})-->
+<!--    }).catch(error => {-->
+<!--      console.log(error)-->
+<!--    })-->
+<!--  }-->
+<!--}-->
+
+
+<!--/***************************** init ******************************/-->
+<!--function init() {-->
+<!--  // 获取database配置项-->
+<!--  getBouncerDatabase().then((res) => {-->
+<!--    state.showDatabasesList = []-->
+<!--    res.data.forEach((item: any) => {-->
+<!--      let temp = {-->
+<!--        id: item.id,-->
+<!--        name: item.name,-->
+<!--        host: item.host,-->
+<!--        port: item.port,-->
+<!--        dbName: item.dbname,-->
+<!--        connectQuery: item.connect_query,-->
+<!--      }-->
+<!--      state.showDatabasesList.push(temp)-->
+<!--    })-->
+<!--    console.log('state.showDatabasesItem:', state.showDatabasesItem)-->
+<!--  })-->
+<!--  // 获取pgbouncer配置项-->
+<!--  getBouncerPgbouncer().then((res) => {-->
+<!--    if (res.data === null) {-->
+<!--      state.showPgbouncerItem2 = [-->
+<!--        {key: 'admin_users', value: ''},-->
+<!--        {key: 'auth_file', value: ''},-->
+<!--        {key: 'auth_type', value: ''},-->
+<!--        {key: 'client_tls_ca_file', value: ''},-->
+<!--        {key: 'client_tls_cert_file', value: ''},-->
+<!--        {key: 'client_tls_ciphers', value: ''},-->
+<!--        {key: 'client_tls_key_file', value: ''},-->
+<!--        {key: 'client_tls_sslmode', value: ''},-->
+<!--        {key: 'ignore_startup_parameters', value: ''},-->
+<!--        {key: 'listen_addr', value: ''},-->
+<!--        {key: 'listen_port', value: ''},-->
+<!--        {key: 'logfile', value: ''},-->
+<!--        {key: 'pidfile', value: ''},-->
+<!--        {key: 'max_client_conn', value: ''},-->
+<!--        {key: 'pool_mode', value: ''},-->
+<!--      ]-->
+<!--    } else {-->
+<!--      state.showPgbouncerItem2 = [-->
+<!--        {key: 'admin_users', value: res.data.admin_users},-->
+<!--        {key: 'auth_file', value: res.data.auth_file},-->
+<!--        {key: 'auth_type', value: res.data.auth_type},-->
+<!--        {key: 'client_tls_ca_file', value: res.data.client_tls_ca_file},-->
+<!--        {key: 'client_tls_cert_file', value: res.data.client_tls_cert_file},-->
+<!--        {key: 'client_tls_ciphers', value: res.data.client_tls_ciphers},-->
+<!--        {key: 'client_tls_key_file', value: res.data.client_tls_key_file},-->
+<!--        {key: 'client_tls_sslmode', value: res.data.client_tls_sslmode},-->
+<!--        {key: 'ignore_startup_parameters', value: res.data.ignore_startup_parameters},-->
+<!--        {key: 'listen_addr', value: res.data.listen_addr},-->
+<!--        {key: 'listen_port', value: res.data.listen_port},-->
+<!--        {key: 'logfile', value: res.data.logfile},-->
+<!--        {key: 'max_client_conn', value: res.data.max_client_conn},-->
+<!--        {key: 'pidfile', value: res.data.pidfile},-->
+<!--        {key: 'pool_mode', value: res.data.pool_mode},-->
+<!--      ]-->
+<!--      state.PgbouncerItemId = res.data.id-->
+<!--      console.log('state.PgbouncerItemId:', state.PgbouncerItemId)-->
+<!--    }-->
+<!--    // console.log('state.showPgbouncerItem2:', state.showPgbouncerItem2)-->
+<!--  })-->
+<!--}-->
+
+<!--onMounted(() => {-->
+<!--  init()-->
+<!--})-->
+
+<!--onBeforeUnmount(() => {-->
+<!--  // clearInterval(timer.value)-->
+<!--})-->
+<!--</script>-->
+
+<!--<style>-->
+<!--/*.demo-tabs > .el-tabs__content {*/-->
+<!--/*  padding: 32px;*/-->
+<!--/*  color: #6b778c;*/-->
+<!--/*  font-size: 32px;*/-->
+<!--/*  font-weight: 600;*/-->
+<!--/*}*/-->
+
+<!--.pgBouncerIniText {-->
+<!--  white-space: pre-line;-->
+<!--  height: 80vh;-->
+<!--  font-size: 20px;-->
+<!--  /*子元素居中*/-->
+<!--  display: flex;-->
+<!--  justify-content: center;-->
+<!--}-->
+<!--</style>-->
+
+
+
+
+
+
+
+
 <!--<template>-->
 <!--  <el-dialog-->
 <!--      title="【数据库管理员】用户授权"-->
