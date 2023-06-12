@@ -131,14 +131,14 @@ const routes = [
                     title: "VXETable局部更新",
                 }
             },
-            {
-                path: "/learning/sortableInVXETable",
-                name: "sortableInVXETable",
-                component: () => import("@/views/learn/sortableInVXETable/index.vue"),
-                meta: {
-                    title: "VXETable排序",
-                }
-            },
+            // {
+            //     path: "/learning/sortableInVXETable",
+            //     name: "sortableInVXETable",
+            //     component: () => import("@/views/learn/sortableInVXETable/index.vue"),
+            //     meta: {
+            //         title: "VXETable排序",
+            //     }
+            // },
             {
                 path: "/learning/mergeInVXETable",
                 name: "mergeInVXETable",
@@ -193,6 +193,14 @@ const routes = [
                 component: () => import("@/views/learn/useTable1/index.vue"),
                 meta: {
                     title: "使用Table1",
+                }
+            },
+            {
+                name: "useTable2",
+                path: "/learning/useTable2",
+                component: () => import("@/views/learn/useTable2/index.vue"),
+                meta: {
+                    title: "使用Table2",
                 }
             }
         ]
