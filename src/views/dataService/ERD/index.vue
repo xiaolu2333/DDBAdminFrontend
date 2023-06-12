@@ -1,30 +1,45 @@
 <template>
-  <div>
-    <div>
-      <el-cascader
-          v-model="fromEntry"
-          :options="fieldOptions"
-          :props="{expandTrigger: 'hover' }"
-          placeholder="From"
-      />
-      <el-cascader
-          v-model="toEntry"
-          :options="fieldOptions"
-          :props="{expandTrigger: 'hover' }"
-          placeholder="To"
-      />
-      <el-button type="primary" @click="makeSure">确认</el-button>
-    </div>
-    <div class="Diagram">
-      <div id="myDiagramDiv"
-           style="background-color: white; border: 1px solid black; width: 100%; height: 700px; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;">
-        <canvas tabindex="0" width="1102" height="851"
-                style="position: absolute; top: 0px; left: 0px; z-index: 2; user-select: none; width: 904px; height: 698px; cursor: auto;">
-          This text is displayed if your browser does not support the Canvas HTML element.
-        </canvas>
-        <div style="position: absolute; overflow: auto; width: 904px; height: 698px; z-index: 1;">
-          <div style="position: absolute; width: 1px; height: 1px;"></div>
-        </div>
+  <div class="add-foreign-key">
+    添加外键关系：
+    <el-cascader
+        v-model="cfkFromEntry"
+        :options="cfieldOptions"
+        :props="{expandTrigger: 'hover' }"
+        placeholder="From"
+    />
+    <el-cascader
+        v-model="cfkToEntry"
+        :options="cfieldOptions"
+        :props="{expandTrigger: 'hover' }"
+        placeholder="To"
+    />
+    <el-button type="primary" @click="addFKRelationship">确认</el-button>
+  </div>
+  <div class="delete-foreign-key">
+    删除外键关系：
+    <el-cascader
+        v-model="dfkFromEntry"
+        :options="dfieldOptions"
+        :props="{expandTrigger: 'hover' }"
+        placeholder="From"
+    />
+    <el-cascader
+        v-model="dfkToEntry"
+        :options="dfieldOptions"
+        :props="{expandTrigger: 'hover' }"
+        placeholder="To"
+    />
+    <el-button type="primary" @click="deleteFKRelationship">确认</el-button>
+  </div>
+  <div class="Diagram">
+    <div id="myDiagramDiv"
+         style="background-color: white; border: 1px solid black; width: 100%; height: 700px; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;">
+      <canvas tabindex="0" width="1102" height="851"
+              style="position: absolute; top: 0px; left: 0px; z-index: 2; user-select: none; width: 904px; height: 698px; cursor: auto;">
+        This text is displayed if your browser does not support the Canvas HTML element.
+      </canvas>
+      <div style="position: absolute; overflow: auto; width: 904px; height: 698px; z-index: 1;">
+        <div style="position: absolute; width: 1px; height: 1px;"></div>
       </div>
     </div>
   </div>
@@ -37,9 +52,18 @@ import {GetERDData} from '@/api/dataService/ERD.js'
 
 const state = reactive({
   entryOptions: [],
-  fieldOptions: [],
-  fromEntry: "",
-  toEntry: "",
+  // 添加外键关系时的下拉框选项
+  cfieldOptions: [],
+  // 删除外键关系时的下拉框选项
+  dfieldOptions: [],
+
+  // 添加外键关系
+  cfkFromEntry: "",
+  cfkToEntry: "",
+  // 删除外键关系
+  dfkFromEntry: "",
+  dfkToEntry: "",
+
   // 实体/节点数据
   nodeDataList: [],
   // 关系/边数据
@@ -48,9 +72,12 @@ const state = reactive({
 
 const {
   entryOptions,
-  fieldOptions,
-  fromEntry,
-  toEntry,
+  cfieldOptions,
+  dfieldOptions,
+  cfkFromEntry,
+  cfkToEntry,
+  dfkFromEntry,
+  dfkToEntry,
   nodeDataList,
   linkDataList,
 } = toRefs(state)
@@ -59,23 +86,61 @@ let myDiagram = null
 
 
 /**************************** 按钮事件 ******************************/
-// 确认按钮
-const makeSure = () => {
-  console.log('from:', fromEntry.value)
-  console.log('to:', toEntry.value)
+// 添加外键关系
+const addFKRelationship = () => {
+  console.log('from:', cfkFromEntry.value)
+  console.log('to:', cfkToEntry.value)
   // {from: "Products", to: "Suppliers", text: "0..N", toText: "1"}
   let temp = {
-    from: fromEntry.value[0],
-    to: toEntry.value[0],
-    text: fromEntry.value[0] + " M",
-    toText: toEntry.value[0] + " 1"
+    from: cfkFromEntry.value[0],
+    to: cfkToEntry.value[0],
+    text: cfkFromEntry.value[0] + " M",
+    toText: cfkToEntry.value[0] + " 1"
   }
-  linkDataList.value.push(temp)
+  // linkDataList.value.push(temp)
 
   myDiagram.model.addLinkData(temp)
+  console.log('linkDataList.value:', linkDataList.value)
+  refreshDfieldOptions()
+}
+
+// 删除外键关系
+const deleteFKRelationship = () => {
+  console.log('dfkFromEntry:', dfkFromEntry.value)
+  console.log('dfkToEntry:', dfkToEntry.value)
+  // let temp = {
+  //   from: dfkFromEntry.value[0],
+  //   to: dfkToEntry.value[0],
+  //   text: dfkFromEntry.value[0] + " M",
+  //   toText: dfkToEntry.value[1] + " 1"
+  // }
+  let temp = {
+    from: 'ProductID',
+    to: 'SupplierID',
+    text: "SupplierID M",
+    toText: "SupplierID 1"
+  }
+
+  const t = myDiagram.model.getKeyForLinkData(temp)
+  console.log('t:', t)
+
+  // myDiagram.model.removeLinkData(temp)
+  // console.log('linkDataList.value:', linkDataList.value)
+  // refreshDfieldOptions()
 }
 
 
+/***************************** utils ******************************/
+const refreshDfieldOptions = () => {
+  let temp = []
+
+  state.dfieldOptions = state.cfieldOptions
+
+  console.log('state.dfieldOptions:', state.dfieldOptions)
+}
+
+
+/***************************** 初始化 ******************************/
 function init() {
   // 定义模板
   let $ = go.GraphObject.make;
@@ -277,7 +342,7 @@ onMounted(() => {
       })
     })
 
-    state.fieldOptions = res.data.data.nodeDataArray.map(item => {
+    state.cfieldOptions = res.data.data.nodeDataArray.map(item => {
       return {
         value: item.key,
         label: item.key,
@@ -289,11 +354,11 @@ onMounted(() => {
         })
       }
     })
-    console.log('GetERDData state.fieldOptions', state.fieldOptions)
+    console.log('GetERDData state.cfieldOptions', state.cfieldOptions)
 
+    refreshDfieldOptions()
     init()
   })
-
 });
 </script>
 
