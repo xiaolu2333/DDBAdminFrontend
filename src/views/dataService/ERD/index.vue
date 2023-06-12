@@ -3,26 +3,28 @@
     <div>
       <el-cascader
           v-model="fromEntry"
-          :options="entryOptions"
-          :props="props"
+          :options="fieldOptions"
+          :props="{expandTrigger: 'hover' }"
           placeholder="From"
       />
       <el-cascader
           v-model="toEntry"
-          :options="entryOptions"
-          :props="props"
+          :options="fieldOptions"
+          :props="{expandTrigger: 'hover' }"
           placeholder="To"
       />
       <el-button type="primary" @click="makeSure">确认</el-button>
     </div>
-    <div id="myDiagramDiv"
-         style="background-color: white; border: 1px solid black; width: 100%; height: 700px; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;">
-      <canvas tabindex="0" width="1102" height="851"
-              style="position: absolute; top: 0px; left: 0px; z-index: 2; user-select: none; width: 904px; height: 698px; cursor: auto;">
-        This text is displayed if your browser does not support the Canvas HTML element.
-      </canvas>
-      <div style="position: absolute; overflow: auto; width: 904px; height: 698px; z-index: 1;">
-        <div style="position: absolute; width: 1px; height: 1px;"></div>
+    <div class="Diagram">
+      <div id="myDiagramDiv"
+           style="background-color: white; border: 1px solid black; width: 100%; height: 700px; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;">
+        <canvas tabindex="0" width="1102" height="851"
+                style="position: absolute; top: 0px; left: 0px; z-index: 2; user-select: none; width: 904px; height: 698px; cursor: auto;">
+          This text is displayed if your browser does not support the Canvas HTML element.
+        </canvas>
+        <div style="position: absolute; overflow: auto; width: 904px; height: 698px; z-index: 1;">
+          <div style="position: absolute; width: 1px; height: 1px;"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -36,8 +38,8 @@ import {GetERDData} from '@/api/dataService/ERD.js'
 const state = reactive({
   entryOptions: [],
   fieldOptions: [],
-  fromEntry: {},
-  toEntry: {},
+  fromEntry: "",
+  toEntry: "",
   // 实体/节点数据
   nodeDataList: [],
   // 关系/边数据
@@ -53,15 +55,24 @@ const {
   linkDataList,
 } = toRefs(state)
 
-const props = {
-  expandTrigger: 'hover',
-}
+let myDiagram = null
 
 
 /**************************** 按钮事件 ******************************/
 // 确认按钮
 const makeSure = () => {
-  console.log(fromEntry.value, toEntry.value)
+  console.log('from:', fromEntry.value)
+  console.log('to:', toEntry.value)
+  // {from: "Products", to: "Suppliers", text: "0..N", toText: "1"}
+  let temp = {
+    from: fromEntry.value[0],
+    to: toEntry.value[0],
+    text: fromEntry.value[0] + " M",
+    toText: toEntry.value[0] + " 1"
+  }
+  linkDataList.value.push(temp)
+
+  myDiagram.model.addLinkData(temp)
 }
 
 
@@ -70,7 +81,7 @@ function init() {
   let $ = go.GraphObject.make;
 
   // 定义画布
-  let myDiagram = $(
+  myDiagram = $(
       go.Diagram,
       "myDiagramDiv",                     // 画布元素
       {                                   // 画布属性
@@ -199,97 +210,90 @@ function init() {
 
 
   // create the model for the E-R diagram
+  console.log('state.nodeDataList', state.nodeDataList)
+  console.log('state.linkDataList', state.linkDataList)
+  let nodeDataArray = state.nodeDataList
+  // [
+  //   {
+  //     key: "Products",
+  //     items: [{name: "ProductID", iskey: true, figure: "Decision", color: colors.red},
+  //       {name: "ProductName", iskey: false, figure: "Hexagon", color: colors.blue},
+  //       {name: "SupplierID", iskey: false, figure: "Decision", color: "purple"},
+  //       {name: "CategoryID", iskey: false, figure: "Decision", color: "purple"}]
+  //   },
+  //   {
+  //     key: "Suppliers",
+  //     items: [{name: "SupplierID", iskey: true, figure: "Decision", color: colors.red},
+  //       {name: "CompanyName", iskey: false, figure: "Hexagon", color: colors.blue},
+  //       {name: "ContactName", iskey: false, figure: "Hexagon", color: colors.blue},
+  //       {name: "Address", iskey: false, figure: "Hexagon", color: colors.blue}]
+  //   },
+  //   {
+  //     key: "Categories",
+  //     items: [{name: "CategoryID", iskey: true, figure: "Decision", color: colors.red},
+  //       {name: "CategoryName", iskey: false, figure: "Hexagon", color: colors.blue},
+  //       {name: "Description", iskey: false, figure: "Hexagon", color: colors.blue},
+  //       {name: "Picture", iskey: false, figure: "TriangleUp", color: colors.pink}]
+  //   },
+  //   {
+  //     key: "Order Details",
+  //     items: [{name: "OrderID", iskey: true, figure: "Decision", color: colors.red},
+  //       {name: "ProductID", iskey: true, figure: "Decision", color: colors.red},
+  //       {name: "UnitPrice", iskey: false, figure: "Circle", color: colors.green},
+  //       {name: "Quantity", iskey: false, figure: "Circle", color: colors.green},
+  //       {name: "Discount", iskey: false, figure: "Circle", color: colors.green}]
+  //   },
+  // ];
+  let linkDataArray = state.linkDataList
+  // [
+  //   {from: "Products", to: "Suppliers", text: "0..N", toText: "1"},
+  //   {from: "Products", to: "Suppliers", text: "0..N", toText: "1"},
+  //   {from: "Products", to: "Categories", text: "0..N", toText: "1"},
+  //   {from: "Order Details", to: "Products", text: "0..N", toText: "1"}
+  // ];
+  myDiagram.model = $(go.GraphLinksModel,
+      {
+        copiesArrays: true,
+        copiesArrayObjects: true,
+        nodeDataArray: nodeDataArray,
+        linkDataArray: linkDataArray
+      });
+}
+
+
+onMounted(() => {
   GetERDData().then(res => {
+    console.log('res.data.data: ', res.data.data)
+
     state.nodeDataList = res.data.data.nodeDataArray
+    console.log('GetERDData state.nodeDataList', state.nodeDataList)
     linkDataList.value = res.data.data.linkDataArray
+    console.log('GetERDData linkDataList.value', linkDataList.value)
 
     res.data.data.nodeDataArray.forEach(item => {
       state.entryOptions.push({
         value: item.key,
         label: item.key,
-        children: []
       })
     })
 
-    res.data.data.nodeDataArray.forEach(item => {
-      state.entryOptions.forEach(entry => {
-        if (entry.value === item.key) {
-          item.items.forEach(field => {
-            entry.children.push({
-              value: field.name,
-              label: field.name
-            })
-          })
-        }
-      })
+    state.fieldOptions = res.data.data.nodeDataArray.map(item => {
+      return {
+        value: item.key,
+        label: item.key,
+        children: item.items.map(field => {
+          return {
+            value: field.name,
+            label: field.name
+          }
+        })
+      }
     })
-    console.log('state.entryOptions', state.entryOptions)
+    console.log('GetERDData state.fieldOptions', state.fieldOptions)
 
-    console.log('state.nodeOptions', state.entryOptions)
-    console.log('state.fieldOptions', state.fieldOptions)
-
-    let nodeDataArray = res.data.data.nodeDataArray
-    // [
-    //   {
-    //     key: "Products",
-    //     items: [{name: "ProductID", iskey: true, figure: "Decision", color: colors.red},
-    //       {name: "ProductName", iskey: false, figure: "Hexagon", color: colors.blue},
-    //       {name: "SupplierID", iskey: false, figure: "Decision", color: "purple"},
-    //       {name: "CategoryID", iskey: false, figure: "Decision", color: "purple"}]
-    //   },
-    //   {
-    //     key: "Suppliers",
-    //     items: [{name: "SupplierID", iskey: true, figure: "Decision", color: colors.red},
-    //       {name: "CompanyName", iskey: false, figure: "Hexagon", color: colors.blue},
-    //       {name: "ContactName", iskey: false, figure: "Hexagon", color: colors.blue},
-    //       {name: "Address", iskey: false, figure: "Hexagon", color: colors.blue}]
-    //   },
-    //   {
-    //     key: "Categories",
-    //     items: [{name: "CategoryID", iskey: true, figure: "Decision", color: colors.red},
-    //       {name: "CategoryName", iskey: false, figure: "Hexagon", color: colors.blue},
-    //       {name: "Description", iskey: false, figure: "Hexagon", color: colors.blue},
-    //       {name: "Picture", iskey: false, figure: "TriangleUp", color: colors.pink}]
-    //   },
-    //   {
-    //     key: "Order Details",
-    //     items: [{name: "OrderID", iskey: true, figure: "Decision", color: colors.red},
-    //       {name: "ProductID", iskey: true, figure: "Decision", color: colors.red},
-    //       {name: "UnitPrice", iskey: false, figure: "Circle", color: colors.green},
-    //       {name: "Quantity", iskey: false, figure: "Circle", color: colors.green},
-    //       {name: "Discount", iskey: false, figure: "Circle", color: colors.green}]
-    //   },
-    // ];
-    let linkDataArray =
-        [
-          {
-            from: "Products",
-            to: "Suppliers",
-            text: "0..N",
-            toText: "1",
-            fromArrow: 'Standard',
-            toArrow: "Backward"
-          },
-          {
-            from: "Products", to: "Suppliers", text: "0..N", toText: "1", fromArrow: "Triangle",
-            toArrow: "BackwardTriangle"
-          },
-          {from: "Products", to: "Categories", text: "0..N", toText: "1"},
-          {from: "Order Details", to: "Products", text: "0..N", toText: "1"}
-        ];
-    myDiagram.model = $(go.GraphLinksModel,
-        {
-          copiesArrays: true,
-          copiesArrayObjects: true,
-          nodeDataArray: nodeDataArray,
-          linkDataArray: linkDataArray
-        });
+    init()
   })
-}
 
-
-onMounted(() => {
-  init();
 });
 </script>
 
