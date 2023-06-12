@@ -40,7 +40,9 @@
       </el-sub-menu>
       <el-sub-menu v-if="item.name==='DataManage' && item.children" :index="item.path">
         <template #title>
-          <el-icon><Coin /></el-icon>
+          <el-icon>
+            <Coin/>
+          </el-icon>
           <span>{{ item.meta && item.meta.title }}</span>
         </template>
         <template v-for="child in item.children" :key="child.path">
@@ -53,6 +55,19 @@
         <template #title>
           <el-icon>
             <Setting/>
+          </el-icon>
+          <span>{{ item.meta && item.meta.title }}</span>
+        </template>
+        <template v-for="child in item.children" :key="child.path">
+          <el-menu-item :index="child.path">
+            {{ child.meta && child.meta.title }}
+          </el-menu-item>
+        </template>
+      </el-sub-menu>
+      <el-sub-menu v-if="item.name==='DataService' && item.children" :index="item.path">
+        <template #title>
+          <el-icon>
+            <Service/>
           </el-icon>
           <span>{{ item.meta && item.meta.title }}</span>
         </template>
