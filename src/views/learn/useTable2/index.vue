@@ -259,6 +259,11 @@ const toggleExpandChangeEvent: VxeTableEvents.ToggleRowExpand = (val) => {
     // 获取 val.row 在 pgBouncerList 中的索引
     const index = state.pgBouncerList.indexOf(val.row)
     $table.toggleRowExpand(state.pgBouncerList[index])
+    // 如果当前行已经展开，则关闭；如果当前行未展开，则展开
+    if (!val.expanded) {
+      $newTable.toggleRowExpand(val.row)
+      return
+    }
   }
 }
 
