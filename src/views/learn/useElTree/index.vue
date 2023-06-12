@@ -7,34 +7,41 @@
             ref='userTreeRef'
             node-key='id'
             :data='userOptions'
-            :props="{ children: 'nodes', label: 'text', disabled: ''}"
+            :props="{ children: 'nodes', label: 'text', disabled: '', class: customNodeClass }"
             :expand-on-click-node='false'
             default-expand-all
         >
           <template #default="{ node, data }">
             <p v-if="node.data.type === 'schema'">
-              schema: {{ node.label }}
+              {{ node.label }}
             </p>
-            <p style="width: 250px" v-else>{{ node.label }}</p>
+            <p v-if="node.data.type === 'table'" style="width: 250px; height:26px;overflow-wrap: break-word">
+              {{ node.label }}
+            </p>
+            <p v-else>{{ node.label }}</p>
             <el-button v-if="node.data.type === 'user'"
                        size="small" type="primary" style="margin-left: 20px"
                        @click="tableAuth(data)"
             >授权
             </el-button>
-            <span class="custom-tree-node" v-if="node.data.type === 'table'">
-                <p style="margin-left: 20px">
+            <p class="custom-tree-node" v-if="node.data.type === 'table'">
+                <span style="margin-left: 20px">
                   <template v-for="perm in ['select', 'insert', 'delete', 'update']">
-                <el-checkbox v-if="tableHasPerm(data, perm)" :key="perm" :checked="true" disabled>
-                  {{ perm }}
-                </el-checkbox>
-              </template>
-                </p>
-            </span>
+                    <el-checkbox v-if="tableHasPerm(data, perm)" :key="perm" :checked="true" disabled>
+                      {{ perm }}
+                    </el-checkbox>
+                  </template>
+                </span>
+            </p>
           </template>
         </el-tree>
       </el-scrollbar>
       <el-button type='primary' @click='submit' :icon="Checked" style="float: right">确定</el-button>
     </el-card>
+  </div>
+  <br/>
+  <div class="test" style="width: 200px; height: 400px; background-color: #f1fff5; overflow-wrap: break-word">
+    222222222222222222222222222233333333333334444444444444444
   </div>
 
   <el-dialog
@@ -111,12 +118,15 @@ const state = reactive({
   // 可被分配权限的用户的列表
   userOptions: [] as any[],
   dialogVisible: false,
+
+  testData1: [] as any[],
 })
 
 const {
   placeholder,
   userOptions,
   dialogVisible,
+  testData1,
 } = toRefs(state);
 
 
@@ -189,6 +199,18 @@ function getCheckedUsersCode(): string {
 function tableHasPerm(data: any, actionType: string): boolean {
   // console.log('data:', data)
   return data.perms.indexOf(actionType) > -1;
+}
+
+
+// 自定义class name
+const customNodeClass = (data: any, node: any) => {
+  if (data.type == 'user') {
+    return 'user-node'
+  }
+  if (data.type == 'table') {
+    return 'table-node'
+  }
+  return ''
 }
 
 
@@ -310,7 +332,13 @@ function init() {
                   id: 'public-a',
                   type: 'schema',
                   nodes: [
-                    {text: 't11111111111111', perms: 'select,update', id: 't1', type: 'table', disabled: true},
+                    {
+                      text: 'pgadmin_mydbconfig_postgresqlconf_postgresqlconf',
+                      perms: 'select,update',
+                      id: 't1',
+                      type: 'table',
+                      disabled: true
+                    },
                     {text: 't2', perms: 'select,delete', id: 't2', type: 'table', disabled: true},
                     {text: 't3', perms: 'select,insert', id: 't3', type: 'table', disabled: true},
                   ]
@@ -367,4 +395,12 @@ onMounted(() => {
 </script>
 
 <style scoped>
+:deep(.user-node) {
+  background-color: #f0f0f0;
+}
+
+/*:deep(.table-node) {*/
+/*  background-color: #f4eafe;*/
+/*  overflow-wrap: break-word;*/
+/*}*/
 </style>
