@@ -18,14 +18,26 @@ export async function UploadFile(dataForm) {
   }
 }
 
-// 一般文件下载
-export async function DownloadFile() {
+// 一般文件流下载
+export async function DownloadFileByStream() {
   try {
     return await service.request({
       method: "get",
-      url: "/test_app/download_file",
+      url: "/test_app/download_file_by_stream",
       responseType: "blob", // 一般文件下载，使用 blob 格式
     });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+// 一般文件URL下载
+export async function DownloadFileByURL() {
+  try {
+    return await service.request({
+      method: "get",
+      url: "/test_app/download_file_by_url",});
   } catch (error) {
     console.log(error);
     throw error;

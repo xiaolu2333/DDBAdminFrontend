@@ -2,7 +2,7 @@
   <div>
     <el-card>
       <el-row :gutter="30">
-        <el-col :span="12">
+        <el-col :span="6">
           <el-card>
             <template #header>
               【一般文件上传】
@@ -11,12 +11,20 @@
             <button @click="uploadFile">Upload</button>
           </el-card>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-card>
             <template #header>
-              【一般文件下载】
+              【一般文件流式下载】
             </template>
-            <button @click="downloadFile">Download</button>
+            <button @click="DownloadFileStream">Download File By Stream</button>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card>
+            <template #header>
+              【一般文件URL式下载】
+            </template>
+            <button @click="DownloadFileURL">Download File By Url</button>
           </el-card>
         </el-col>
       </el-row>
@@ -58,7 +66,7 @@
 <script setup>
 import {reactive, ref, toRefs} from 'vue'
 import {ElMessage} from 'element-plus'
-import {UploadFile, DownloadFile, UploadFormFile} from '@/api/learn/uploadAndDownloadFile.js'
+import {UploadFile, UploadFormFile, DownloadFileByStream, DownloadFileByURL} from '@/api/learn/uploadAndDownloadFile.js'
 
 const file = ref("file")
 const state = reactive({
@@ -96,18 +104,21 @@ function uploadFile() {
       });
 }
 
-function downloadFile() {
+function DownloadFileStream() {
   // 下载文件
-  DownloadFile()
+  DownloadFileByStream()
       .then((response) => {
         console.log(response);
-        let blob = new Blob([response.data], {
-          type: 'application/vnd.ms-excel'
-        })
         // 获取文件名
         let fileNameEncode = response.headers['content-disposition'].split("filename=")[1];
         // 解码
         let fileName = decodeURIComponent(fileNameEncode)
+        // 指定文件类型
+        const fileType = getContentType(fileName.split('.')[1])
+        let blob = new Blob([response.data], {
+          type: fileType
+        })
+
         let link = document.createElement('a')
         link.href = window.URL.createObjectURL(blob)
         link.download = fileName
@@ -117,6 +128,66 @@ function downloadFile() {
 
         ElMessage.success("下载成功")
       })
+}
+
+function DownloadFileURL() {
+  // 下载文件
+  DownloadFileByURL()
+      .then((response) => {
+        console.log(response);
+        const link = document.createElement('a') // 创建一个 a 标签用来模拟点击事件
+        link.style.display = 'none'
+        link.href = response.data // 下载地址
+        link.setAttribute('download', '文件名')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+
+        ElMessage.success("下载成功")
+      })
+}
+
+function getContentType(filename) {
+  const extension = filename.substring(filename.lastIndexOf('.') + 1);
+  switch (extension) {
+    case 'html':
+      return 'text/html';
+    case 'css':
+      return 'text/css';
+    case 'js':
+      return 'text/javascript';
+    case 'json':
+      return 'application/json';
+    case 'pdf':
+      return 'application/pdf';
+    case 'jpg':
+    case 'jpeg':
+      return 'image/jpeg';
+    case 'png':
+      return 'image/png';
+    case 'gif':
+      return 'image/gif';
+    case 'svg':
+      return 'image/svg+xml';
+    case 'wav':
+      return 'audio/wav';
+    case 'xlsx':
+      return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    case 'xls':
+      return 'application/vnd.ms-excel';
+    case 'docx':
+      return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    case 'doc':
+      return 'application/msword';
+    case 'pptx':
+      return 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+    case 'ppt':
+      return 'application/vnd.ms-powerpoint';
+    case 'zip':
+      return 'application/zip';
+    default:
+      return 'application/octet-stream';
+  }
 }
 
 
