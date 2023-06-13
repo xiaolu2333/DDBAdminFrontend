@@ -20,21 +20,24 @@
           </el-card>
         </el-col>
       </el-row>
+      <br/>
+
       <el-row :gutter="30">
         <el-col :span="12">
           <el-card>
+            <template #header>
+              【在表单数据中上传文件】
+            </template>
             <el-form :model="formData1" ref='dataFormRef' label-width="120px">
               <el-form-item label="姓名" prop='name' @input="change">
                 <el-input v-model="formData1.name"/>
               </el-form-item>
-              <el-form-item
-                  label="密码" prop="password"
-                  type="password" show-password
-              >
+              <el-form-item label="密码" prop="password" type="password" show-password>
                 <el-input v-model="formData1.password"/>
               </el-form-item>
               <el-form-item label="文件" prop="file">
-                <el-input type="file" v-model="formData1.file"/>
+                <el-input v-model="formData1.fileName"/>
+                <input type="file" @change="handleFileUpload"/>
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" @click="submit1">提交</el-button>
@@ -59,15 +62,14 @@ import {UploadFile, DownloadFile, UploadFormFile} from '@/api/learn/uploadAndDow
 
 const file = ref("file")
 const state = reactive({
-  fileObj: null,
   formData1: {
     name: "",
     password: "",
     file: null,
+    fileName: "",
   },
 })
 const {
-  fileObj,
   formData1,
 } = toRefs(state)
 
@@ -119,17 +121,30 @@ function downloadFile() {
 
 
 /*************************** 表单文件上传与下载 ***************************/
+function handleFileUpload(event) {
+  console.log("event:", event)
+  const file = event.target.files[0]
+  state.formData1.fileName = file.name
+  const reader = new FileReader()
+  reader.readAsDataURL(file)
+  reader.onload = () => {
+    state.formData1.file = reader.result
+  }
+}
+
+
 function submit1() {
   // 创建表单对象
   let formData = new FormData();
   // 添加要上传的文件到表单对象中
-  formData.append("file", formData1.file);
-  formData.append("name", formData1.name);
-  formData.append("password", formData1.password);
-  console.log("formData:", formData)
+  formData.append("file", formData1.value.file);
+  formData.append("name", formData1.value.name);
+  formData.append("password", formData1.value.password);
+  formData.append("fileName", formData1.value.fileName);
   UploadFormFile(formData)
       .then((response) => {
         console.log(response.data);
+        ElMessage.success("上传成功")
       })
       .catch((error) => {
         console.log(error);
