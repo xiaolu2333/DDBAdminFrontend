@@ -9,7 +9,7 @@ export async function UploadFile(dataForm) {
       url: "/test_app/upload_file",
       data: dataForm,
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "multipart/form-data",  // 一般文件上传，使用 multipart/form-data 格式
       },
     });
   } catch (error) {
@@ -24,7 +24,7 @@ export async function DownloadFile() {
     return await service.request({
       method: "get",
       url: "/test_app/download_file",
-      responseType: "blob",
+      responseType: "blob", // 一般文件下载，使用 blob 格式
     });
   } catch (error) {
     console.log(error);

@@ -4,12 +4,18 @@
       <el-row :gutter="30">
         <el-col :span="12">
           <el-card>
+            <template #header>
+              【一般文件上传】
+            </template>
             <input type="file" ref="file" @change="handleFileChange"/>
             <button @click="uploadFile">Upload</button>
           </el-card>
         </el-col>
         <el-col :span="12">
           <el-card>
+            <template #header>
+              【一般文件下载】
+            </template>
             <button @click="downloadFile">Download</button>
           </el-card>
         </el-col>
@@ -48,6 +54,7 @@
 </template>
 <script setup>
 import {reactive, ref, toRefs} from 'vue'
+import {ElMessage} from 'element-plus'
 import {UploadFile, DownloadFile, UploadFormFile} from '@/api/learn/uploadAndDownloadFile.js'
 
 const file = ref("file")
@@ -80,6 +87,7 @@ function uploadFile() {
   UploadFile(formData)
       .then((response) => {
         console.log(response.data);
+        ElMessage.success("上传成功")
       })
       .catch((error) => {
         console.log(error);
@@ -94,7 +102,7 @@ function downloadFile() {
         let blob = new Blob([response.data], {
           type: 'application/vnd.ms-excel'
         })
-        // 切割出文件名
+        // 获取文件名
         let fileNameEncode = response.headers['content-disposition'].split("filename=")[1];
         // 解码
         let fileName = decodeURIComponent(fileNameEncode)
@@ -104,6 +112,8 @@ function downloadFile() {
         link.click()
         // 释放内存
         window.URL.revokeObjectURL(link.href)
+
+        ElMessage.success("下载成功")
       })
 }
 
