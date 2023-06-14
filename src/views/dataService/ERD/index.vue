@@ -31,6 +31,14 @@
     />
     <el-button type="primary" @click="deleteFKRelationship">确认</el-button>
   </div>
+  <el-button-group>
+    <el-button type="primary" @click="addNode">添加节点</el-button>
+    <el-button type="primary" @click="addLink">添加边</el-button>
+    <el-button type="primary" @click="deleteNode">删除节点</el-button>
+    <el-button type="primary" @click="deleteLink">删除边</el-button>
+    <el-button type="primary" @click="save">保存</el-button>
+    <el-button type="primary" @click="load">数据融合</el-button>
+  </el-button-group>
   <div class="Diagram">
     <div id="myDiagramDiv"
          style="background-color: white; border: 1px solid black; width: 100%; height: 700px; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;">
@@ -226,7 +234,9 @@ function init() {
           // define the node's outer shape, which will surround the Table
           $(go.Shape, "RoundedRectangle",
               {fill: 'white', stroke: "#eeeeee", strokeWidth: 3}),
-          $(go.Panel, "Table",
+          $(
+              go.Panel,
+              "Table",
               {margin: 8, stretch: go.GraphObject.Fill},
               $(go.RowColumnDefinition, {row: 0, sizing: go.RowColumnDefinition.None}),
               // the table header
@@ -252,7 +262,21 @@ function init() {
                     itemTemplate: itemTempl
                   },
                   new go.Binding("itemArray", "items"))
-          )  // end Table Panel
+          ),  // end Table Panel
+          {
+            contextMenu:     // define a context menu for each node
+                $("ContextMenu",  // that has one button
+                    $("ContextMenuButton",
+                        $(go.TextBlock, "改变节点背景颜色"),
+                        {click: changeColor},
+                    ),
+                    $("ContextMenuButton",
+                        $(go.TextBlock, "改变节点字体颜色"),
+                        {click: changeColor},
+                    )
+                    // more ContextMenuButtons would go here
+                )  // end Adornment
+          }
       );  // end Node
   // define the Link template, representing a relationship
   myDiagram.linkTemplate =
@@ -286,7 +310,17 @@ function init() {
                 segmentOffset: new go.Point(NaN, NaN),
                 segmentOrientation: go.Link.OrientUpright
               },
-              new go.Binding("text", "toText"))
+              new go.Binding("text", "toText")),
+          {
+            contextMenu:     // define a context menu for each node
+                $("ContextMenu",  // that has one button
+                    $("ContextMenuButton",
+                        $(go.TextBlock, "改变边颜色"),
+                        {click: changeColor},
+                    )
+                    // more ContextMenuButtons would go here
+                )  // end Adornment
+          }
       );
 
 
@@ -385,6 +419,37 @@ function init() {
 }
 
 
+/*********************************** 对象右键菜单回调函数 ***********************************/
+// Rotate the selected node's color through a predefined sequence of colors.
+function changeColor(e, obj) {
+  alert('changeColor')
+  myDiagram.commit((d) => {
+    // 获取被点击的菜单
+    let contextmenu = obj.part;
+    // 获取节点信息
+    let nodeData = contextmenu.data;
+    // 计算下一种颜色
+    let newColor = "lightblue";
+    switch (nodeData.color) {
+      case "lightblue":
+        newColor = "lightgreen";
+        break;
+      case "lightgreen":
+        newColor = "lightyellow";
+        break;
+      case "lightyellow":
+        newColor = "orange";
+        break;
+      case "orange":
+        newColor = "lightblue";
+        break;
+    }
+    // 修改节点数据
+    d.model.set(nodeData, "color", newColor);
+  }, "changed color");
+}
+
+
 onMounted(() => {
   GetERDData().then(res => {
     console.log('res.data.data: ', res.data.data)
@@ -425,5 +490,56 @@ onMounted(() => {
 #myDiagramDiv {
   background-color: #F8F8F8;
   border: 1px solid #aaa;
+}
+
+/* CSS for the traditional context menu */
+.ctxmenu {
+  display: none;
+  position: absolute;
+  opacity: 0;
+  margin: 0;
+  padding: 8px 0;
+  z-index: 999;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, .2), 0 8px 10px 1px rgba(0, 0, 0, .14), 0 3px 14px 2px rgba(0, 0, 0, .12);
+  list-style: none;
+  background-color: #ffffff;
+  border-radius: 4px;
+}
+
+.menu-item {
+  display: block;
+  position: relative;
+  min-width: 60px;
+  margin: 0;
+  padding: 6px 16px;
+  font: bold 12px sans-serif;
+  color: rgba(0, 0, 0, .87);
+  cursor: pointer;
+}
+
+.menu-item::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  content: "";
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+}
+
+.menu-item:hover::before {
+  opacity: .04;
+}
+
+.menu .menu {
+  top: -8px;
+  left: 100%;
+}
+
+.show-menu, .menu-item:hover .ctxmenu {
+  display: block;
+  opacity: 1;
 }
 </style>
