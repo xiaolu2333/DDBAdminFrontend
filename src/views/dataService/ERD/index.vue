@@ -178,6 +178,19 @@ function init() {
         "undoManager.isEnabled": true       // 开启撤销和重做功能
       });
 
+  /**
+   * 指定显示网格
+   */
+  myDiagram.grid.visible = true;
+  /**
+   * 拖动时对齐网格
+   */
+  myDiagram.toolManager.draggingTool.isGridSnapEnabled = true;
+  /**
+   * 重置大小时对齐网格
+   */
+  myDiagram.toolManager.resizingTool.isGridSnapEnabled = true;
+
 
   let colors = {
     'red': '#be4b15',
@@ -388,10 +401,29 @@ function init() {
   // ];
   let linkDataArray = state.linkDataList
   // [
-  //   {from: "Products", to: "Suppliers", text: "0..N", toText: "1"},
-  //   {from: "Products", to: "Suppliers", text: "0..N", toText: "1"},
-  //   {from: "Products", to: "Categories", text: "0..N", toText: "1"},
-  //   {from: "Order Details", to: "Products", text: "0..N", toText: "1"}
+  //   {
+  //     from: "Products",
+  //     to: "Suppliers",
+  //     text: "0..N", toText: "1",
+  //     // fromEndSegmentLength: 30,
+  //     // toEndSegmentLength: 30
+  //   },
+  //   {
+  //     from: "Products",
+  //     to: "Categories",
+  //     text: "0..N",
+  //     toText: "1",
+  //     // fromEndSegmentLength: 30,
+  //     // toEndSegmentLength: 30
+  //   },
+  //   {
+  //     from: "Order Details",
+  //     to: "Products",
+  //     text: "0..N",
+  //     toText: "1",
+  //     // fromEndSegmentLength: 30,
+  //     // toEndSegmentLength: 30
+  //   }
   // ];
 
 
