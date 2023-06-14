@@ -68,6 +68,15 @@ const state = reactive({
   nodeDataList: [],
   // 关系/边数据
   linkDataList: [],
+
+  // 被左键单击的节点
+  clickedNode: null,
+  // 被左键单击的边
+  clickedLink: null,
+  // 被右键单击的节点
+  rightClickedNode: null,
+  // 被右键单击的边
+  rightClickedLink: null,
 })
 
 const {
@@ -80,6 +89,10 @@ const {
   dfkToEntry,
   nodeDataList,
   linkDataList,
+  clickedNode,
+  clickedLink,
+  rightClickedNode,
+  rightClickedLink,
 } = toRefs(state)
 
 let myDiagram = null
@@ -142,10 +155,11 @@ const refreshDfieldOptions = () => {
 
 /***************************** 初始化 ******************************/
 function init() {
-  // 定义模板
   let $ = go.GraphObject.make;
 
-  // 定义画布
+  /**
+   * 定义画布
+   */
   myDiagram = $(
       go.Diagram,
       "myDiagramDiv",                     // 画布元素
@@ -168,7 +182,7 @@ function init() {
     'purple': '#d689ff',
     'orange': '#fdb400',
   }
-  // 每条节点数据数组中每个属性的模板
+  // 节点数据数组中每个属性的模板
   let itemTempl =
       $(
           go.Panel,         // represents a single item in a Panel of type "LIST"
@@ -186,7 +200,9 @@ function init() {
               new go.Binding("text", "name")) //
       );
 
-  // 定义节点模板，用于表示实体
+  /**
+   * 定义节点模板与边模板
+   */
   myDiagram.nodeTemplate =
       $(
           go.Node,    // 表示一个节点
@@ -274,7 +290,9 @@ function init() {
       );
 
 
-  // create the model for the E-R diagram
+  /**
+   * 获取节点数据与边数据
+   */
   console.log('state.nodeDataList', state.nodeDataList)
   console.log('state.linkDataList', state.linkDataList)
   let nodeDataArray = state.nodeDataList
@@ -316,6 +334,47 @@ function init() {
   //   {from: "Products", to: "Categories", text: "0..N", toText: "1"},
   //   {from: "Order Details", to: "Products", text: "0..N", toText: "1"}
   // ];
+
+
+  /**
+   * 添加对象点击事件，获取对象信息
+   */
+  myDiagram.addDiagramListener("ObjectSingleClicked",
+      function (e) {
+        let part = e.subject.part;
+        if (part instanceof go.Node) {
+          console.log("Clicked on Node：" + part.data.key);
+          state.clickedNode = part.data
+          console.log('state.clickedNode', state.clickedNode)
+        }
+        if (part instanceof go.Link) {
+          console.log("Clicked on Link：" + part.data.from + " to " + part.data.to);
+          state.clickedLink = part.data
+          console.log('state.clickedLink', state.clickedLink)
+        }
+      });
+
+  /**
+   * 添加对象右键事件，获取对象信息
+   */
+  myDiagram.addDiagramListener("ObjectContextClicked",
+      function (e) {
+        let part = e.subject.part;
+        if (part instanceof go.Node) {
+          console.log("right Clicked on Node：" + part.data.key);
+          state.rightClickedNode = part.data
+          console.log('state.rightClickedNode', state.rightClickedNode)
+        }
+        if (part instanceof go.Link) {
+          console.log("right Clicked on Link：" + part.data.from + " to " + part.data.to);
+          state.rightClickedLink = part.data
+          console.log('state.rightClickedLink', state.rightClickedLink)
+        }
+      });
+
+  /**
+   * 创建图表模型
+   */
   myDiagram.model = $(go.GraphLinksModel,
       {
         copiesArrays: true,
