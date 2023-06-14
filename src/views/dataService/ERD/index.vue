@@ -263,6 +263,7 @@ function init() {
                   },
                   new go.Binding("itemArray", "items"))
           ),  // end Table Panel
+          // 对象右键菜单
           {
             contextMenu:     // define a context menu for each node
                 $("ContextMenu",  // that has one button
@@ -311,6 +312,7 @@ function init() {
                 segmentOrientation: go.Link.OrientUpright
               },
               new go.Binding("text", "toText")),
+          // 对象右键菜单
           {
             contextMenu:     // define a context menu for each node
                 $("ContextMenu",  // that has one button
@@ -323,6 +325,28 @@ function init() {
           }
       );
 
+  /**
+   * 背景右键菜单
+   */
+  myDiagram.contextMenu =
+      $("ContextMenu",
+          $("ContextMenuButton",
+              $(go.TextBlock, "Undo"),
+              {click: undo},
+              new go.Binding("visible", "", function (o) {
+                return o.diagram.commandHandler.canUndo();
+              }).ofObject()),
+          $("ContextMenuButton",
+              $(go.TextBlock, "Redo"),
+              {click: redo},
+              new go.Binding("visible", "", function (o) {
+                return o.diagram.commandHandler.canRedo();
+              }).ofObject()),
+          // no binding, always visible button:
+          $("ContextMenuButton",
+              $(go.TextBlock, "创建新节点"),
+              {click: newNode})
+      );
 
   /**
    * 获取节点数据与边数据
@@ -447,6 +471,26 @@ function changeColor(e, obj) {
     // 修改节点数据
     d.model.set(nodeData, "color", newColor);
   }, "changed color");
+}
+
+
+/*********************************** 背景右键菜单回调函数 ***********************************/
+function newNode(e, obj) {
+  e.diagram.commit(function (d) {
+    let data = {};
+    d.model.addNodeData(data);
+    let part = d.findPartForData(data);  // must be same data reference, not a new {}
+    // set location to saved mouseDownPoint in ContextMenuTool
+    part.location = d.toolManager.contextMenuTool.mouseDownPoint;
+  }, 'new node');
+}
+
+function undo(e, obj) {
+  e.diagram.commandHandler.undo();
+}
+
+function redo(e, obj) {
+  e.diagram.commandHandler.redo();
 }
 
 
