@@ -174,7 +174,7 @@ function init() {
       {                                   // 画布属性
         allowDelete: false,                 // 禁止删除
         allowCopy: false,                   // 禁止复制
-        layout: $(go.ForceDirectedLayout),  // 指定布局：力导向布局
+        layout: $(go.TreeLayout),           // 指定布局：力导向布局
         "undoManager.isEnabled": true       // 开启撤销和重做功能
       });
 
@@ -279,20 +279,21 @@ function init() {
                 )  // end Adornment
           }
       );  // end Node
-  // define the Link template, representing a relationship
+  // 定义边模板
   myDiagram.linkTemplate =
-      $(go.Link,  // the whole link panel
+      $(go.Link,
+          // 边属性配置
           {
-            selectionAdorned: true,
-            layerName: "Foreground",
-            reshapable: true,
-            routing: go.Link.AvoidsNodes,
-            corner: 5,
-            curve: go.Link.JumpOver
+            selectionAdorned: true,       // 边被选中时，显示选中装饰器
+            layerName: "Foreground",      // 边显示在节点上方
+            reshapable: true,             // 边可调整
+            routing: go.Link.AvoidsNodes, // 边避开节点
+            corner: 5,                    // 边拐角弧度
+            curve: go.Link.JumpOver       // 边跳过节点
           },
-          $(go.Shape,  // the link shape
-              {stroke: "#303B45", strokeWidth: 2.5}),
-          $(go.TextBlock,  // the "from" label
+          $(go.Shape),  // 边形状，不指定则为直线
+          $(go.Shape, {toArrow: "OpenTriangle", fill: null}), // 边箭头，fill为null表示不填充
+          $(go.TextBlock,  // from 一侧的文本标签属性
               {
                 textAlign: "center",
                 font: "bold 14px sans-serif",
@@ -302,7 +303,7 @@ function init() {
                 segmentOrientation: go.Link.OrientUpright
               },
               new go.Binding("text", "text")),
-          $(go.TextBlock,  // the "to" label
+          $(go.TextBlock,  // to 一侧的文本标签属性
               {
                 textAlign: "center",
                 font: "bold 14px sans-serif",
