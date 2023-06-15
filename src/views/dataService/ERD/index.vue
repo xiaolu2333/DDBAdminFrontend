@@ -40,7 +40,7 @@
     <el-button type="primary" @click="load">数据融合</el-button>
   </el-button-group>
   <div id="myDiagramDiv"
-       style="border: 1px solid black; width: 100%; height: 300px; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;">
+       style="border: 1px solid black; width: 100%; height: 600px; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;">
     <canvas tabindex="0" width="1234" height="407"
             style="position: absolute; top: 0px; left: 0px; z-index: 2; user-select: none; width: 905px; height: 299px; cursor: auto;">
       This text is displayed if your browser does not support the Canvas HTML element.
@@ -49,21 +49,6 @@
       <div style="position: absolute; width: 1px; height: 1px;"></div>
     </div>
   </div>
-  <div>Diagram Model saved in JSON format, automatically updated after each change or undo or redo: <textarea
-      id="mySavedModel" style="width:100%;height:250px">{ "class": "GraphLinksModel",
-	"copiesArrays": true,
-	"copiesArrayObjects": true,
-	"linkFromPortIdProperty": "fromPort",
-	"linkToPortIdProperty": "toPort",
-	"nodeDataArray": [
-	{"key":"Record1", "fields":[ {"name":"field1", "info":"", "color":"#F7B84B", "figure":"Ellipse"},{"name":"field2", "info":"the second one", "color":"#F25022", "figure":"Ellipse"},{"name":"fieldThree", "info":"3rd", "color":"#00BCF2"} ], "loc":"0 0"},
-	{"key":"Record2", "fields":[ {"name":"fieldA", "info":"", "color":"#FFB900", "figure":"Diamond"},{"name":"fieldB", "info":"", "color":"#F25022", "figure":"Rectangle"},{"name":"fieldC", "info":"", "color":"#7FBA00", "figure":"Diamond"},{"name":"fieldD", "info":"fourth", "color":"#00BCF2", "figure":"Rectangle"} ], "loc":"280 0"}
-	],
-	"linkDataArray": [
-	{"from":"Record1", "fromPort":"field1", "to":"Record2", "toPort":"fieldA"},
-	{"from":"Record1", "fromPort":"field2", "to":"Record2", "toPort":"fieldD"},
-	{"from":"Record1", "fromPort":"fieldThree", "to":"Record2", "toPort":"fieldB"}
-	]}</textarea></div>
 </template>
 
 <script setup>
@@ -176,135 +161,140 @@ const refreshDfieldOptions = () => {
 
 /***************************** 初始化 ******************************/
 function init() {
-	if (window.goSamples) goSamples();  // init for these samples -- you don't need to call this
-	let $ = go.GraphObject.make;  // for conciseness in defining templates
-	myDiagram =
-		$(go.Diagram, "myDiagramDiv",
-		  {
-		validCycle: go.Diagram.CycleNotDirected,  // don't allow loops
-		// For this sample, automatically show the state of the diagram's model on the page
-		"ModelChanged": function(e) {
-			if (e.isTransactionFinished) showModel();
-		},
-		"undoManager.isEnabled": true
-	});
-	// This template is a Panel that is used to represent each item in a Panel.itemArray.
-	// The Panel is data bound to the item object.
-	let fieldTemplate =
-		$(go.Panel, "TableRow",  // this Panel is a row in the containing Table
-		  new go.Binding("portId", "name"),  // this Panel is a "port"
-		  {
-			background: "transparent",  // so this port's background can be picked by the mouse
-			fromSpot: go.Spot.Right,  // links only go from the right side to the left side
-			toSpot: go.Spot.Left,
-			// allow drawing links from or to this port:
-			fromLinkable: true, toLinkable: true
-		},
-		  $(go.Shape,
-			{
-			width: 12, height: 12, column: 0, strokeWidth: 2, margin: 4,
-			// but disallow drawing links from or to this shape:
-			fromLinkable: false, toLinkable: false
-		},
-			new go.Binding("figure", "figure"),
-			new go.Binding("fill", "color")),
-		  $(go.TextBlock,
-			{
-			margin: new go.Margin(0, 5), column: 1, font: "bold 13px sans-serif",
-			alignment: go.Spot.Left,
-			// and disallow drawing links from or to this text:
-			fromLinkable: false, toLinkable: false
-		},
-			new go.Binding("text", "name")),
-		  $(go.TextBlock,
-			{ margin: new go.Margin(0, 5), column: 2, font: "13px sans-serif", alignment: go.Spot.Left },
-			new go.Binding("text", "info"))
-		 );
-	// This template represents a whole "record".
-	myDiagram.nodeTemplate =
-		$(go.Node, "Auto",
-		  { copyable: false, deletable: false },
-		  new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
-		  // this rectangular shape surrounds the content of the node
-		  $(go.Shape,
-			{ fill: "#EEEEEE" }),
-		  // the content consists of a header and a list of items
-		  $(go.Panel, "Vertical",
-			// this is the header for the whole node
-			$(go.Panel, "Auto",
-			  { stretch: go.GraphObject.Horizontal },  // as wide as the whole node
-			  $(go.Shape,
-				{ fill: "#1570A6", stroke: null }),
-			  $(go.TextBlock,
-				{
-		alignment: go.Spot.Center,
-		margin: 3,
-		stroke: "white",
-		textAlign: "center",
-		font: "bold 12pt sans-serif"
-	},
-				new go.Binding("text", "key"))),
-			// this Panel holds a Panel for each item object in the itemArray;
-			// each item Panel is defined by the itemTemplate to be a TableRow in this Table
-			$(go.Panel, "Table",
-			  {
-		padding: 2,
-		minSize: new go.Size(100, 10),
-		defaultStretch: go.GraphObject.Horizontal,
-		itemTemplate: fieldTemplate
-	},
-			  new go.Binding("itemArray", "fields")
-			 )  // end Table Panel of items
-		   )  // end Vertical Panel
-		 );  // end Node
-	myDiagram.linkTemplate =
-		$(go.Link,
-		  {
-		relinkableFrom: true, relinkableTo: true, // let user reconnect links
-		toShortLength: 4, fromShortLength: 2
-	},
-		  $(go.Shape, { strokeWidth: 1.5 }),
-		  $(go.Shape, { toArrow: "Standard", stroke: null })
-		 );
-	myDiagram.model =
-		$(go.GraphLinksModel,
-		  {
-		copiesArrays: true,
-		copiesArrayObjects: true,
-		linkFromPortIdProperty: "fromPort",
-		linkToPortIdProperty: "toPort",
-		nodeDataArray: [
-			{
-				key: "Record1",
-				fields: [
-					{ name: "field1", info: "", color: "#F7B84B", figure: "Ellipse" },
-					{ name: "field2", info: "the second one", color: "#F25022", figure: "Ellipse" },
-					{ name: "fieldThree", info: "3rd", color: "#00BCF2" }
-				],
-				loc: "0 0"
-			},
-			{
-				key: "Record2",
-				fields: [
-					{ name: "fieldA", info: "", color: "#FFB900", figure: "Diamond" },
-					{ name: "fieldB", info: "", color: "#F25022", figure: "Rectangle" },
-					{ name: "fieldC", info: "", color: "#7FBA00", figure: "Diamond" },
-					{ name: "fieldD", info: "fourth", color: "#00BCF2", figure: "Rectangle" }
-				],
-				loc: "280 0"
-			}
-		],
-		linkDataArray: [
-			{ from: "Record1", fromPort: "field1", to: "Record2", toPort: "fieldA" },
-			{ from: "Record1", fromPort: "field2", to: "Record2", toPort: "fieldD" },
-			{ from: "Record1", fromPort: "fieldThree", to: "Record2", toPort: "fieldB" }
-		]
-	});
-	showModel();  // show the diagram's initial model
-	function showModel() {
-		document.getElementById("mySavedModel").textContent = myDiagram.model.toJson();
-	}
+  let $ = go.GraphObject.make;
+
+  /**
+   * 定义画布
+   */
+  myDiagram =
+      $(go.Diagram,
+          "myDiagramDiv",                                 // 画布元素
+          {                                               // 画布属性
+            validCycle: go.Diagram.CycleNotDirected,        // don't allow loops
+            allowDelete: false,                             // 禁止删除
+            allowCopy: false,                               // 禁止复制
+            layout: $(go.LayeredDigraphLayout),             // 指定布局：分层布局
+            "undoManager.isEnabled": true                   // 开启撤销和重做功能
+          });
+
+  /**
+   * 定义节点field模板
+   */
+  let fieldTemplate =
+      $(go.Panel,
+          "TableRow",                                             // 指定Panel为TableRow，使用Table布局
+          new go.Binding("portId", "name"),  // 绑定portId为nodeDataArray中的每项的name，设置连线端点
+          {                                                       // Panel属性
+            background: "transparent",                              // 使得portId的背景透明
+            fromSpot: go.Spot.Right,                                // 只允许从右边出
+            toSpot: go.Spot.Left,                                   // 只允许从左边进
+            fromLinkable: false,                                    // 不允许从重新选择出
+            toLinkable: false,                                      // 不允许从重新选择进
+          },
+          $(go.Shape,                                                         // 形状配置
+              {
+                width: 12, height: 12, column: 0, strokeWidth: 2, margin: 4,  // 形状属性
+                // but disallow drawing links from or to this shape:
+                fromLinkable: false, toLinkable: false
+              },
+              new go.Binding("figure", "figure"),
+              new go.Binding("fill", "color")
+          ),
+          $(go.TextBlock,                                                     // 文本配置
+              {
+                margin: new go.Margin(0, 5), column: 1,
+                font: "bold 13px sans-serif",
+                alignment: go.Spot.Left,                                        // 文本左对齐
+                // and disallow drawing links from or to this text:
+                fromLinkable: false, toLinkable: false
+              },
+              new go.Binding("text", "name")               // 绑定文本为nodeDataArray中的每项的name
+          ),
+          $(go.TextBlock,                                                     // 文本块配置
+              {
+                margin: new go.Margin(0, 5), column: 2,
+                font: "13px sans-serif",
+                alignment: go.Spot.Left
+              },
+              new go.Binding("text", "info"))               // 绑定文本块为nodeDataArray中的每项的info
+      );
+
+  /**
+   * 定义节点模板
+   */
+  myDiagram.nodeTemplate =
+      $(go.Node, "Auto",
+          {copyable: false, deletable: false},
+          new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+          $(go.Shape,           // 节点形状属性
+              {
+                fill: "#EEEEEE",  // 填充色
+                stroke: "black",  // 边框色
+                strokeWidth: 1,   // 边框宽度
+              }
+          ),
+          // 节点内容包含 header 以及 items 列表
+          $(go.Panel,
+              "Vertical",                                 // 垂直布局
+              $(go.Panel, "Auto",                         // header 自动布局
+                  {stretch: go.GraphObject.Horizontal},     // 水平拉伸，使得header宽度与父节点一致
+                  $(go.Shape,                               // header形状
+                      {fill: "#1570A6", stroke: null}),       // 填充色为蓝色，边框色为空
+                  $(go.TextBlock,                           // header文本
+                      {
+                        alignment: go.Spot.Center,
+                        margin: 6,
+                        stroke: "white",                      // 文本色为白色
+                        font: "bold 12pt sans-serif"
+                      },
+                      new go.Binding("text", "key")         // 绑定文本为nodeDataArray中的key
+                  )
+              ),
+
+              $(go.Panel, "Table",                                    // items Table布局
+                  {                                                     // Table属性
+                    padding: 4,
+                    minSize: new go.Size(100, 10),
+                    defaultStretch: go.GraphObject.Horizontal,          // 水平拉伸
+                    itemTemplate: fieldTemplate                         // 指定item模板为上面定义的fieldTemplate
+                  },
+                  new go.Binding("itemArray", "fields")     // 绑定itemArray为nodeDataArray中的fields
+              )  // end Table Panel of items
+          )  // end Vertical Panel
+      );  // end Node
+
+  /**
+   * 定义连线模板
+   */
+  myDiagram.linkTemplate =
+      $(go.Link,
+          {                           // 连线属性
+            reshapable: true,             // 连线可调整
+            routing: go.Link.AvoidsNodes, // 连线避开节点
+            corner: 5,                    // 连线拐角弧度
+            curve: go.Link.JumpOver,      // 连线绕过节点
+            toShortLength: 2,             // 入连线端点距离节点距离
+            fromShortLength: 4            // 出连线端点距离节点距离
+          },
+          $(go.Shape, {strokeWidth: 1.5}),  // 连线形状属性
+          $(go.Shape, {toArrow: "Standard", stroke: null})  // 连线箭头属性
+      );
+
+  /**
+   * 定义模型
+   */
+  myDiagram.model =
+      $(go.GraphLinksModel,
+          {
+            copiesArrays: true,                 // 可以复制数组
+            copiesArrayObjects: true,           // 可以复制数组中的对象
+            linkFromPortIdProperty: "fromPort", // 连线起始端口属性
+            linkToPortIdProperty: "toPort",     // 连线结束端口属性
+            nodeDataArray: state.nodeDataList,  // 节点数据
+            linkDataArray: state.linkDataList   // 连线数据
+          });
 }
+
 // function init() {
 //   let $ = go.GraphObject.make;
 //
@@ -690,7 +680,7 @@ onMounted(() => {
       return {
         value: item.key,
         label: item.key,
-        children: item.items.map(field => {
+        children: item.fields.map(field => {
           return {
             value: field.name,
             label: field.name
