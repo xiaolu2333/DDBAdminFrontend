@@ -190,6 +190,30 @@ function init() {
    */
   myDiagram.toolManager.resizingTool.isGridSnapEnabled = true;
 
+
+  /**
+   * 背景右键菜单
+   */
+  myDiagram.contextMenu =
+      $("ContextMenu",
+          $("ContextMenuButton",
+              $(go.TextBlock, "撤销"),
+              {click: undo},
+              new go.Binding("visible", "", function (o) {
+                return o.diagram.commandHandler.canUndo();
+              }).ofObject()),
+          $("ContextMenuButton",
+              $(go.TextBlock, "重做"),
+              {click: redo},
+              new go.Binding("visible", "", function (o) {
+                return o.diagram.commandHandler.canRedo();
+              }).ofObject()),
+          // no binding, always visible button:
+          $("ContextMenuButton",
+              $(go.TextBlock, "创建新节点"),
+              {click: newNode})
+      );
+
   /**
    * 定义节点field模板
    */
@@ -263,7 +287,6 @@ function init() {
                       new go.Binding("text", "key")         // 绑定文本为nodeDataArray中的key
                   )
               ),
-
               $(go.Panel, "Table",                                    // items Table布局
                   {                                                     // Table属性
                     padding: 2,
@@ -272,7 +295,20 @@ function init() {
                     itemTemplate: fieldTemplate                         // 指定item模板为上面定义的fieldTemplate
                   },
                   new go.Binding("itemArray", "fields")     // 绑定itemArray为nodeDataArray中的fields
-              )  // end Table Panel of items
+              ),  // end Table Panel of items
+              {                                                   // 对象右键菜单
+                contextMenu:     // define a context menu for each node
+                    $("ContextMenu",  // that has one button
+                        $("ContextMenuButton",
+                            $(go.TextBlock, "改变节点背景颜色"),
+                            {click: changeColor,},
+                        ),
+                        $("ContextMenuButton",
+                            $(go.TextBlock, "改变节点字体颜色"),
+                            {click: changeColor},
+                        )
+                    )  // end Adornment
+              }
           )  // end Vertical Panel
       );  // end Node
 
