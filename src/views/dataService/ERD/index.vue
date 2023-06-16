@@ -31,14 +31,36 @@
     />
     <el-button type="primary" @click="deleteFKRelationship">确认</el-button>
   </div>
-  <el-button-group>
-    <el-button type="primary" @click="addNode">添加节点</el-button>
-    <el-button type="primary" @click="addLink">添加边</el-button>
-    <el-button type="primary" @click="deleteNode">删除节点</el-button>
-    <el-button type="primary" @click="deleteLink">删除边</el-button>
-    <el-button type="primary" @click="save">保存</el-button>
-    <el-button type="primary" @click="load">数据融合</el-button>
-  </el-button-group>
+  <br/>
+  <div>
+    <div v-if="clickedLink || rightClickedLink">
+      <el-button v-if="clickedLink && !rightClickedLink">
+        选中连线【{{ clickedLink.from }}.{{ clickedLink.fromPort }} -> {{ clickedLink.to }}.{{ clickedLink.toPort }}】
+      </el-button>
+      <el-button v-if="(!clickedLink && rightClickedLink) || (clickedLink && rightClickedLink)">
+        选中连线【{{ rightClickedLink.from }}.{{ rightClickedLink.fromPort }} -> {{
+          rightClickedLink.to
+        }}.{{ rightClickedLink.toPort }}】
+      </el-button>
+    </div>
+    <div v-if="clickedNode || rightClickedNode">
+      <el-button v-if="clickedNode && !rightClickedNode">
+        选中节点【{{ clickedNode.key }}】
+      </el-button>
+      <el-button v-if="(!clickedNode && rightClickedNode) || (clickedNode && rightClickedNode)">
+        选中节点【{{ rightClickedNode.key }}】
+      </el-button>
+    </div>
+    <el-button-group>
+      <el-button type="primary" @click="addNode">添加节点</el-button>
+      <el-button type="primary" @click="addLink">添加边</el-button>
+      <el-button type="primary" @click="deleteNode">删除节点</el-button>
+      <el-button type="primary" @click="deleteLink">删除边</el-button>
+      <el-button type="primary" @click="save">保存</el-button>
+      <el-button type="primary" @click="load">数据融合</el-button>
+    </el-button-group>
+  </div>
+
   <div id="myDiagramDiv"
        style="border: 1px solid black; width: 100%; height: 600px; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;">
     <canvas tabindex="0" width="1234" height="407"
@@ -57,6 +79,13 @@ import {onMounted, reactive, toRefs, ref} from 'vue'
 import {GetERDData} from '@/api/dataService/ERD.js'
 
 const state = reactive({
+  // 布局方式
+  layout: "ForceDirected",  // 布局方式可选：GridLayout、TreeLayout、ForceDirectedLayout、LayeredDigraphLayout、CircularLayout
+  // 实体/节点数据
+  nodeDataList: [],
+  // 关系/边数据
+  linkDataList: [],
+
   entryOptions: [],
   // 添加外键关系时的下拉框选项
   cfieldOptions: [],
@@ -70,11 +99,6 @@ const state = reactive({
   dfkFromEntry: "",
   dfkToEntry: "",
 
-  // 实体/节点数据
-  nodeDataList: [],
-  // 关系/边数据
-  linkDataList: [],
-
   // 被左键单击的节点
   clickedNode: null,
   // 被左键单击的边
@@ -86,6 +110,9 @@ const state = reactive({
 })
 
 const {
+  layout,
+  nodeDataList,
+  linkDataList,
   entryOptions,
   cfieldOptions,
   dfieldOptions,
@@ -93,8 +120,6 @@ const {
   cfkToEntry,
   dfkFromEntry,
   dfkToEntry,
-  nodeDataList,
-  linkDataList,
   clickedNode,
   clickedLink,
   rightClickedNode,
@@ -176,43 +201,6 @@ function init() {
             layout: $(go.LayeredDigraphLayout),             // 指定布局：分层布局
             "undoManager.isEnabled": true                   // 开启撤销和重做功能
           });
-
-  /**
-   * 指定显示网格
-   */
-  myDiagram.grid.visible = true;
-  /**
-   * 拖动时对齐网格
-   */
-  myDiagram.toolManager.draggingTool.isGridSnapEnabled = true;
-  /**
-   * 重置大小时对齐网格
-   */
-  myDiagram.toolManager.resizingTool.isGridSnapEnabled = true;
-
-
-  /**
-   * 背景右键菜单
-   */
-  myDiagram.contextMenu =
-      $("ContextMenu",
-          $("ContextMenuButton",
-              $(go.TextBlock, "撤销"),
-              {click: undo},
-              new go.Binding("visible", "", function (o) {
-                return o.diagram.commandHandler.canUndo();
-              }).ofObject()),
-          $("ContextMenuButton",
-              $(go.TextBlock, "重做"),
-              {click: redo},
-              new go.Binding("visible", "", function (o) {
-                return o.diagram.commandHandler.canRedo();
-              }).ofObject()),
-          // no binding, always visible button:
-          $("ContextMenuButton",
-              $(go.TextBlock, "创建新节点"),
-              {click: newNode})
-      );
 
   /**
    * 定义节点field模板
@@ -342,6 +330,88 @@ function init() {
             nodeDataArray: state.nodeDataList,  // 节点数据
             linkDataArray: state.linkDataList   // 连线数据
           });
+
+
+  /**
+   * 指定显示网格
+   */
+  myDiagram.grid.visible = true;
+  /**
+   * 拖动时对齐网格
+   */
+  myDiagram.toolManager.draggingTool.isGridSnapEnabled = true;
+  /**
+   * 重置大小时对齐网格
+   */
+  myDiagram.toolManager.resizingTool.isGridSnapEnabled = true;
+
+
+  /**
+   * 添加对象点击事件，获取对象信息
+   */
+  myDiagram.addDiagramListener("ObjectSingleClicked",
+      function (e) {
+        state.clickedNode = undefined
+        state.clickedLink = undefined
+        state.rightClickedNode = undefined
+        state.rightClickedLink = undefined
+        let part = e.subject.part;
+        if (part instanceof go.Node) {
+          console.log("Clicked on Node：" + part.data.key);
+          state.clickedNode = part.data
+          console.log('state.clickedNode', state.clickedNode)
+        }
+        if (part instanceof go.Link) {
+          console.log("Clicked on Link：" + part.data.from + " to " + part.data.to);
+          state.clickedLink = part.data
+          console.log('state.clickedLink', state.clickedLink)
+        }
+      });
+  /**
+   * 添加对象右键事件，获取对象信息
+   */
+  myDiagram.addDiagramListener("ObjectContextClicked",
+      function (e) {
+        state.clickedNode = undefined
+        state.clickedLink = undefined
+        state.rightClickedNode = undefined
+        state.rightClickedLink = undefined
+        let part = e.subject.part;
+        if (part instanceof go.Node) {
+          console.log("right Clicked on Node：" + part.data.key);
+          state.rightClickedNode = part.data
+          console.log('state.rightClickedNode', state.rightClickedNode)
+        }
+        if (part instanceof go.Link) {
+          console.log("right Clicked on Link：" + part.data.from + " to " + part.data.to);
+          state.rightClickedLink = part.data
+          console.log('state.rightClickedLink', state.rightClickedLink)
+        }
+      });
+
+  /**
+   * 背景右键菜单
+   */
+  myDiagram.contextMenu =
+      $("ContextMenu",
+          $("ContextMenuButton",
+              $(go.TextBlock, "撤销"),
+              {click: undo},
+              new go.Binding("visible", "", function (o) {
+                return o.diagram.commandHandler.canUndo();
+              }).ofObject()),
+          $("ContextMenuButton",
+              $(go.TextBlock, "重做"),
+              {click: redo},
+              new go.Binding("visible", "", function (o) {
+                return o.diagram.commandHandler.canRedo();
+              }).ofObject()),
+          // no binding, always visible button:
+          $("ContextMenuButton",
+              $(go.TextBlock, "创建新节点"),
+              {click: newNode})
+      );
+
 }
 
 // function init() {
@@ -690,6 +760,20 @@ function changeColor(e, obj) {
 
 
 /*********************************** 背景右键菜单回调函数 ***********************************/
+/**
+ * 修改布局
+ * @param e
+ * @param obj
+ */
+function reLayout(e, obj) {
+  console.log('reLayout')
+}
+
+/**
+ * 新增节点
+ * @param e
+ * @param obj
+ */
 function newNode(e, obj) {
   e.diagram.commit(function (d) {
     let data = {};
@@ -700,10 +784,20 @@ function newNode(e, obj) {
   }, 'new node');
 }
 
+/**
+ * 撤销操作
+ * @param e
+ * @param obj
+ */
 function undo(e, obj) {
   e.diagram.commandHandler.undo();
 }
 
+/**
+ * 重做操作
+ * @param e
+ * @param obj
+ */
 function redo(e, obj) {
   e.diagram.commandHandler.redo();
 }
