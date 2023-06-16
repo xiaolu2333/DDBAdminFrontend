@@ -178,6 +178,19 @@ function init() {
           });
 
   /**
+   * 指定显示网格
+   */
+  myDiagram.grid.visible = true;
+  /**
+   * 拖动时对齐网格
+   */
+  myDiagram.toolManager.draggingTool.isGridSnapEnabled = true;
+  /**
+   * 重置大小时对齐网格
+   */
+  myDiagram.toolManager.resizingTool.isGridSnapEnabled = true;
+
+  /**
    * 定义节点field模板
    */
   let fieldTemplate =
@@ -253,7 +266,7 @@ function init() {
 
               $(go.Panel, "Table",                                    // items Table布局
                   {                                                     // Table属性
-                    padding: 4,
+                    padding: 2,
                     minSize: new go.Size(100, 10),
                     defaultStretch: go.GraphObject.Horizontal,          // 水平拉伸
                     itemTemplate: fieldTemplate                         // 指定item模板为上面定义的fieldTemplate
