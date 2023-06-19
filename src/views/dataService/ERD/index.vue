@@ -74,24 +74,52 @@
   </div>
   <br/>
 
-  <div id="myDiagramDiv"
-       style="border: 1px solid black; width: 100%; height: 600px; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;">
-    <canvas tabindex="0" width="1234" height="407"
-            style="position: absolute; top: 0px; left: 0px; z-index: 2; user-select: none; width: 905px; height: 299px; cursor: auto;">
-      This text is displayed if your browser does not support the Canvas HTML element.
-    </canvas>
-    <div style="position: absolute; overflow: auto; width: 905px; height: 299px; z-index: 1;">
-      <div style="position: absolute; width: 1px; height: 1px;"></div>
-    </div>
-  </div>
+  <el-row :gutter="20">
+    <el-col :span="6">
+      <el-card>
+        <el-switch
+            v-model="isComplete"
+            size="large"
+            active-text="完整"
+            inactive-text="简易"
+        />
+        <el-tree
+            :data="treeData"
+            :props="defaultProps"
+            :draggable="true"
+            @node-click="handleNodeClick"
+        />
+      </el-card>
+    </el-col>
+    <el-col :span="18">
+      <div id="myDiagramDiv"
+           style="border: 1px solid black; height: 600px; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;">
+        <canvas tabindex="0" width="1234" height="407"
+                style="position: absolute; top: 0px; left: 0px; z-index: 2; user-select: none; width: 905px; height: 299px; cursor: auto;">
+          This text is displayed if your browser does not support the Canvas HTML element.
+        </canvas>
+        <div style="position: absolute; overflow: auto; width: 905px; height: 299px; z-index: 1;">
+          <div style="position: absolute; width: 1px; height: 1px;"></div>
+        </div>
+      </div>
+    </el-col>
+  </el-row>
 </template>
 
 <script setup>
 import {onMounted, reactive, toRefs, ref} from 'vue'
 
 import {GetERDData} from '@/api/dataService/ERD.js'
+import {GetDataTree, CreateNode} from '@/api/dataManage/dataTree.js'
 
 const state = reactive({
+  isComplete: true,
+  treeData: [],
+  defaultProps: {
+    children: 'children',
+    label: 'name',
+  },
+
   // 布局方式
   layoutOptions: [// 布局方式可选：GridLayout、TreeLayout、ForceDirectedLayout、LayeredDigraphLayout、CircularLayout
     {label: "ForceDirectedLayout", value: "ForceDirectedLayout"},
@@ -102,18 +130,15 @@ const state = reactive({
   ],
   // 选中的布局方式
   selectedLayout: "ForceDirectedLayout",
-
   // 实体/节点数据
   nodeDataList: [],
   // 关系/边数据
   linkDataList: [],
-
   entryOptions: [],
   // 添加外键关系时的下拉框选项
   cfieldOptions: [],
   // 删除外键关系时的下拉框选项
   dfieldOptions: [],
-
   // 添加外键关系
   cfkFromEntry: "",
   cfkToEntry: "",
@@ -132,6 +157,10 @@ const state = reactive({
 })
 
 const {
+  isComplete,
+  treeData,
+  defaultProps,
+
   layoutOptions,
   selectedLayout,
   nodeDataList,
@@ -150,6 +179,11 @@ const {
 } = toRefs(state)
 
 let myDiagram = null
+
+/************************ tree ************************/
+const handleNodeClick = (data) => {
+  console.log(data)
+}
 
 
 /**************************** 按钮事件 ******************************/
@@ -227,7 +261,10 @@ const refreshDfieldOptions = () => {
 }
 
 
-/***************************** 初始化 ******************************/
+/***************************** diagram 初始化 ******************************/
+/**
+ * diagram 初始化
+ */
 function init() {
   let $ = go.GraphObject.make;
 
@@ -457,322 +494,12 @@ function init() {
 
 }
 
-// function init() {
-//   let $ = go.GraphObject.make;
-//
-//   /**
-//    * 定义画布
-//    */
-//   myDiagram = $(
-//       go.Diagram,
-//       "myDiagramDiv",                     // 画布元素
-//       {                                   // 画布属性
-//         allowDelete: false,                 // 禁止删除
-//         allowCopy: false,                   // 禁止复制
-//         layout: $(go.TreeLayout),           // 指定布局：力导向布局
-//         "undoManager.isEnabled": true       // 开启撤销和重做功能
-//       });
-//
-//   /**
-//    * 指定显示网格
-//    */
-//   myDiagram.grid.visible = true;
-//   /**
-//    * 拖动时对齐网格
-//    */
-//   myDiagram.toolManager.draggingTool.isGridSnapEnabled = true;
-//   /**
-//    * 重置大小时对齐网格
-//    */
-//   myDiagram.toolManager.resizingTool.isGridSnapEnabled = true;
-//
-//
-//   let colors = {
-//     'red': '#be4b15',
-//     'green': '#52ce60',
-//     'blue': '#6ea5f8',
-//     'lightred': '#fd8852',
-//     'lightblue': '#afd4fe',
-//     'lightgreen': '#b9e986',
-//     'pink': '#faadc1',
-//     'purple': '#d689ff',
-//     'orange': '#fdb400',
-//   }
-//   // 节点数据数组中每个属性的模板
-//   let itemTempl =
-//       $(
-//           go.Panel,         // represents a single item in a Panel of type "LIST"
-//           "Horizontal",     // 内部元素水平排列
-//           $(go.Shape,       // 形状属性配置
-//               {desiredSize: new go.Size(15, 15), strokeJoin: "round", strokeWidth: 3, stroke: null, margin: 2}, // 形状大小
-//               new go.Binding("figure", "figure"),   // 形状类型
-//               new go.Binding("fill", "color"),      // 形状填充颜色
-//               new go.Binding("stroke", "color")),   // 形状边框颜色
-//           $(go.TextBlock,    // 文本属性配置
-//               {
-//                 stroke: "#333333",            // 文本颜色
-//                 font: "bold 14px sans-serif"  // 文本字体
-//               },
-//               new go.Binding("text", "name")) //
-//       );
-//
-//   /**
-//    * 定义节点模板与边模板
-//    */
-//   myDiagram.nodeTemplate =
-//       $(
-//           go.Node,    // 表示一个节点
-//           "Auto",     // 节点的位置和大小由其内容决定
-//           {           // 节点属性配置
-//             selectionAdorned: true,     // 节点被选中时，显示选中装饰器
-//             resizable: true,            // 节点可调整大小
-//             layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,  // 节点大小不受布局影响
-//             fromSpot: go.Spot.AllSides, // 节点的连线起点可以在节点的任意一侧
-//             toSpot: go.Spot.AllSides,   // 节点的连线终点可以在节点的任意一侧
-//             isShadowed: true,           // 节点显示阴影
-//             shadowOffset: new go.Point(3, 3),  // 阴影偏移量
-//             shadowColor: "#C5C1AA"      // 阴影颜色
-//           },
-//           new go.Binding("location", "location").makeTwoWay(),  // 节点位置
-//           // whenever the PanelExpanderButton changes the visible property of the "LIST" panel,
-//           // clear out any desiredSize set by the ResizingTool.
-//           new go.Binding("desiredSize", "visible", function (v) {
-//             return new go.Size(NaN, NaN);
-//           }).ofObject("LIST"),
-//           // define the node's outer shape, which will surround the Table
-//           $(go.Shape, "RoundedRectangle",
-//               {fill: 'white', stroke: "#eeeeee", strokeWidth: 3}),
-//           $(
-//               go.Panel,
-//               "Table",
-//               {margin: 8, stretch: go.GraphObject.Fill},
-//               $(go.RowColumnDefinition, {row: 0, sizing: go.RowColumnDefinition.None}),
-//               // the table header
-//               $(go.TextBlock,
-//                   {
-//                     row: 0, alignment: go.Spot.Center,
-//                     margin: new go.Margin(0, 24, 0, 2),  // leave room for Button
-//                     font: "bold 16px sans-serif"
-//                   },
-//                   new go.Binding("text", "key")),
-//               // the collapse/expand button
-//               $("PanelExpanderButton", "LIST",  // the name of the element whose visibility this button toggles
-//                   {row: 0, alignment: go.Spot.TopRight}),
-//               // the list of Panels, each showing an attribute
-//               $(go.Panel, "Vertical",
-//                   {
-//                     name: "LIST",
-//                     row: 1,
-//                     padding: 3,
-//                     alignment: go.Spot.TopLeft,
-//                     defaultAlignment: go.Spot.Left,
-//                     stretch: go.GraphObject.Horizontal,
-//                     itemTemplate: itemTempl
-//                   },
-//                   new go.Binding("itemArray", "items"))
-//           ),  // end Table Panel
-//           // 对象右键菜单
-//           {
-//             contextMenu:     // define a context menu for each node
-//                 $("ContextMenu",  // that has one button
-//                     $("ContextMenuButton",
-//                         $(go.TextBlock, "改变节点背景颜色"),
-//                         {click: changeColor},
-//                     ),
-//                     $("ContextMenuButton",
-//                         $(go.TextBlock, "改变节点字体颜色"),
-//                         {click: changeColor},
-//                     )
-//                     // more ContextMenuButtons would go here
-//                 )  // end Adornment
-//           }
-//       );  // end Node
-//   // 定义边模板
-//   myDiagram.linkTemplate =
-//       $(go.Link,
-//           // 边属性配置
-//           {
-//             selectionAdorned: true,       // 边被选中时，显示选中装饰器
-//             layerName: "Foreground",      // 边显示在节点上方
-//             reshapable: true,             // 边可调整
-//             routing: go.Link.AvoidsNodes, // 边避开节点
-//             corner: 5,                    // 边拐角弧度
-//             curve: go.Link.JumpOver       // 边跳过节点
-//           },
-//           $(go.Shape),  // 边形状，不指定则为直线
-//           $(go.Shape, {toArrow: "OpenTriangle", fill: null}), // 边箭头，fill为null表示不填充
-//           $(go.TextBlock,  // from 一侧的文本标签属性
-//               {
-//                 textAlign: "center",
-//                 font: "bold 14px sans-serif",
-//                 stroke: "#1967B3",
-//                 segmentIndex: 0,
-//                 segmentOffset: new go.Point(NaN, NaN),
-//                 segmentOrientation: go.Link.OrientUpright
-//               },
-//               new go.Binding("text", "text")),
-//           $(go.TextBlock,  // to 一侧的文本标签属性
-//               {
-//                 textAlign: "center",
-//                 font: "bold 14px sans-serif",
-//                 stroke: "#1967B3",
-//                 segmentIndex: -1,
-//                 segmentOffset: new go.Point(NaN, NaN),
-//                 segmentOrientation: go.Link.OrientUpright
-//               },
-//               new go.Binding("text", "toText")),
-//           // 对象右键菜单
-//           {
-//             contextMenu:     // define a context menu for each node
-//                 $("ContextMenu",  // that has one button
-//                     $("ContextMenuButton",
-//                         $(go.TextBlock, "改变边颜色"),
-//                         {click: changeColor},
-//                     )
-//                     // more ContextMenuButtons would go here
-//                 )  // end Adornment
-//           }
-//       );
-//
-//   /**
-//    * 背景右键菜单
-//    */
-//   myDiagram.contextMenu =
-//       $("ContextMenu",
-//           $("ContextMenuButton",
-//               $(go.TextBlock, "Undo"),
-//               {click: undo},
-//               new go.Binding("visible", "", function (o) {
-//                 return o.diagram.commandHandler.canUndo();
-//               }).ofObject()),
-//           $("ContextMenuButton",
-//               $(go.TextBlock, "Redo"),
-//               {click: redo},
-//               new go.Binding("visible", "", function (o) {
-//                 return o.diagram.commandHandler.canRedo();
-//               }).ofObject()),
-//           // no binding, always visible button:
-//           $("ContextMenuButton",
-//               $(go.TextBlock, "创建新节点"),
-//               {click: newNode})
-//       );
-//
-//   /**
-//    * 获取节点数据与边数据
-//    */
-//   console.log('state.nodeDataList', state.nodeDataList)
-//   console.log('state.linkDataList', state.linkDataList)
-//   let nodeDataArray = state.nodeDataList
-//   // [
-//   //   {
-//   //     key: "Products",
-//   //     items: [{name: "ProductID", iskey: true, figure: "Decision", color: colors.red},
-//   //       {name: "ProductName", iskey: false, figure: "Hexagon", color: colors.blue},
-//   //       {name: "SupplierID", iskey: false, figure: "Decision", color: "purple"},
-//   //       {name: "CategoryID", iskey: false, figure: "Decision", color: "purple"}]
-//   //   },
-//   //   {
-//   //     key: "Suppliers",
-//   //     items: [{name: "SupplierID", iskey: true, figure: "Decision", color: colors.red},
-//   //       {name: "CompanyName", iskey: false, figure: "Hexagon", color: colors.blue},
-//   //       {name: "ContactName", iskey: false, figure: "Hexagon", color: colors.blue},
-//   //       {name: "Address", iskey: false, figure: "Hexagon", color: colors.blue}]
-//   //   },
-//   //   {
-//   //     key: "Categories",
-//   //     items: [{name: "CategoryID", iskey: true, figure: "Decision", color: colors.red},
-//   //       {name: "CategoryName", iskey: false, figure: "Hexagon", color: colors.blue},
-//   //       {name: "Description", iskey: false, figure: "Hexagon", color: colors.blue},
-//   //       {name: "Picture", iskey: false, figure: "TriangleUp", color: colors.pink}]
-//   //   },
-//   //   {
-//   //     key: "Order Details",
-//   //     items: [{name: "OrderID", iskey: true, figure: "Decision", color: colors.red},
-//   //       {name: "ProductID", iskey: true, figure: "Decision", color: colors.red},
-//   //       {name: "UnitPrice", iskey: false, figure: "Circle", color: colors.green},
-//   //       {name: "Quantity", iskey: false, figure: "Circle", color: colors.green},
-//   //       {name: "Discount", iskey: false, figure: "Circle", color: colors.green}]
-//   //   },
-//   // ];
-//   let linkDataArray = state.linkDataList
-//   // [
-//   //   {
-//   //     from: "Products",
-//   //     to: "Suppliers",
-//   //     text: "0..N", toText: "1",
-//   //     // fromEndSegmentLength: 30,
-//   //     // toEndSegmentLength: 30
-//   //   },
-//   //   {
-//   //     from: "Products",
-//   //     to: "Categories",
-//   //     text: "0..N",
-//   //     toText: "1",
-//   //     // fromEndSegmentLength: 30,
-//   //     // toEndSegmentLength: 30
-//   //   },
-//   //   {
-//   //     from: "Order Details",
-//   //     to: "Products",
-//   //     text: "0..N",
-//   //     toText: "1",
-//   //     // fromEndSegmentLength: 30,
-//   //     // toEndSegmentLength: 30
-//   //   }
-//   // ];
-//
-//
-//   /**
-//    * 添加对象点击事件，获取对象信息
-//    */
-//   myDiagram.addDiagramListener("ObjectSingleClicked",
-//       function (e) {
-//         let part = e.subject.part;
-//         if (part instanceof go.Node) {
-//           console.log("Clicked on Node：" + part.data.key);
-//           state.clickedNode = part.data
-//           console.log('state.clickedNode', state.clickedNode)
-//         }
-//         if (part instanceof go.Link) {
-//           console.log("Clicked on Link：" + part.data.from + " to " + part.data.to);
-//           state.clickedLink = part.data
-//           console.log('state.clickedLink', state.clickedLink)
-//         }
-//       });
-//
-//   /**
-//    * 添加对象右键事件，获取对象信息
-//    */
-//   myDiagram.addDiagramListener("ObjectContextClicked",
-//       function (e) {
-//         let part = e.subject.part;
-//         if (part instanceof go.Node) {
-//           console.log("right Clicked on Node：" + part.data.key);
-//           state.rightClickedNode = part.data
-//           console.log('state.rightClickedNode', state.rightClickedNode)
-//         }
-//         if (part instanceof go.Link) {
-//           console.log("right Clicked on Link：" + part.data.from + " to " + part.data.to);
-//           state.rightClickedLink = part.data
-//           console.log('state.rightClickedLink', state.rightClickedLink)
-//         }
-//       });
-//
-//   /**
-//    * 创建图表模型
-//    */
-//   myDiagram.model = $(go.GraphLinksModel,
-//       {
-//         copiesArrays: true,
-//         copiesArrayObjects: true,
-//         nodeDataArray: nodeDataArray,
-//         linkDataArray: linkDataArray
-//       });
-// }
 
-
-/*********************************** 对象右键菜单回调函数 ***********************************/
-// Rotate the selected node's color through a predefined sequence of colors.
+/**
+ * 对象右键菜单回调函数
+ * @param e
+ * @param obj
+ */
 function changeColor(e, obj) {
   alert('changeColor')
   myDiagram.commit((d) => {
@@ -847,39 +574,44 @@ function redo(e, obj) {
 
 
 onMounted(() => {
-  state.selectedLayout = 'LayeredDigraphLayout',
+  state.selectedLayout = 'LayeredDigraphLayout'
 
-      GetERDData().then(res => {
-        console.log('res.data.data: ', res.data.data)
-        state.nodeDataList = res.data.data.nodeDataArray
-        console.log('GetERDData state.nodeDataList', state.nodeDataList)
-        linkDataList.value = res.data.data.linkDataArray
-        console.log('GetERDData linkDataList.value', linkDataList.value)
+  GetDataTree().then(res => {
+    console.log('res:', res)
+    state.treeData = res.data.data
+  })
 
-        res.data.data.nodeDataArray.forEach(item => {
-          state.entryOptions.push({
-            value: item.key,
-            label: item.key,
-          })
-        })
+  GetERDData().then(res => {
+    console.log('res.data.data: ', res.data.data)
+    state.nodeDataList = res.data.data.nodeDataArray
+    console.log('GetERDData state.nodeDataList', state.nodeDataList)
+    linkDataList.value = res.data.data.linkDataArray
+    console.log('GetERDData linkDataList.value', linkDataList.value)
 
-        state.cfieldOptions = res.data.data.nodeDataArray.map(item => {
+    res.data.data.nodeDataArray.forEach(item => {
+      state.entryOptions.push({
+        value: item.key,
+        label: item.key,
+      })
+    })
+
+    state.cfieldOptions = res.data.data.nodeDataArray.map(item => {
+      return {
+        value: item.key,
+        label: item.key,
+        children: item.fields.map(field => {
           return {
-            value: item.key,
-            label: item.key,
-            children: item.fields.map(field => {
-              return {
-                value: field.name,
-                label: field.name
-              }
-            })
+            value: field.name,
+            label: field.name
           }
         })
-        console.log('GetERDData state.cfieldOptions', state.cfieldOptions)
+      }
+    })
+    console.log('GetERDData state.cfieldOptions', state.cfieldOptions)
 
-        refreshDfieldOptions()
-        init()
-      })
+    refreshDfieldOptions()
+    init()
+  })
 });
 </script>
 
