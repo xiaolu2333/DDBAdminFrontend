@@ -60,6 +60,19 @@
       <el-button type="primary" @click="load">数据融合</el-button>
     </el-button-group>
   </div>
+  <br/>
+  <div>
+    选择布局方式：
+    <el-select v-model="selectedLayout" class="m-2" placeholder="Select" @change="layoutOptionChange">
+      <el-option
+          v-for="item in layoutOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+      />
+    </el-select>
+  </div>
+  <br/>
 
   <div id="myDiagramDiv"
        style="border: 1px solid black; width: 100%; height: 600px; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;">
@@ -80,7 +93,16 @@ import {GetERDData} from '@/api/dataService/ERD.js'
 
 const state = reactive({
   // 布局方式
-  layout: "ForceDirected",  // 布局方式可选：GridLayout、TreeLayout、ForceDirectedLayout、LayeredDigraphLayout、CircularLayout
+  layoutOptions: [// 布局方式可选：GridLayout、TreeLayout、ForceDirectedLayout、LayeredDigraphLayout、CircularLayout
+    {label: "ForceDirectedLayout", value: "ForceDirectedLayout"},
+    {label: "GridLayout", value: "GridLayout"},
+    {label: "TreeLayout", value: "TreeLayout"},
+    {label: "LayeredDigraphLayout", value: "LayeredDigraphLayout"},
+    {label: "CircularLayout", value: "CircularLayout"},
+  ],
+  // 选中的布局方式
+  selectedLayout: "ForceDirectedLayout",
+
   // 实体/节点数据
   nodeDataList: [],
   // 关系/边数据
@@ -110,7 +132,8 @@ const state = reactive({
 })
 
 const {
-  layout,
+  layoutOptions,
+  selectedLayout,
   nodeDataList,
   linkDataList,
   entryOptions,
@@ -171,6 +194,27 @@ const deleteFKRelationship = () => {
   // myDiagram.model.removeLinkData(temp)
   // console.log('linkDataList.value:', linkDataList.value)
   // refreshDfieldOptions()
+}
+
+/***************************** 选择器事件 ******************************/
+/**
+ * 选择布局方式
+ * @param val
+ */
+const layoutOptionChange = (val) => {
+  state.selectedLayout = val
+  console.log('selectedLayout:', state.selectedLayout)
+  if (val === 'ForceDirectedLayout') {
+    myDiagram.layout = new go.ForceDirectedLayout()
+  } else if (val === 'GridLayout') {
+    myDiagram.layout = new go.GridLayout()
+  } else if (val === 'TreeLayout') {
+    myDiagram.layout = new go.TreeLayout()
+  } else if (val === 'LayeredDigraphLayout') {
+    myDiagram.layout = new go.LayeredDigraphLayout()
+  } else if (val === 'CircularLayout') {
+    myDiagram.layout = new go.CircularLayout()
+  }
 }
 
 
@@ -804,9 +848,10 @@ function redo(e, obj) {
 
 
 onMounted(() => {
+  state.selectedLayout = 'LayeredDigraphLayout',
+
   GetERDData().then(res => {
     console.log('res.data.data: ', res.data.data)
-
     state.nodeDataList = res.data.data.nodeDataArray
     console.log('GetERDData state.nodeDataList', state.nodeDataList)
     linkDataList.value = res.data.data.linkDataArray
