@@ -157,12 +157,11 @@ let myDiagram = null
 const addFKRelationship = () => {
   console.log('from:', cfkFromEntry.value)
   console.log('to:', cfkToEntry.value)
-  // {from: "Products", to: "Suppliers", text: "0..N", toText: "1"}
   let temp = {
     from: cfkFromEntry.value[0],
+    fromPort: cfkFromEntry.value[1],
     to: cfkToEntry.value[0],
-    text: cfkFromEntry.value[0] + " M",
-    toText: cfkToEntry.value[0] + " 1"
+    toPort: cfkToEntry.value[1],
   }
   // linkDataList.value.push(temp)
 
@@ -173,27 +172,27 @@ const addFKRelationship = () => {
 
 // 删除外键关系
 const deleteFKRelationship = () => {
-  console.log('dfkFromEntry:', dfkFromEntry.value)
-  console.log('dfkToEntry:', dfkToEntry.value)
-  // let temp = {
-  //   from: dfkFromEntry.value[0],
-  //   to: dfkToEntry.value[0],
-  //   text: dfkFromEntry.value[0] + " M",
-  //   toText: dfkToEntry.value[1] + " 1"
-  // }
+  console.log('删除前：', linkDataList.value)
   let temp = {
-    from: 'ProductID',
-    to: 'SupplierID',
-    text: "SupplierID M",
-    toText: "SupplierID 1"
+    from: dfkFromEntry.value[0],
+    fromPort: dfkFromEntry.value[1],
+    to: dfkToEntry.value[0],
+    toPort: dfkToEntry.value[1],
   }
 
-  const t = myDiagram.model.getKeyForLinkData(temp)
-  console.log('t:', t)
-
-  // myDiagram.model.removeLinkData(temp)
-  // console.log('linkDataList.value:', linkDataList.value)
-  // refreshDfieldOptions()
+  // 从 state.linkDataList 数组中删除
+  let index = linkDataList.value.findIndex(item => {
+    return item.from === temp.from && item.fromPort === temp.fromPort && item.to === temp.to && item.toPort === temp.toPort
+  })
+  console.log('index:', index)
+  if (index === -1) {
+    console.log('未找到该外键关系')
+    return
+  } else {
+    myDiagram.model.removeLinkData(linkDataList.value[index])
+    linkDataList.value.splice(index, 1)
+    console.log('删除后：', linkDataList.value)
+  }
 }
 
 /***************************** 选择器事件 ******************************/
@@ -312,7 +311,7 @@ function init() {
                   $(go.TextBlock,                           // header文本
                       {
                         alignment: go.Spot.Center,
-                        margin: 6,
+                        margin: 4,
                         stroke: "white",                      // 文本色为白色
                         font: "bold 12pt sans-serif"
                       },
@@ -850,37 +849,37 @@ function redo(e, obj) {
 onMounted(() => {
   state.selectedLayout = 'LayeredDigraphLayout',
 
-  GetERDData().then(res => {
-    console.log('res.data.data: ', res.data.data)
-    state.nodeDataList = res.data.data.nodeDataArray
-    console.log('GetERDData state.nodeDataList', state.nodeDataList)
-    linkDataList.value = res.data.data.linkDataArray
-    console.log('GetERDData linkDataList.value', linkDataList.value)
+      GetERDData().then(res => {
+        console.log('res.data.data: ', res.data.data)
+        state.nodeDataList = res.data.data.nodeDataArray
+        console.log('GetERDData state.nodeDataList', state.nodeDataList)
+        linkDataList.value = res.data.data.linkDataArray
+        console.log('GetERDData linkDataList.value', linkDataList.value)
 
-    res.data.data.nodeDataArray.forEach(item => {
-      state.entryOptions.push({
-        value: item.key,
-        label: item.key,
-      })
-    })
+        res.data.data.nodeDataArray.forEach(item => {
+          state.entryOptions.push({
+            value: item.key,
+            label: item.key,
+          })
+        })
 
-    state.cfieldOptions = res.data.data.nodeDataArray.map(item => {
-      return {
-        value: item.key,
-        label: item.key,
-        children: item.fields.map(field => {
+        state.cfieldOptions = res.data.data.nodeDataArray.map(item => {
           return {
-            value: field.name,
-            label: field.name
+            value: item.key,
+            label: item.key,
+            children: item.fields.map(field => {
+              return {
+                value: field.name,
+                label: field.name
+              }
+            })
           }
         })
-      }
-    })
-    console.log('GetERDData state.cfieldOptions', state.cfieldOptions)
+        console.log('GetERDData state.cfieldOptions', state.cfieldOptions)
 
-    refreshDfieldOptions()
-    init()
-  })
+        refreshDfieldOptions()
+        init()
+      })
 });
 </script>
 
