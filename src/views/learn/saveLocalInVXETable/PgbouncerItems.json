@@ -1,0 +1,506 @@
+[
+  {
+    "key": "admin_users",
+    "value": "admin",
+    "default": "",
+    "changeable": "yes"
+  },
+  {
+    "key": "application_name_add_host",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "auth_file",
+    "value": "userlist.txt",
+    "default": "",
+    "changeable": "yes"
+  },
+  {
+    "key": "auth_hba_file",
+    "value": "",
+    "default": "",
+    "changeable": "yes"
+  },
+  {
+    "key": "auth_query",
+    "value": "SELECT usename, passwd FROM pg_shadow WHERE usename=$1",
+    "default": "SELECT usename, passwd FROM pg_shadow WHERE usename=$1",
+    "changeable": "yes"
+  },
+  {
+    "key": "auth_type",
+    "value": "cert",
+    "default": "md5",
+    "changeable": "yes"
+  },
+  {
+    "key": "auth_user",
+    "value": "",
+    "default": "",
+    "changeable": "yes"
+  },
+  {
+    "key": "autodb_idle_timeout",
+    "value": "3600",
+    "default": "3600",
+    "changeable": "yes"
+  },
+  {
+    "key": "client_idle_timeout",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "client_login_timeout",
+    "value": "60",
+    "default": "60",
+    "changeable": "yes"
+  },
+  {
+    "key": "client_tls_ca_file",
+    "value": "/home/liuxihua/Documents/pgbouncer/config/wisteria/root.crt",
+    "default": "",
+    "changeable": "yes"
+  },
+  {
+    "key": "client_tls_cert_file",
+    "value": "/home/liuxihua/Documents/pgbouncer/config/wisteria/pgbouncer.crt",
+    "default": "",
+    "changeable": "yes"
+  },
+  {
+    "key": "client_tls_ciphers",
+    "value": "normal",
+    "default": "fast",
+    "changeable": "yes"
+  },
+  {
+    "key": "client_tls_dheparams",
+    "value": "auto",
+    "default": "auto",
+    "changeable": "yes"
+  },
+  {
+    "key": "client_tls_ecdhcurve",
+    "value": "auto",
+    "default": "auto",
+    "changeable": "yes"
+  },
+  {
+    "key": "client_tls_key_file",
+    "value": "/home/liuxihua/Documents/pgbouncer/config/wisteria/pgbouncer.key",
+    "default": "",
+    "changeable": "yes"
+  },
+  {
+    "key": "client_tls_protocols",
+    "value": "secure",
+    "default": "secure",
+    "changeable": "yes"
+  },
+  {
+    "key": "client_tls_sslmode",
+    "value": "verify-full",
+    "default": "disable",
+    "changeable": "yes"
+  },
+  {
+    "key": "conffile",
+    "value": "/home/liuxihua/Documents/pgbouncer/config/wisteria/pgbouncer.ini",
+    "default": "",
+    "changeable": "yes"
+  },
+  {
+    "key": "default_pool_size",
+    "value": "20",
+    "default": "20",
+    "changeable": "yes"
+  },
+  {
+    "key": "disable_pqexec",
+    "value": "0",
+    "default": "0",
+    "changeable": "no"
+  },
+  {
+    "key": "dns_max_ttl",
+    "value": "15",
+    "default": "15",
+    "changeable": "yes"
+  },
+  {
+    "key": "dns_nxdomain_ttl",
+    "value": "15",
+    "default": "15",
+    "changeable": "yes"
+  },
+  {
+    "key": "dns_zone_check_period",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "idle_transaction_timeout",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "ignore_startup_parameters",
+    "value": "extra_float_digits",
+    "default": "",
+    "changeable": "yes"
+  },
+  {
+    "key": "job_name",
+    "value": "pgbouncer",
+    "default": "pgbouncer",
+    "changeable": "no"
+  },
+  {
+    "key": "listen_addr",
+    "value": "172.28.79.103",
+    "default": "",
+    "changeable": "no"
+  },
+  {
+    "key": "listen_backlog",
+    "value": "128",
+    "default": "128",
+    "changeable": "no"
+  },
+  {
+    "key": "listen_port",
+    "value": "6435",
+    "default": "6432",
+    "changeable": "no"
+  },
+  {
+    "key": "log_connections",
+    "value": "1",
+    "default": "1",
+    "changeable": "yes"
+  },
+  {
+    "key": "log_disconnections",
+    "value": "1",
+    "default": "1",
+    "changeable": "yes"
+  },
+  {
+    "key": "log_pooler_errors",
+    "value": "1",
+    "default": "1",
+    "changeable": "yes"
+  },
+  {
+    "key": "log_stats",
+    "value": "1",
+    "default": "1",
+    "changeable": "yes"
+  },
+  {
+    "key": "logfile",
+    "value": "pgbouncer.log",
+    "default": "",
+    "changeable": "yes"
+  },
+  {
+    "key": "max_client_conn",
+    "value": "1000",
+    "default": "100",
+    "changeable": "yes"
+  },
+  {
+    "key": "max_db_connections",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "max_packet_size",
+    "value": "2147483647",
+    "default": "2147483647",
+    "changeable": "yes"
+  },
+  {
+    "key": "max_user_connections",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "min_pool_size",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "pidfile",
+    "value": "pgbouncer.pid",
+    "default": "",
+    "changeable": "no"
+  },
+  {
+    "key": "pkt_buf",
+    "value": "4096",
+    "default": "4096",
+    "changeable": "no"
+  },
+  {
+    "key": "pool_mode",
+    "value": "transaction",
+    "default": "session",
+    "changeable": "yes"
+  },
+  {
+    "key": "query_timeout",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "query_wait_timeout",
+    "value": "120",
+    "default": "120",
+    "changeable": "yes"
+  },
+  {
+    "key": "reserve_pool_size",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "reserve_pool_timeout",
+    "value": "5",
+    "default": "5",
+    "changeable": "yes"
+  },
+  {
+    "key": "resolv_conf",
+    "value": "",
+    "default": "",
+    "changeable": "no"
+  },
+  {
+    "key": "sbuf_loopcnt",
+    "value": "5",
+    "default": "5",
+    "changeable": "yes"
+  },
+  {
+    "key": "server_check_delay",
+    "value": "30",
+    "default": "30",
+    "changeable": "yes"
+  },
+  {
+    "key": "server_check_query",
+    "value": "select 1",
+    "default": "select 1",
+    "changeable": "yes"
+  },
+  {
+    "key": "server_connect_timeout",
+    "value": "15",
+    "default": "15",
+    "changeable": "yes"
+  },
+  {
+    "key": "server_fast_close",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "server_idle_timeout",
+    "value": "600",
+    "default": "600",
+    "changeable": "yes"
+  },
+  {
+    "key": "server_lifetime",
+    "value": "3600",
+    "default": "3600",
+    "changeable": "yes"
+  },
+  {
+    "key": "server_login_retry",
+    "value": "15",
+    "default": "15",
+    "changeable": "yes"
+  },
+  {
+    "key": "server_reset_query",
+    "value": "DISCARD ALL",
+    "default": "DISCARD ALL",
+    "changeable": "yes"
+  },
+  {
+    "key": "server_reset_query_always",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "server_round_robin",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "server_tls_ca_file",
+    "value": "",
+    "default": "",
+    "changeable": "yes"
+  },
+  {
+    "key": "server_tls_cert_file",
+    "value": "",
+    "default": "",
+    "changeable": "yes"
+  },
+  {
+    "key": "server_tls_ciphers",
+    "value": "fast",
+    "default": "fast",
+    "changeable": "yes"
+  },
+  {
+    "key": "server_tls_key_file",
+    "value": "",
+    "default": "",
+    "changeable": "yes"
+  },
+  {
+    "key": "server_tls_protocols",
+    "value": "secure",
+    "default": "secure",
+    "changeable": "yes"
+  },
+  {
+    "key": "server_tls_sslmode",
+    "value": "disable",
+    "default": "disable",
+    "changeable": "yes"
+  },
+  {
+    "key": "so_reuseport",
+    "value": "0",
+    "default": "0",
+    "changeable": "no"
+  },
+  {
+    "key": "stats_period",
+    "value": "60",
+    "default": "60",
+    "changeable": "yes"
+  },
+  {
+    "key": "stats_users",
+    "value": "",
+    "default": "",
+    "changeable": "yes"
+  },
+  {
+    "key": "suspend_timeout",
+    "value": "10",
+    "default": "10",
+    "changeable": "yes"
+  },
+  {
+    "key": "syslog",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "syslog_facility",
+    "value": "daemon",
+    "default": "daemon",
+    "changeable": "yes"
+  },
+  {
+    "key": "syslog_ident",
+    "value": "pgbouncer",
+    "default": "pgbouncer",
+    "changeable": "yes"
+  },
+  {
+    "key": "tcp_defer_accept",
+    "value": "1",
+    "default": "1",
+    "changeable": "yes"
+  },
+  {
+    "key": "tcp_keepalive",
+    "value": "1",
+    "default": "1",
+    "changeable": "yes"
+  },
+  {
+    "key": "tcp_keepcnt",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "tcp_keepidle",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "tcp_keepintvl",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "tcp_socket_buffer",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "tcp_user_timeout",
+    "value": "0",
+    "default": "0",
+    "changeable": "yes"
+  },
+  {
+    "key": "unix_socket_dir",
+    "value": "/tmp",
+    "default": "/tmp",
+    "changeable": "no"
+  },
+  {
+    "key": "unix_socket_group",
+    "value": "",
+    "default": "",
+    "changeable": "no"
+  },
+  {
+    "key": "unix_socket_mode",
+    "value": "511",
+    "default": "0777",
+    "changeable": "no"
+  },
+  {
+    "key": "user",
+    "value": "",
+    "default": "",
+    "changeable": "no"
+  },
+  {
+    "key": "verbose",
+    "value": "1",
+    "default": "",
+    "changeable": "yes"
+  }
+]
