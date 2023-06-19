@@ -1,47 +1,89 @@
 <template>
-  <vxe-toolbar>
-    <template #buttons>
-      <vxe-button @click="insertEvent">新增</vxe-button>
-      <vxe-button @click="$refs.xTable.removeCheckboxRow()">删除选中</vxe-button>
-      <vxe-button @click="getInsertEvent">获取新增</vxe-button>
-      <vxe-button @click="getRemoveEvent">获取删除</vxe-button>
-      <vxe-button @click="getUpdateEvent">获取修改</vxe-button>
-      <vxe-button @click="saveEvent">保存</vxe-button>
-    </template>
-  </vxe-toolbar>
+  <div>
+    <vxe-toolbar>
+      <template #buttons>
+        <vxe-button @click="insertEvent">新增</vxe-button>
+        <vxe-button @click="$refs.xTable.removeCheckboxRow()">删除选中</vxe-button>
+        <vxe-button @click="getInsertEvent">获取新增</vxe-button>
+        <vxe-button @click="getRemoveEvent">获取删除</vxe-button>
+        <vxe-button @click="getUpdateEvent">获取修改</vxe-button>
+        <vxe-button @click="saveEvent">保存</vxe-button>
+      </template>
+    </vxe-toolbar>
 
-  <vxe-table
-      border
-      show-overflow
-      keep-source
-      ref="xTable"
-      :loading="loading"
-      :data="tableData"
-      :row-config="{isHover: true, isCurrent:true}"
-      :edit-config="{trigger: 'click', mode: 'cell', showStatus: true}"
-      @current-change="currentChangeEvent"
-  >
-    <vxe-column type="checkbox" width="60"></vxe-column>
-    <vxe-column type="seq" width="60"></vxe-column>
-    <vxe-column field="name" title="Name" :edit-render="{autofocus: '.myinput'}">
-      <template #edit="scope">
-        <input type="text" class="myinput" v-model="scope.row.name" @input="$refs.xTable.updateStatus(scope)"/>
-      </template>
-    </vxe-column>
-    <vxe-column field="status" title="Status" :edit-render="{autofocus: '.myinput'}">
-      <template #edit="scope">
-        <input type="text" class="myinput" v-model="scope.row.status" @input="$refs.xTable.updateStatus(scope)"/>
-      </template>
-    </vxe-column>
-    <vxe-column title="操作" width="300">
-      <template #default="{ row }">
-        <vxe-button @click="handleDirectUpdate(row)">点击status更新</vxe-button>
-        <template v-if="$refs.xTable.isUpdateByRow(row)">
-          <vxe-button @click="saveTheUpdate(row)" :loading="row.loading">更新编辑</vxe-button>
+    <vxe-table
+        border
+        show-overflow
+        keep-source
+        ref="xTable"
+        :loading="loading"
+        :data="tableData"
+        :row-config="{isHover: true, isCurrent:true}"
+        :edit-config="{trigger: 'click', mode: 'cell', showStatus: true}"
+        align="center"
+        height="350"
+        width="50%"
+        @current-change="currentChangeEvent"
+    >
+      <vxe-column type="checkbox" width="60"></vxe-column>
+      <vxe-column type="seq" width="60"></vxe-column>
+      <vxe-column field="name" title="Name" :edit-render="{autofocus: '.myinput'}">
+        <template #edit="scope">
+          <input type="text" class="myinput" v-model="scope.row.name" @input="$refs.xTable.updateStatus(scope)"/>
         </template>
-      </template>
-    </vxe-column>
-  </vxe-table>
+      </vxe-column>
+      <vxe-column field="status" title="Status" :edit-render="{autofocus: '.myinput'}">
+        <template #edit="scope">
+          <input type="text" class="myinput" v-model="scope.row.status" @input="$refs.xTable.updateStatus(scope)"/>
+        </template>
+      </vxe-column>
+      <vxe-column title="操作" width="300">
+        <template #default="{ row }">
+          <vxe-button @click="handleDirectUpdate(row)">点击status更新</vxe-button>
+          <template v-if="$refs.xTable.isUpdateByRow(row)">
+            <vxe-button @click="saveTheUpdate(row)" :loading="row.loading">更新编辑</vxe-button>
+          </template>
+        </template>
+      </vxe-column>
+    </vxe-table>
+    <br/>
+
+    <vxe-table
+        border
+        show-overflow
+        keep-source
+        ref="xTable"
+        :loading="loading"
+        :data="tableData"
+        :row-config="{isHover: true, isCurrent:true}"
+        :edit-config="{trigger: 'click', mode: 'cell', showStatus: true}"
+        align="center"
+        height="350"
+        width="50%"
+        @current-change="currentChangeEvent"
+    >
+      <vxe-column type="checkbox" width="60"></vxe-column>
+      <vxe-column type="seq" width="60"></vxe-column>
+      <vxe-column field="name" title="Name" :edit-render="{autofocus: '.myinput'}">
+        <template #edit="scope">
+          <input type="text" class="myinput" v-model="scope.row.name" @input="$refs.xTable.updateStatus(scope)"/>
+        </template>
+      </vxe-column>
+      <vxe-column field="status" title="Status" :edit-render="{autofocus: '.myinput'}">
+        <template #edit="scope">
+          <input type="text" class="myinput" v-model="scope.row.status" @input="$refs.xTable.updateStatus(scope)"/>
+        </template>
+      </vxe-column>
+      <vxe-column title="操作" width="300">
+        <template #default="{ row }">
+          <vxe-button @click="handleDirectUpdate(row)">点击status更新</vxe-button>
+          <template v-if="$refs.xTable.isUpdateByRow(row)">
+            <vxe-button @click="saveTheUpdate(row)" :loading="row.loading">更新编辑</vxe-button>
+          </template>
+        </template>
+      </vxe-column>
+    </vxe-table>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -179,8 +221,6 @@ onMounted(() => {
 <style scoped>
 
 </style>
-
-
 
 
 <!--<template>-->
@@ -1092,9 +1132,6 @@ onMounted(() => {
 <!--</style>-->
 
 
-
-
-
 <!--<script lang="ts" setup>-->
 <!--import {onBeforeUnmount, onMounted, reactive, ref, toRefs} from 'vue'-->
 <!--import type {TabsPaneContext} from 'element-plus'-->
@@ -1645,12 +1682,6 @@ onMounted(() => {
 <!--  justify-content: center;-->
 <!--}-->
 <!--</style>-->
-
-
-
-
-
-
 
 
 <!--<template>-->
