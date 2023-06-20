@@ -92,6 +92,9 @@
       </el-card>
     </el-col>
     <el-col :span="18">
+      <div style="height: 40vh; background-color: #c3fdd3">
+
+      </div>
       <div id="myDiagramDiv"
            style="border: 1px solid black; height: 600px; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;">
         <canvas tabindex="0" width="1234" height="407"
@@ -154,6 +157,8 @@ const state = reactive({
   rightClickedNode: null,
   // 被右键单击的边
   rightClickedLink: null,
+
+  // 表节点元素
 })
 
 const {

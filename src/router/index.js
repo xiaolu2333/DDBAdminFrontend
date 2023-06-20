@@ -202,6 +202,14 @@ const routes = [
                 meta: {
                     title: "使用Table2",
                 }
+            },
+            {
+                name: "elementDrag",
+                path: "/learning/elementDrag",
+                component: () => import("@/views/learn/elementDrag/index.vue"),
+                meta: {
+                    title: "元素拖拽",
+                }
             }
         ]
     },
