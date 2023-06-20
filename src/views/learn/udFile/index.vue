@@ -55,7 +55,46 @@
         </el-col>
         <el-col :span="12">
           <el-card>
-            <button @click="downloadFile">Download</button>
+            <template #header>
+              【使用element plus的el-upload组件山川文件】
+            </template>
+            <el-form :model="formData2" ref='dataFormRef2' label-width="120px">
+              <el-form-item label="姓名" prop='name' @input="change">
+                <el-input v-model="formData2.name"/>
+              </el-form-item>
+              <el-form-item label="密码" prop="password" type="password" show-password label-width='120px'>
+                <el-input v-model="formData2.password"/>
+              </el-form-item>
+              <el-form-item label='文件' prop='file' label-width='120px'>
+                <div style="width: 100%">
+                  <el-row gutter="6">
+                    <el-col :span="17">
+                      <el-input
+                          v-model="formData2.fileName"
+                          disabled
+                      />
+                    </el-col>
+                    <el-col :span="7">
+                      <el-upload
+                          ref="upload"
+                          class="upload-demo"
+                          action="http://127.0.0.1:8000/test_app/upload_form_file"
+                          :auto-upload="false"
+                          :file-list="dataFileList"
+                          :on-change="handleFileChange2"
+                          :limit="1"
+                          style="width: 70%"
+                      >
+                        <el-button type="primary">选择文件</el-button>
+                      </el-upload>
+                    </el-col>
+                  </el-row>
+                </div>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="submit2">提交</el-button>
+              </el-form-item>
+            </el-form>
           </el-card>
         </el-col>
       </el-row>
@@ -69,16 +108,28 @@ import {ElMessage} from 'element-plus'
 import {UploadFile, UploadFormFile, DownloadFileByStream, DownloadFileByURL} from '@/api/learn/uploadAndDownloadFile.js'
 
 const file = ref("file")
+const upload = ref()
 const state = reactive({
+  // 原生文件上传
   formData1: {
     name: "",
     password: "",
     file: null,
     fileName: "",
   },
+  // ep upload 组件上传
+  formData2: {
+    name: "",
+    password: "",
+    fileName: "",
+    file: null,
+  },
+  dataFileList: [],
 })
 const {
   formData1,
+  formData2,
+  dataFileList,
 } = toRefs(state)
 
 /*************************** 一般文件上传与下载 ***************************/
@@ -225,6 +276,44 @@ function submit1() {
 function change(data) {
   console.log("data:", data)
   console.log("formData1:", formData1)
+}
+
+
+/*************************** ep upload 组件上传与下载 ***************************/
+/**
+ * 文件选择事件
+ * @param file
+ */
+const handleFileChange2 = (file) => {
+  // 先清空待上传的文件列表
+  upload.value.clearFiles()
+  state.formData2 = {
+    name: state.formData2.name,
+    password: state.formData2.password,
+    fileName: file.name,
+    file: file.raw,
+  }
+  console.log('state.formData2: ', state.formData2)
+}
+
+function submit2() {
+  // 创建表单对象
+  let formData = new FormData();
+  // 添加要上传的文件到表单对象中
+  formData.append("file", formData2.value.file);
+  formData.append("name", formData2.value.name);
+  formData.append("password", formData2.value.password);
+  formData.append("fileName", formData2.value.fileName);
+
+  console.log('待提交的formData: ', formData.get('file'))
+  UploadFormFile(formData)
+      .then((response) => {
+        console.log(response.data);
+        ElMessage.success("上传成功")
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 }
 
 </script>
