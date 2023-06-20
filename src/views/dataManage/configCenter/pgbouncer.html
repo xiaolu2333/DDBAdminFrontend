@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!DOCTYPE html>
+<!-- saved from url=(0054)https://www.pgbouncer.org/config.html#generic-settings -->
+<html lang="en" data-redeviation-bs-uid="4uju30u7mh8"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>PgBouncer config</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./PgBouncer config_files/jquery.min.js.下载"></script>
+    <script src="./PgBouncer config_files/bootstrap.min.js.下载"></script>
+    <script src="./PgBouncer config_files/toc.js.下载"></script>
+    <script src="./PgBouncer config_files/main.js.下载"></script>
+    <link href="./PgBouncer config_files/bootstrap.min.css" rel="stylesheet">
+    <link href="./PgBouncer config_files/theme.css" rel="stylesheet">
+    <link rel="alternate" type="application/atom+xml" title="News feed" href="https://www.pgbouncer.org/feed.xml">
+<style class="redeviation-bs-style" data-name="content">/*! (c) Philipp Koenig under GPL-3.0 */
+body>div#redeviation-bs-indicator>div{opacity:0;pointer-events:none}body>#redeviation-bs-overlay.redeviation-bs-visible,body>#redeviation-bs-sidebar.redeviation-bs-visible{opacity:1;pointer-events:auto}body.redeviation-bs-noscroll{overflow:hidden !important}body>div#redeviation-bs-indicator>div{position:absolute;transform:translate3d(-27px, 0, 0);top:0;left:0;width:27px !important;height:100%;background:rgba(0,0,0,0.5);border-radius:0 10px 10px 0;transition:opacity .3s,transform .3s;z-index:2}body>div#redeviation-bs-indicator>div>span{-webkit-mask:no-repeat center/32px;-webkit-mask-image:url(chrome-extension://lmjefbghkfeppnpofmbfmhgodpclipbl/img/icon-bookmark.svg);background-color:#ffffff;position:absolute;display:block;top:0;left:0;width:100%;height:100%}body>div#redeviation-bs-indicator[data-pos=right]{left:auto;right:0}body>div#redeviation-bs-indicator[data-pos=right]>div{transform:translate3d(27px, 0, 0);left:auto;right:0;border-radius:10px 0 0 10px}body>div#redeviation-bs-indicator.redeviation-bs-fullHeight>div{border-radius:0}body>div#redeviation-bs-indicator.redeviation-bs-hover>div{transform:translate3d(0, 0, 0);opacity:1}body>div#redeviation-bs-indicator[data-pos=left].redeviation-bs-has-lsb{height:100% !important;top:0 !important}body>div#redeviation-bs-indicator[data-pos=left].redeviation-bs-has-lsb>div{background:rgba(0,0,0,0)}body>div#redeviation-bs-indicator[data-pos=left].redeviation-bs-has-lsb>div>span{-webkit-mask-position-y:20px}body>#redeviation-bs-sidebar{width:350px;max-width:none;height:0;z-index:2147483646;background-color:rgba(0,0,0,0.6) !important;color-scheme:auto !important;speak:none;border:none;display:block !important;transform:translate3d(-350px, 0, 0);transition:width 0s .3s,height 0s .3s,opacity .3s,transform .3s}body>#redeviation-bs-sidebar[data-pos=right]{left:auto;right:0;transform:translate3d(350px, 0, 0)}body>#redeviation-bs-sidebar.redeviation-bs-visible{width:calc(100% + 350px);height:100%;transform:translate3d(0, 0, 0);transition:opacity .3s,transform .3s}body>#redeviation-bs-sidebar.redeviation-bs-hideMask{background:none !important}body>#redeviation-bs-sidebar.redeviation-bs-hideMask:not(.redeviation-bs-hover){width:calc(350px + 50px)}body>#redeviation-bs-overlay{width:100%;max-width:none;height:100%;z-index:2147483647;border:none;speak:none;background:rgba(0,0,0,0.5) !important;color-scheme:auto !important;transition:opacity .3s}</style></head>
+
+<body>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="https://www.pgbouncer.org/"></a>
+              </div>
+              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="https://www.pgbouncer.org/">Home</a></li>
+                    <li class="active visible-xs-block"><a href="https://www.pgbouncer.org/links.html">Documentation</a></li>
+                    <li class="active"><a href="https://www.pgbouncer.org/features.html">Features</a></li>
+                    <li class="active"><a href="https://www.pgbouncer.org/downloads/">Downloads</a></li>
+                    <li class="active"><a href="https://www.pgbouncer.org/community.html">Community</a></li>
+                    <li class="active"><a href="https://www.pgbouncer.org/archive.html">Archive</a></li>
+
+                </ul>
+              </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container container-left">
+    <div class="row">
+        <div class="col-md-3 hidden-xs">
+            <div class="sidebar well">
+              <h1>Documentation</h1>
+<ul>
+  <li><a href="https://www.pgbouncer.org/faq.html">FAQ</a></li>
+  <li><a href="https://www.pgbouncer.org/config.html">Configuration</a></li>
+  <li><a href="https://www.pgbouncer.org/usage.html">Usage</a></li>
+  <li><a href="https://www.pgbouncer.org/install.html">Install</a></li>
+  <li><a href="https://www.pgbouncer.org/changelog.html">Changelog</a></li>
+</ul>
+
+            </div>
+            <div class="sidebar well">
+                <h1>Contents</h1>
+                <div id="toc"><i>Jump to...</i> <ol><li><a href="https://www.pgbouncer.org/config.html#description">Description</a></li><li><a href="https://www.pgbouncer.org/config.html#generic-settings">Generic settings</a></li><li><a href="https://www.pgbouncer.org/config.html#authentication-settings">Authentication settings</a></li><li><a href="https://www.pgbouncer.org/config.html#log-settings">Log settings</a></li><li><a href="https://www.pgbouncer.org/config.html#console-access-control">Console access control</a></li><li><a href="https://www.pgbouncer.org/config.html#connection-sanity-checks-timeouts">Connection sanity checks, timeouts</a></li><li><a href="https://www.pgbouncer.org/config.html#tls-settings">TLS settings</a></li><li><a href="https://www.pgbouncer.org/config.html#dangerous-timeouts">Dangerous timeouts</a></li><li><a href="https://www.pgbouncer.org/config.html#low-level-network-settings">Low-level network settings</a></li><li><a href="https://www.pgbouncer.org/config.html#section-databases">Section [databases]</a></li><li><a href="https://www.pgbouncer.org/config.html#section-users">Section [users]</a></li><li><a href="https://www.pgbouncer.org/config.html#section-peers">Section [peers]</a></li><li><a href="https://www.pgbouncer.org/config.html#include-directive">Include directive</a></li><li><a href="https://www.pgbouncer.org/config.html#authentication-file-format">Authentication file format</a></li><li><a href="https://www.pgbouncer.org/config.html#hba-file-format">HBA file format</a></li><li><a href="https://www.pgbouncer.org/config.html#examples">Examples</a></li><li><a href="https://www.pgbouncer.org/config.html#see-also">See also</a></li></ol></div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <h1 id="pgbouncerini">pgbouncer.ini</h1>
+
+<h2 id="description" class="clickable-header top-level-header">Description</h2><i class="icon-arrow-up back-to-top"> </i>
+
+<p>The configuration file is in “ini” format. Section names are between “[” and “]”.  Lines
+starting with “;” or “#” are taken as comments and ignored. The characters “;”
+and “#” are not recognized as special when they appear later in the line.</p>
+
+<h2 id="generic-settings" class="clickable-header top-level-header">Generic settings</h2><i class="icon-arrow-up back-to-top"> </i>
+
+<h3 id="logfile">logfile</h3>
+
+<p>Specifies the log file.  For daemonization (<code class="language-plaintext highlighter-rouge">-d</code>), either this or
+<code class="language-plaintext highlighter-rouge">syslog</code> need to be set.</p>
+
+<p>The log file is kept open, so after rotation, <code class="language-plaintext highlighter-rouge">kill -HUP</code>
+or on console <code class="language-plaintext highlighter-rouge">RELOAD;</code> should be done.
+On Windows, the service must be stopped and started.</p>
+
+<p>Note that setting <code class="language-plaintext highlighter-rouge">logfile</code> does not by itself turn off logging to
+stderr.  Use the command-line option <code class="language-plaintext highlighter-rouge">-q</code> or <code class="language-plaintext highlighter-rouge">-d</code> for that.</p>
+
+<p>Default: not set</p>
+
+<h3 id="pidfile">pidfile</h3>
+
+<p>Specifies the PID file. Without <code class="language-plaintext highlighter-rouge">pidfile</code> set, daemonization (<code class="language-plaintext highlighter-rouge">-d</code>) is not allowed.</p>
+
+<p>Default: not set</p>
+
+<h3 id="listen_addr">listen_addr</h3>
+
+<p>Specifies a list (comma-separated) of addresses where to listen for TCP connections.
+You may also use <code class="language-plaintext highlighter-rouge">*</code> meaning “listen on all addresses”. When not set,
+only Unix socket connections are accepted.</p>
+
+<p>Addresses can be specified numerically (IPv4/IPv6) or by name.</p>
+
+<p>Default: not set</p>
+
+<h3 id="listen_port">listen_port</h3>
+
+<p>Which port to listen on. Applies to both TCP and Unix sockets.</p>
+
+<p>Default: 6432</p>
+
+<h3 id="unix_socket_dir">unix_socket_dir</h3>
+
+<p>Specifies the location for Unix sockets. Applies to both the listening socket and to
+server connections. If set to an empty string, Unix sockets are disabled.
+A value that starts with <code class="language-plaintext highlighter-rouge">@</code> specifies that a Unix socket in the
+abstract namespace should be created (currently supported on Linux and
+Windows).</p>
+
+<p>For online reboot (<code class="language-plaintext highlighter-rouge">-R</code>) to work, a Unix socket needs to be
+configured, and it needs to be in the file-system namespace.</p>
+
+<p>Default: <code class="language-plaintext highlighter-rouge">/tmp</code> (empty on Windows)</p>
+
+<h3 id="unix_socket_mode">unix_socket_mode</h3>
+
+<p>File system mode for Unix socket.
+Ignored for sockets in the abstract namespace.
+Not supported on Windows.</p>
+
+<p>Default: 0777</p>
+
+<h3 id="unix_socket_group">unix_socket_group</h3>
+
+<p>Group name to use for Unix socket.
+Ignored for sockets in the abstract namespace.
+Not supported on Windows.</p>
+
+<p>Default: not set</p>
+
+<h3 id="user">user</h3>
+
+<p>If set, specifies the Unix user to change to after startup. Works only if
+PgBouncer is started as root or if it’s already running as the given user.
+Not supported on Windows.</p>
+
+<p>Default: not set</p>
+
+<h3 id="pool_mode">pool_mode</h3>
+
+<p>Specifies when a server connection can be reused by other clients.</p>
+
+<dl>
+  <dt>session</dt>
+  <dd>Server is released back to pool after client disconnects.  Default.</dd>
+  <dt>transaction</dt>
+  <dd>Server is released back to pool after transaction finishes.</dd>
+  <dt>statement</dt>
+  <dd>Server is released back to pool after query finishes. Transactions
+spanning multiple statements are disallowed in this mode.</dd>
+</dl>
+
+<h3 id="max_client_conn">max_client_conn</h3>
+
+<p>Maximum number of client connections allowed.</p>
+
+<p>When this setting is increased, then the file descriptor limits in the
+operating system might also have to be increased.  Note that the
+number of file descriptors potentially used is more than
+<code class="language-plaintext highlighter-rouge">max_client_conn</code>.  If each user connects under its own user name to
+the server, the theoretical maximum used is:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>max_client_conn + (max pool_size * total databases * total users)
+</code></pre></div></div>
+
+<p>If a database user
+is specified in the connection string (all users connect under the same user name),
+the theoretical maximum is:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>max_client_conn + (max pool_size * total databases)
+</code></pre></div></div>
+
+<p>The theoretical maximum should never be reached, unless somebody deliberately
+crafts a special load for it.  Still, it means you should set the number of
+file descriptors to a safely high number.</p>
+
+<p>Search for <code class="language-plaintext highlighter-rouge">ulimit</code> in your favorite shell man page.
+Note: <code class="language-plaintext highlighter-rouge">ulimit</code> does not apply in a Windows environment.</p>
+
+<p>Default: 100</p>
+
+<h3 id="default_pool_size">default_pool_size</h3>
+
+<p>How many server connections to allow per user/database pair. Can be overridden in
+the per-database configuration.</p>
+
+<p>Default: 20</p>
+
+<h3 id="min_pool_size">min_pool_size</h3>
+
+<p>Add more server connections to pool if below this number.
+Improves behavior when the normal load suddently comes back after a period
+of total inactivity.  The value is effectively capped at the pool size.</p>
+
+<p>Default: 0 (disabled)</p>
+
+<h3 id="reserve_pool_size">reserve_pool_size</h3>
+
+<p>How many additional connections to allow to a pool (see <code class="language-plaintext highlighter-rouge">reserve_pool_timeout</code>). 0 disables.</p>
+
+<p>Default: 0 (disabled)</p>
+
+<h3 id="reserve_pool_timeout">reserve_pool_timeout</h3>
+
+<p>If a client has not been serviced in this time,
+use additional connections from the reserve pool.  0 disables.  [seconds]</p>
+
+<p>Default: 5.0</p>
+
+<h3 id="max_db_connections">max_db_connections</h3>
+
+<p>Do not allow more than this many server connections per database
+(regardless of user).  This considers the PgBouncer database that the
+client has connected to, not the PostgreSQL database of the outgoing
+connection.</p>
+
+<p>This can also be set per database in the <code class="language-plaintext highlighter-rouge">[databases]</code> section.</p>
+
+<p>Note that when you hit the limit, closing a client connection to one
+pool will not immediately allow a server connection to be established
+for another pool, because the server connection for the first pool is
+still open.  Once the server connection closes (due to idle timeout),
+a new server connection will immediately be opened for the waiting
+pool.</p>
+
+<p>Default: 0 (unlimited)</p>
+
+<h3 id="max_user_connections">max_user_connections</h3>
+
+<p>Do not allow more than this many server connections per user
+(regardless of database).  This considers the PgBouncer user that is
+associated with a pool, which is either the user specified for the
+server connection or in absence of that the user the client has
+connected as.</p>
+
+<p>This can also be set per user in the <code class="language-plaintext highlighter-rouge">[users]</code> section.</p>
+
+<p>Note that when you hit the limit, closing a client connection to one
+pool will not immediately allow a server connection to be established
+for another pool, because the server connection for the first pool is
+still open.  Once the server connection closes (due to idle timeout),
+a new server connection will immediately be opened for the waiting
+pool.</p>
+
+<p>Default: 0 (unlimited)</p>
+
+<h3 id="server_round_robin">server_round_robin</h3>
+
+<p>By default, PgBouncer reuses server connections in LIFO (last-in, first-out) manner,
+so that few connections get the most load.  This gives best performance if you have
+a single server serving a database.  But if there is a round-robin
+system behind a database address (TCP, DNS, or host list), then it is
+better if PgBouncer also uses connections in that manner, thus
+achieving uniform load.</p>
+
+<p>Default: 0</p>
+
+<h3 id="ignore_startup_parameters">ignore_startup_parameters</h3>
+
+<p>By default, PgBouncer allows only parameters it can keep track of in startup
+packets: <code class="language-plaintext highlighter-rouge">client_encoding</code>, <code class="language-plaintext highlighter-rouge">datestyle</code>, <code class="language-plaintext highlighter-rouge">timezone</code> and <code class="language-plaintext highlighter-rouge">standard_conforming_strings</code>.
+All others parameters will raise an error.  To allow others parameters, they can be
+specified here, so that PgBouncer knows that they are handled by the admin and it can ignore them.</p>
+
+<p>If you need to specify multiple values, use a comma-separated list (e.g.
+<code class="language-plaintext highlighter-rouge">options,extra_float_digits</code>)</p>
+
+<p>Default: empty</p>
+
+<h3 id="peer_id">peer_id</h3>
+<p>The peer id used to identify this PgBouncer process in a group of PgBouncer
+processes that are peered together. The <code class="language-plaintext highlighter-rouge">peer_id</code> value should be unique within
+a group of peered PgBouncer processes. When set to 0 pgbouncer peering is
+disabled. See the docs for the <code class="language-plaintext highlighter-rouge">[peers]</code> section for more information. The
+maximum value that can be used for the <code class="language-plaintext highlighter-rouge">peer_id</code> is 16383.</p>
+
+<p>Default: 0</p>
+
+<h3 id="disable_pqexec">disable_pqexec</h3>
+
+<p>Disable the Simple Query protocol (PQexec).  Unlike the Extended Query protocol, Simple Query
+allows multiple queries in one packet, which allows some classes of SQL-injection
+attacks.  Disabling it can improve security.  Obviously, this means only clients that
+exclusively use the Extended Query protocol will stay working.</p>
+
+<p>Default: 0</p>
+
+<h3 id="application_name_add_host">application_name_add_host</h3>
+
+<p>Add the client host address and port to the application name setting set on connection start.
+This helps in identifying the source of bad queries etc.  This logic applies
+only at the start of a connection.  If <code class="language-plaintext highlighter-rouge">application_name</code> is later changed with <code class="language-plaintext highlighter-rouge">SET</code>,
+PgBouncer does not change it again.</p>
+
+<p>Default: 0</p>
+
+<h3 id="conffile">conffile</h3>
+
+<p>Show location of current config file.  Changing it will make PgBouncer use another
+config file for next <code class="language-plaintext highlighter-rouge">RELOAD</code> / <code class="language-plaintext highlighter-rouge">SIGHUP</code>.</p>
+
+<p>Default: file from command line</p>
+
+<h3 id="service_name">service_name</h3>
+
+<p>Used on win32 service registration.</p>
+
+<p>Default: <code class="language-plaintext highlighter-rouge">pgbouncer</code></p>
+
+<h3 id="job_name">job_name</h3>
+
+<p>Alias for <code class="language-plaintext highlighter-rouge">service_name</code>.</p>
+
+<h3 id="stats_period">stats_period</h3>
+
+<p>Sets how often the averages shown in various <code class="language-plaintext highlighter-rouge">SHOW</code> commands are
+updated and how often aggregated statistics are written to the log
+(but see <code class="language-plaintext highlighter-rouge">log_stats</code>). [seconds]</p>
+
+<p>Default: 60</p>
+
+<h2 id="authentication-settings" class="clickable-header top-level-header">Authentication settings</h2><i class="icon-arrow-up back-to-top"> </i>
+
+<p>PgBouncer handles its own client authentication and has its own
+database of users.  These settings control this.</p>
+
+<h3 id="auth_type">auth_type</h3>
+
+<p>How to authenticate users.</p>
+
+<dl>
+  <dt>cert</dt>
+  <dd>Client must connect over TLS connection with a valid client certificate.
+The user name is then taken from the CommonName field from the certificate.</dd>
+  <dt>md5</dt>
+  <dd>Use MD5-based password check.  This is the default authentication
+method.  <code class="language-plaintext highlighter-rouge">auth_file</code> may contain both MD5-encrypted and plain-text
+passwords.  If <code class="language-plaintext highlighter-rouge">md5</code> is configured and a user has a SCRAM secret,
+then SCRAM authentication is used automatically instead.</dd>
+  <dt>scram-sha-256</dt>
+  <dd>Use password check with SCRAM-SHA-256.  <code class="language-plaintext highlighter-rouge">auth_file</code> has to contain
+SCRAM secrets or plain-text passwords.</dd>
+  <dt>plain</dt>
+  <dd>The clear-text password is sent over the wire.  Deprecated.</dd>
+  <dt>trust</dt>
+  <dd>No authentication is done. The user name must still exist in <code class="language-plaintext highlighter-rouge">auth_file</code>.</dd>
+  <dt>any</dt>
+  <dd>Like the <code class="language-plaintext highlighter-rouge">trust</code> method, but the user name given is ignored. Requires that all
+databases are configured to log in as a specific user.  Additionally, the console
+database allows any user to log in as admin.</dd>
+  <dt>hba</dt>
+  <dd>The actual authentication type is loaded from <code class="language-plaintext highlighter-rouge">auth_hba_file</code>.  This allows different
+authentication methods for different access paths, for example: connections
+over Unix socket use the <code class="language-plaintext highlighter-rouge">peer</code> auth method, connections over TCP
+must use TLS.</dd>
+  <dt>pam</dt>
+  <dd>PAM is used to authenticate users, <code class="language-plaintext highlighter-rouge">auth_file</code> is ignored. This method is not
+compatible with databases using the <code class="language-plaintext highlighter-rouge">auth_user</code> option. The service name reported to
+PAM is “pgbouncer”. <code class="language-plaintext highlighter-rouge">pam</code> is not supported in the HBA configuration file.</dd>
+</dl>
+
+<h3 id="auth_hba_file">auth_hba_file</h3>
+
+<p>HBA configuration file to use when <code class="language-plaintext highlighter-rouge">auth_type</code> is <code class="language-plaintext highlighter-rouge">hba</code>.</p>
+
+<p>Default: not set</p>
+
+<h3 id="auth_file">auth_file</h3>
+
+<p>The name of the file to load user names and passwords from.  See
+section <a href="https://www.pgbouncer.org/config.html#authentication-file-format">Authentication file format</a> below about details.</p>
+
+<p>Most authentication types (see above) require that either <code class="language-plaintext highlighter-rouge">auth_file</code>
+or <code class="language-plaintext highlighter-rouge">auth_user</code> be set; otherwise there would be no users defined.</p>
+
+<p>Default: not set</p>
+
+<h3 id="auth_user">auth_user</h3>
+
+<p>If <code class="language-plaintext highlighter-rouge">auth_user</code> is set, then any user not specified in <code class="language-plaintext highlighter-rouge">auth_file</code> will be
+queried through the <code class="language-plaintext highlighter-rouge">auth_query</code> query from pg_shadow in the database,
+using <code class="language-plaintext highlighter-rouge">auth_user</code>. The password of <code class="language-plaintext highlighter-rouge">auth_user</code> will be taken from <code class="language-plaintext highlighter-rouge">auth_file</code>.
+(If the <code class="language-plaintext highlighter-rouge">auth_user</code> does not require a password then it does not need
+to be defined in <code class="language-plaintext highlighter-rouge">auth_file</code>.)</p>
+
+<p>Direct access to pg_shadow requires admin rights.  It’s preferable to
+use a non-superuser that calls a SECURITY DEFINER function instead.</p>
+
+<p>Default: not set</p>
+
+<h3 id="auth_query">auth_query</h3>
+
+<p>Query to load user’s password from database.</p>
+
+<p>Direct access to pg_shadow requires admin rights.  It’s preferable to
+use a non-superuser that calls a SECURITY DEFINER function instead.</p>
+
+<p>Note that the query is run inside the target database.  So if a function
+is used, it needs to be installed into each database.</p>
+
+<p>Default: <code class="language-plaintext highlighter-rouge">SELECT usename, passwd FROM pg_shadow WHERE usename=$1</code></p>
+
+<h3 id="auth_dbname">auth_dbname</h3>
+
+<p>Database name in the <code class="language-plaintext highlighter-rouge">[database]</code> section to be used for authentication purposes. This
+option can be either global or overriden in the connection string if this parameter is
+specified.</p>
+
+<h2 id="log-settings" class="clickable-header top-level-header">Log settings</h2><i class="icon-arrow-up back-to-top"> </i>
+
+<h3 id="syslog">syslog</h3>
+
+<p>Toggles syslog on/off.
+On Windows, the event log is used instead.</p>
+
+<p>Default: 0</p>
+
+<h3 id="syslog_ident">syslog_ident</h3>
+
+<p>Under what name to send logs to syslog.</p>
+
+<p>Default: <code class="language-plaintext highlighter-rouge">pgbouncer</code> (program name)</p>
+
+<h3 id="syslog_facility">syslog_facility</h3>
+
+<p>Under what facility to send logs to syslog.
+Possibilities: <code class="language-plaintext highlighter-rouge">auth</code>, <code class="language-plaintext highlighter-rouge">authpriv</code>, <code class="language-plaintext highlighter-rouge">daemon</code>, <code class="language-plaintext highlighter-rouge">user</code>, <code class="language-plaintext highlighter-rouge">local0-7</code>.</p>
+
+<p>Default: <code class="language-plaintext highlighter-rouge">daemon</code></p>
+
+<h3 id="log_connections">log_connections</h3>
+
+<p>Log successful logins.</p>
+
+<p>Default: 1</p>
+
+<h3 id="log_disconnections">log_disconnections</h3>
+
+<p>Log disconnections with reasons.</p>
+
+<p>Default: 1</p>
+
+<h3 id="log_pooler_errors">log_pooler_errors</h3>
+
+<p>Log error messages the pooler sends to clients.</p>
+
+<p>Default: 1</p>
+
+<h3 id="log_stats">log_stats</h3>
+
+<p>Write aggregated statistics into the log, every <code class="language-plaintext highlighter-rouge">stats_period</code>.  This
+can be disabled if external monitoring tools are used to grab the same
+data from <code class="language-plaintext highlighter-rouge">SHOW</code> commands.</p>
+
+<p>Default: 1</p>
+
+<h3 id="verbose">verbose</h3>
+
+<p>Increase verbosity.  Mirrors the “-v” switch on the command line.
+For example, using “-v -v” on the command line is the same as <code class="language-plaintext highlighter-rouge">verbose=2</code>.</p>
+
+<p>Default: 0</p>
+
+<h2 id="console-access-control" class="clickable-header top-level-header">Console access control</h2><i class="icon-arrow-up back-to-top"> </i>
+
+<h3 id="admin_users">admin_users</h3>
+
+<p>Comma-separated list of database users that are allowed to connect and
+run all commands on the console.  Ignored when <code class="language-plaintext highlighter-rouge">auth_type</code> is <code class="language-plaintext highlighter-rouge">any</code>,
+in which case any user name is allowed in as admin.</p>
+
+<p>Default: empty</p>
+
+<h3 id="stats_users">stats_users</h3>
+
+<p>Comma-separated list of database users that are allowed to connect and
+run read-only queries on the console. That means all <code class="language-plaintext highlighter-rouge">SHOW</code> commands except
+<code class="language-plaintext highlighter-rouge">SHOW FDS</code>.</p>
+
+<p>Default: empty</p>
+
+<h2 id="connection-sanity-checks-timeouts" class="clickable-header top-level-header">Connection sanity checks, timeouts</h2><i class="icon-arrow-up back-to-top"> </i>
+
+<h3 id="server_reset_query">server_reset_query</h3>
+
+<p>Query sent to server on connection release, before making it
+available to other clients.  At that moment no transaction is in
+progress, so the value should not include <code class="language-plaintext highlighter-rouge">ABORT</code> or <code class="language-plaintext highlighter-rouge">ROLLBACK</code>.</p>
+
+<p>The query is supposed to clean any changes made to the database session
+so that the next client gets the connection in a well-defined state.  The default is
+<code class="language-plaintext highlighter-rouge">DISCARD ALL</code>, which cleans everything, but that leaves the next client
+no pre-cached state.  It can be made lighter, e.g. <code class="language-plaintext highlighter-rouge">DEALLOCATE ALL</code>
+to just drop prepared statements, if the application does not break when
+some state is kept around.</p>
+
+<p>When transaction pooling is used, the <code class="language-plaintext highlighter-rouge">server_reset_query</code> is not used,
+because in that mode, clients must not use any session-based features, since each transaction
+ends up in a different connection and thus gets a different session state.</p>
+
+<p>Default: <code class="language-plaintext highlighter-rouge">DISCARD ALL</code></p>
+
+<h3 id="server_reset_query_always">server_reset_query_always</h3>
+
+<p>Whether <code class="language-plaintext highlighter-rouge">server_reset_query</code> should be run in all pooling modes.  When this
+setting is off (default), the <code class="language-plaintext highlighter-rouge">server_reset_query</code> will be run only in pools
+that are in sessions-pooling mode.  Connections in transaction-pooling mode
+should not have any need for a reset query.</p>
+
+<p>This setting is for working around broken setups that run applications that use session features
+over a transaction-pooled PgBouncer.  It changes non-deterministic breakage
+to deterministic breakage: Clients always lose their state after each
+transaction.</p>
+
+<p>Default: 0</p>
+
+<h3 id="server_check_delay">server_check_delay</h3>
+
+<p>How long to keep released connections available for immediate re-use, without running
+<code class="language-plaintext highlighter-rouge">server_check_query</code> on it. If 0 then the check is always run.</p>
+
+<p>Default: 30.0</p>
+
+<h3 id="server_check_query">server_check_query</h3>
+
+<p>Simple do-nothing query to check if the server connection is alive.</p>
+
+<p>If an empty string, then sanity checking is disabled.</p>
+
+<p>Default: <code class="language-plaintext highlighter-rouge">select 1</code></p>
+
+<h3 id="server_fast_close">server_fast_close</h3>
+
+<p>Disconnect a server in session pooling mode immediately or after the
+end of the current transaction if it is in “close_needed” mode (set by
+<code class="language-plaintext highlighter-rouge">RECONNECT</code>, <code class="language-plaintext highlighter-rouge">RELOAD</code> that changes connection settings, or DNS
+change), rather than waiting for the session end.  In statement or
+transaction pooling mode, this has no effect since that is the default
+behavior there.</p>
+
+<p>If because of this setting a server connection is closed before the
+end of the client session, the client connection is also closed.  This
+ensures that the client notices that the session has been interrupted.</p>
+
+<p>This setting makes connection configuration changes take effect sooner
+if session pooling and long-running sessions are used.  The downside
+is that client sessions are liable to be interrupted by a
+configuration change, so client applications will need logic to
+reconnect and reestablish session state.  But note that no
+transactions will be lost, because running transactions are not
+interrupted, only idle sessions.</p>
+
+<p>Default: 0</p>
+
+<h3 id="server_lifetime">server_lifetime</h3>
+
+<p>The pooler will close an unused (not currently linked to any client connection)
+server connection that has been connected longer
+than this. Setting it to 0 means the connection is to be used only once,
+then closed. [seconds]</p>
+
+<p>Default: 3600.0</p>
+
+<h3 id="server_idle_timeout">server_idle_timeout</h3>
+
+<p>If a server connection has been idle more than this many seconds it will be closed.
+If 0 then this timeout is disabled.  [seconds]</p>
+
+<p>Default: 600.0</p>
+
+<h3 id="server_connect_timeout">server_connect_timeout</h3>
+
+<p>If connection and login don’t finish in this amount of time, the connection
+will be closed. [seconds]</p>
+
+<p>Default: 15.0</p>
+
+<h3 id="server_login_retry">server_login_retry</h3>
+
+<p>If login to the server failed, because of failure to connect or from
+authentication, the pooler waits this much before retrying to connect.
+During the waiting interval, new clients trying to connect to the
+failing server will get an error immediately without another
+connection attempt. [seconds]</p>
+
+<p>The purpose of this behavior is that clients don’t unnecessarily queue
+up waiting for a server connection to become available if the server
+is not working.  However, it also means that if a server is
+momentarily failing, for example during a restart or if the
+configuration was erroneous, then it will take at least this long
+until the pooler will consider connecting to it again.  Planned events
+such as restarts should normally be managed using the <code class="language-plaintext highlighter-rouge">PAUSE</code> command
+to avoid this.</p>
+
+<p>Default: 15.0</p>
+
+<h3 id="client_login_timeout">client_login_timeout</h3>
+
+<p>If a client connects but does not manage to log in in this amount of time, it
+will be disconnected. Mainly needed to avoid dead connections stalling
+<code class="language-plaintext highlighter-rouge">SUSPEND</code> and thus online restart. [seconds]</p>
+
+<p>Default: 60.0</p>
+
+<h3 id="autodb_idle_timeout">autodb_idle_timeout</h3>
+
+<p>If the automatically created (via “*”) database pools have
+been unused this many seconds, they are freed.  The negative
+aspect of that is that their statistics are also forgotten.  [seconds]</p>
+
+<p>Default: 3600.0</p>
+
+<h3 id="dns_max_ttl">dns_max_ttl</h3>
+
+<p>How long DNS lookups can be cached.  The actual DNS TTL is ignored.
+[seconds]</p>
+
+<p>Default: 15.0</p>
+
+<h3 id="dns_nxdomain_ttl">dns_nxdomain_ttl</h3>
+
+<p>How long DNS errors and NXDOMAIN DNS lookups can be cached. [seconds]</p>
+
+<p>Default: 15.0</p>
+
+<h3 id="dns_zone_check_period">dns_zone_check_period</h3>
+
+<p>Period to check if a zone serial has changed.</p>
+
+<p>PgBouncer can collect DNS zones from host names (everything after first dot)
+and then periodically check if the zone serial changes.
+If it notices changes, all host names under that zone
+are looked up again.  If any host IP changes, its connections
+are invalidated.</p>
+
+<p>Works only with UDNS and c-ares backends (<code class="language-plaintext highlighter-rouge">configure</code> option <code class="language-plaintext highlighter-rouge">--with-udns</code> or <code class="language-plaintext highlighter-rouge">--with-cares</code>).</p>
+
+<p>Default: 0.0 (disabled)</p>
+
+<h3 id="resolv_conf">resolv_conf</h3>
+
+<p>The location of a custom <code class="language-plaintext highlighter-rouge">resolv.conf</code> file.  This is to allow
+specifying custom DNS servers and perhaps other name resolution
+options, independent of the global operating system configuration.</p>
+
+<p>Requires evdns (&gt;= 2.0.3) or c-ares (&gt;= 1.15.0) backend.</p>
+
+<p>The parsing of the file is done by the DNS backend library, not
+PgBouncer, so see the library’s documentation for details on allowed
+syntax and directives.</p>
+
+<p>Default: empty (use operating system defaults)</p>
+
+<h2 id="tls-settings" class="clickable-header top-level-header">TLS settings</h2><i class="icon-arrow-up back-to-top"> </i>
+
+<h3 id="client_tls_sslmode">client_tls_sslmode</h3>
+
+<p>TLS mode to use for connections from clients.  TLS connections
+are disabled by default.  When enabled, <code class="language-plaintext highlighter-rouge">client_tls_key_file</code>
+and <code class="language-plaintext highlighter-rouge">client_tls_cert_file</code> must be also configured to set up
+the key and certificate PgBouncer uses to accept client connections.</p>
+
+<dl>
+  <dt>disable</dt>
+  <dd>Plain TCP.  If client requests TLS, it’s ignored.  Default.</dd>
+  <dt>allow</dt>
+  <dd>If client requests TLS, it is used.  If not, plain TCP is used.
+If the client presents a client certificate, it is not validated.</dd>
+  <dt>prefer</dt>
+  <dd>Same as <code class="language-plaintext highlighter-rouge">allow</code>.</dd>
+  <dt>require</dt>
+  <dd>Client must use TLS.  If not, the client connection is rejected.
+If the client presents a client certificate, it is not validated.</dd>
+  <dt>verify-ca</dt>
+  <dd>Client must use TLS with valid client certificate.</dd>
+  <dt>verify-full</dt>
+  <dd>Same as <code class="language-plaintext highlighter-rouge">verify-ca</code>.</dd>
+</dl>
+
+<h3 id="client_tls_key_file">client_tls_key_file</h3>
+
+<p>Private key for PgBouncer to accept client connections.</p>
+
+<p>Default: not set</p>
+
+<h3 id="client_tls_cert_file">client_tls_cert_file</h3>
+
+<p>Certificate for private key.  Clients can validate it.</p>
+
+<p>Default: not set</p>
+
+<h3 id="client_tls_ca_file">client_tls_ca_file</h3>
+
+<p>Root certificate file to validate client certificates.</p>
+
+<p>Default: not set</p>
+
+<h3 id="client_tls_protocols">client_tls_protocols</h3>
+
+<p>Which TLS protocol versions are allowed.  Allowed values: <code class="language-plaintext highlighter-rouge">tlsv1.0</code>, <code class="language-plaintext highlighter-rouge">tlsv1.1</code>, <code class="language-plaintext highlighter-rouge">tlsv1.2</code>, <code class="language-plaintext highlighter-rouge">tlsv1.3</code>.
+Shortcuts: <code class="language-plaintext highlighter-rouge">all</code> (tlsv1.0,tlsv1.1,tlsv1.2,tlsv1.3), <code class="language-plaintext highlighter-rouge">secure</code> (tlsv1.2,tlsv1.3), <code class="language-plaintext highlighter-rouge">legacy</code> (all).</p>
+
+<p>Default: <code class="language-plaintext highlighter-rouge">secure</code></p>
+
+<h3 id="client_tls_ciphers">client_tls_ciphers</h3>
+
+<p>Allowed TLS ciphers, in OpenSSL syntax.  Shortcuts:
+<code class="language-plaintext highlighter-rouge">default</code>/<code class="language-plaintext highlighter-rouge">secure</code>, <code class="language-plaintext highlighter-rouge">compat</code>/<code class="language-plaintext highlighter-rouge">legacy</code>, <code class="language-plaintext highlighter-rouge">insecure</code>/<code class="language-plaintext highlighter-rouge">all</code>, <code class="language-plaintext highlighter-rouge">normal</code>,
+<code class="language-plaintext highlighter-rouge">fast</code>.</p>
+
+<p>Only connections using TLS version 1.2 and lower are affected.  There
+is currently no setting that controls the cipher choices used by TLS
+version 1.3 connections.</p>
+
+<p>Default: <code class="language-plaintext highlighter-rouge">fast</code></p>
+
+<h3 id="client_tls_ecdhcurve">client_tls_ecdhcurve</h3>
+
+<p>Elliptic Curve name to use for ECDH key exchanges.</p>
+
+<p>Allowed values: <code class="language-plaintext highlighter-rouge">none</code> (DH is disabled), <code class="language-plaintext highlighter-rouge">auto</code> (256-bit ECDH), curve name</p>
+
+<p>Default: <code class="language-plaintext highlighter-rouge">auto</code></p>
+
+<h3 id="client_tls_dheparams">client_tls_dheparams</h3>
+
+<p>DHE key exchange type.</p>
+
+<p>Allowed values: <code class="language-plaintext highlighter-rouge">none</code> (DH is disabled), <code class="language-plaintext highlighter-rouge">auto</code> (2048-bit DH), <code class="language-plaintext highlighter-rouge">legacy</code> (1024-bit DH)</p>
+
+<p>Default: <code class="language-plaintext highlighter-rouge">auto</code></p>
+
+<h3 id="server_tls_sslmode">server_tls_sslmode</h3>
+
+<p>TLS mode to use for connections to PostgreSQL servers.
+TLS connections are disabled by default.</p>
+
+<dl>
+  <dt>disable</dt>
+  <dd>Plain TCP.  TLS is not even requested from the server.  Default.</dd>
+  <dt>allow</dt>
+  <dd>FIXME: if server rejects plain, try TLS?</dd>
+  <dt>prefer</dt>
+  <dd>TLS connection is always requested first from PostgreSQL.
+If refused, the connection will be established over plain TCP.
+Server certificate is not validated.</dd>
+  <dt>require</dt>
+  <dd>Connection must go over TLS.  If server rejects it,
+plain TCP is not attempted.  Server certificate is not validated.</dd>
+  <dt>verify-ca</dt>
+  <dd>Connection must go over TLS and server certificate must be valid
+according to <code class="language-plaintext highlighter-rouge">server_tls_ca_file</code>.  Server host name is not checked
+against certificate.</dd>
+  <dt>verify-full</dt>
+  <dd>Connection must go over TLS and server certificate must be valid
+according to <code class="language-plaintext highlighter-rouge">server_tls_ca_file</code>.  Server host name must match
+certificate information.</dd>
+</dl>
+
+<h3 id="server_tls_ca_file">server_tls_ca_file</h3>
+
+<p>Root certificate file to validate PostgreSQL server certificates.</p>
+
+<p>Default: not set</p>
+
+<h3 id="server_tls_key_file">server_tls_key_file</h3>
+
+<p>Private key for PgBouncer to authenticate against PostgreSQL server.</p>
+
+<p>Default: not set</p>
+
+<h3 id="server_tls_cert_file">server_tls_cert_file</h3>
+
+<p>Certificate for private key.  PostgreSQL server can validate it.</p>
+
+<p>Default: not set</p>
+
+<h3 id="server_tls_protocols">server_tls_protocols</h3>
+
+<p>Which TLS protocol versions are allowed.  Allowed values: <code class="language-plaintext highlighter-rouge">tlsv1.0</code>, <code class="language-plaintext highlighter-rouge">tlsv1.1</code>, <code class="language-plaintext highlighter-rouge">tlsv1.2</code>, <code class="language-plaintext highlighter-rouge">tlsv1.3</code>.
+Shortcuts: <code class="language-plaintext highlighter-rouge">all</code> (tlsv1.0,tlsv1.1,tlsv1.2,tlsv1.3), <code class="language-plaintext highlighter-rouge">secure</code> (tlsv1.2,tlsv1.3), <code class="language-plaintext highlighter-rouge">legacy</code> (all).</p>
+
+<p>Default: <code class="language-plaintext highlighter-rouge">secure</code></p>
+
+<h3 id="server_tls_ciphers">server_tls_ciphers</h3>
+
+<p>Allowed TLS ciphers, in OpenSSL syntax.  Shortcuts:
+<code class="language-plaintext highlighter-rouge">default</code>/<code class="language-plaintext highlighter-rouge">secure</code>, <code class="language-plaintext highlighter-rouge">compat</code>/<code class="language-plaintext highlighter-rouge">legacy</code>, <code class="language-plaintext highlighter-rouge">insecure</code>/<code class="language-plaintext highlighter-rouge">all</code>, <code class="language-plaintext highlighter-rouge">normal</code>,
+<code class="language-plaintext highlighter-rouge">fast</code>.</p>
+
+<p>Only connections using TLS version 1.2 and lower are affected.  There
+is currently no setting that controls the cipher choices used by TLS
+version 1.3 connections.</p>
+
+<p>Default: <code class="language-plaintext highlighter-rouge">fast</code></p>
+
+<h2 id="dangerous-timeouts" class="clickable-header top-level-header">Dangerous timeouts</h2><i class="icon-arrow-up back-to-top"> </i>
+
+<p>Setting the following timeouts can cause unexpected errors.</p>
+
+<h3 id="query_timeout">query_timeout</h3>
+
+<p>Queries running longer than that are canceled. This should be used only with
+a slightly smaller server-side <code class="language-plaintext highlighter-rouge">statement_timeout</code>, to apply only for network
+problems. [seconds]</p>
+
+<p>Default: 0.0 (disabled)</p>
+
+<h3 id="query_wait_timeout">query_wait_timeout</h3>
+
+<p>Maximum time queries are allowed to spend waiting for execution. If the query
+is not assigned to a server during that time, the client is disconnected.
+0 disables.  If this is disabled, clients will be queued indefinitely. [seconds]</p>
+
+<p>This setting is used to prevent unresponsive servers from grabbing up
+connections.  It also helps when the server is down or rejects
+connections for any reason.</p>
+
+<p>Default: 120.0</p>
+
+<h3 id="cancel_wait_timeout">cancel_wait_timeout</h3>
+
+<p>Maximum time cancellation requests are allowed to spend waiting for execution.
+If the cancel request is not assigned to a server during that time, the client is
+disconnected.
+0 disables.  If this is disabled, cancel requests will be queued indefinitely. [seconds]</p>
+
+<p>This setting is used to prevent a client locking up when a cancel cannot be
+forwarded due to the server being down.</p>
+
+<p>Default: 10.0</p>
+
+<h3 id="client_idle_timeout">client_idle_timeout</h3>
+
+<p>Client connections idling longer than this many seconds are closed. This should
+be larger than the client-side connection lifetime settings, and only used
+for network problems. [seconds]</p>
+
+<p>Default: 0.0 (disabled)</p>
+
+<h3 id="idle_transaction_timeout">idle_transaction_timeout</h3>
+
+<p>If a client has been in “idle in transaction” state longer,
+it will be disconnected.  [seconds]</p>
+
+<p>Default: 0.0 (disabled)</p>
+
+<h3 id="suspend_timeout">suspend_timeout</h3>
+
+<p>How long to wait for buffer flush during <code class="language-plaintext highlighter-rouge">SUSPEND</code> or reboot (<code class="language-plaintext highlighter-rouge">-R</code>).
+A connection is dropped if the flush does not succeed. [seconds]</p>
+
+<p>Default: 10</p>
+
+<h2 id="low-level-network-settings" class="clickable-header top-level-header">Low-level network settings</h2><i class="icon-arrow-up back-to-top"> </i>
+
+<h3 id="pkt_buf">pkt_buf</h3>
+
+<p>Internal buffer size for packets. Affects size of TCP packets sent and general
+memory usage. Actual libpq packets can be larger than this, so no need to set it
+large.</p>
+
+<p>Default: 4096</p>
+
+<h3 id="max_packet_size">max_packet_size</h3>
+
+<p>Maximum size for PostgreSQL packets that PgBouncer allows through.  One packet
+is either one query or one result set row.  The full result set can be larger.</p>
+
+<p>Default: 2147483647</p>
+
+<h3 id="listen_backlog">listen_backlog</h3>
+
+<p>Backlog argument for listen(2).  Determines how many new unanswered connection
+attempts are kept in the queue.  When the queue is full, further new connections are dropped.</p>
+
+<p>Default: 128</p>
+
+<h3 id="sbuf_loopcnt">sbuf_loopcnt</h3>
+
+<p>How many times to process data on one connection, before proceeding.
+Without this limit, one connection with a big result set can stall
+PgBouncer for a long time.  One loop processes one <code class="language-plaintext highlighter-rouge">pkt_buf</code> amount of data.
+0 means no limit.</p>
+
+<p>Default: 5</p>
+
+<h3 id="so_reuseport">so_reuseport</h3>
+
+<p>Specifies whether to set the socket option <code class="language-plaintext highlighter-rouge">SO_REUSEPORT</code> on TCP
+listening sockets.  On some operating systems, this allows running
+multiple PgBouncer instances on the same host listening on the same
+port and having the kernel distribute the connections automatically.
+This option is a way to get PgBouncer to use more CPU cores.
+(PgBouncer is single-threaded and uses one CPU core per instance.)</p>
+
+<p>The behavior in detail depends on the operating system kernel.  As of
+this writing, this setting has the desired effect on (sufficiently
+recent versions of) Linux, DragonFlyBSD, and FreeBSD.  (On FreeBSD, it
+applies the socket option <code class="language-plaintext highlighter-rouge">SO_REUSEPORT_LB</code> instead.)  Some other
+operating systems support the socket option but it won’t have the
+desired effect: It will allow multiple processes to bind to the same
+port but only one of them will get the connections.  See your
+operating system’s setsockopt() documentation for details.</p>
+
+<p>On systems that don’t support the socket option at all, turning this
+setting on will result in an error.</p>
+
+<p>Each PgBouncer instance on the same host needs different settings for
+at least <code class="language-plaintext highlighter-rouge">unix_socket_dir</code> and <code class="language-plaintext highlighter-rouge">pidfile</code>, as well as <code class="language-plaintext highlighter-rouge">logfile</code> if that
+is used.  Also note that if you make use of this option, you can no
+longer connect to a specific PgBouncer instance via TCP/IP, which
+might have implications for monitoring and metrics collection.</p>
+
+<p>To make sure query cancellations keep working, you should set up PgBouncer
+peering between the different PgBouncer processes. For details look at docs
+for the <code class="language-plaintext highlighter-rouge">peer_id</code> configuration option and the <code class="language-plaintext highlighter-rouge">peers</code> configuration section.
+There’s also an example that uses peering and so_reuseport in the example
+section of these docs.</p>
+
+<p>Default: 0</p>
+
+<h3 id="tcp_defer_accept">tcp_defer_accept</h3>
+
+<p>Sets the <code class="language-plaintext highlighter-rouge">TCP_DEFER_ACCEPT</code> socket option; see <code class="language-plaintext highlighter-rouge">man 7 tcp</code> for
+details.  (This is a Boolean option: 1 means enabled.  The actual
+value set if enabled is currently hardcoded to 45 seconds.)</p>
+
+<p>This is currently only supported on Linux.</p>
+
+<p>Default: 1 on Linux, otherwise 0</p>
+
+<h3 id="tcp_socket_buffer">tcp_socket_buffer</h3>
+
+<p>Default: not set</p>
+
+<h3 id="tcp_keepalive">tcp_keepalive</h3>
+
+<p>Turns on basic keepalive with OS defaults.</p>
+
+<p>On Linux, the system defaults are tcp_keepidle=7200, tcp_keepintvl=75,
+tcp_keepcnt=9.  They are probably similar on other operating systems.</p>
+
+<p>Default: 1</p>
+
+<h3 id="tcp_keepcnt">tcp_keepcnt</h3>
+
+<p>Default: not set</p>
+
+<h3 id="tcp_keepidle">tcp_keepidle</h3>
+
+<p>Default: not set</p>
+
+<h3 id="tcp_keepintvl">tcp_keepintvl</h3>
+
+<p>Default: not set</p>
+
+<h3 id="tcp_user_timeout">tcp_user_timeout</h3>
+
+<p>Sets the <code class="language-plaintext highlighter-rouge">TCP_USER_TIMEOUT</code> socket option.  This specifies the maximum
+amount of time in milliseconds that transmitted data may remain
+unacknowledged before the TCP connection is forcibly closed.  If set
+to 0, then operating system’s default is used.</p>
+
+<p>This is currently only supported on Linux.</p>
+
+<p>Default: 0</p>
+
+<h2 id="section-databases" class="clickable-header top-level-header">Section [databases]</h2><i class="icon-arrow-up back-to-top"> </i>
+
+<p>The section <code class="language-plaintext highlighter-rouge">[databases]</code> defines the names of the databases that
+clients of PgBouncer can connect to and specifies where those
+connections will be routed.  The section contains key=value lines like</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dbname = connection string
+</code></pre></div></div>
+
+<p>where the key will be taken as a database name and the value as a
+connection string, consisting of key=value pairs of connection
+parameters, described below (similar to libpq, but the actual libpq is
+not used and the set of available features is different).  Example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>foodb = host=host1.example.com port=5432
+bardb = host=localhost dbname=bazdb
+</code></pre></div></div>
+
+<p>The database name can contain characters <code class="language-plaintext highlighter-rouge">_0-9A-Za-z</code> without quoting.
+Names that contain other characters need to be quoted with standard SQL
+identifier quoting: double quotes, with “” for a single instance of a double quote.</p>
+
+<p>The database name “pgbouncer” is reserved for the admin console and
+cannot be used as a key here.</p>
+
+<p>“*” acts as a fallback database: If the exact name does not exist, its
+value is taken as connection string for the requested database.  For
+example, if there is an entry (and no other overriding entries)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>* = host=foo
+</code></pre></div></div>
+
+<p>then a connection to PgBouncer specifying a database “bar” will
+effectively behave as if an entry</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bar = host=foo dbname=bar
+</code></pre></div></div>
+
+<p>exists (taking advantage of the default for <code class="language-plaintext highlighter-rouge">dbname</code> being the
+client-side database name; see below).</p>
+
+<p>Such automatically created database entries are cleaned up
+if they stay idle longer than the time specified by the <code class="language-plaintext highlighter-rouge">autodb_idle_timeout</code>
+parameter.</p>
+
+<h3 id="dbname">dbname</h3>
+
+<p>Destination database name.</p>
+
+<p>Default: same as client-side database name</p>
+
+<h3 id="host">host</h3>
+
+<p>Host name or IP address to connect to.  Host names are resolved
+at connection time, the result is cached per <code class="language-plaintext highlighter-rouge">dns_max_ttl</code> parameter.
+When a host name’s resolution changes, existing server connections are
+automatically closed when they are released (according to the pooling
+mode), and new server connections immediately use the new resolution.
+If DNS returns several results, they are used in a round-robin
+manner.</p>
+
+<p>If the value begins with <code class="language-plaintext highlighter-rouge">/</code>, then a Unix socket in the file-system
+namespace is used.  If the value begins with <code class="language-plaintext highlighter-rouge">@</code>, then a Unix socket
+in the abstract namespace is used.</p>
+
+<p>A comma-separated list of host names or addresses can be specified.
+In that case, connections are made in a round-robin manner.  (If a
+host list contains host names that in turn resolve via DNS to multiple
+addresses, the round-robin systems operate independently.  This is an
+implementation dependency that is subject to change.)  Note that in a
+list, all hosts must be available at all times: There are no
+mechanisms to skip unreachable hosts or to select only available hosts
+from a list or similar.  (This is different from what a host list in
+libpq means.)  Also note that this only affects how the destinations
+of new connections are chosen.  See also the setting
+<code class="language-plaintext highlighter-rouge">server_round_robin</code> for how clients are assigned to already
+established server connections.</p>
+
+<p>Examples:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>host=localhost
+host=127.0.0.1
+host=2001:0db8:85a3:0000:0000:8a2e:0370:7334
+host=/var/run/postgresql
+host=192.168.0.1,192.168.0.2,192.168.0.3
+</code></pre></div></div>
+
+<p>Default: not set, meaning to use a Unix socket</p>
+
+<h3 id="port">port</h3>
+
+<p>Default: 5432</p>
+
+<h3 id="user-1">user</h3>
+
+<p>If <code class="language-plaintext highlighter-rouge">user=</code> is set, all connections to the destination database will be
+done with the specified user, meaning that there will be only one pool
+for this database.</p>
+
+<p>Otherwise, PgBouncer logs into the destination database with the client
+user name, meaning that there will be one pool per user.</p>
+
+<h3 id="password">password</h3>
+
+<p>If no password is specified here, the password from the <code class="language-plaintext highlighter-rouge">auth_file</code> or
+<code class="language-plaintext highlighter-rouge">auth_query</code> will be used.</p>
+
+<h3 id="auth_user-1">auth_user</h3>
+
+<p>Override of the global <code class="language-plaintext highlighter-rouge">auth_user</code> setting, if specified.</p>
+
+<h3 id="pool_size">pool_size</h3>
+
+<p>Set the maximum size of pools for this database.  If not set,
+the <code class="language-plaintext highlighter-rouge">default_pool_size</code> is used.</p>
+
+<h3 id="min_pool_size-1">min_pool_size</h3>
+
+<p>Set the minimum pool size for this database. If not set, the global <code class="language-plaintext highlighter-rouge">min_pool_size</code> is
+used.</p>
+
+<h3 id="reserve_pool">reserve_pool</h3>
+
+<p>Set additional connections for this database. If not set, <code class="language-plaintext highlighter-rouge">reserve_pool_size</code> is
+used.</p>
+
+<h3 id="connect_query">connect_query</h3>
+
+<p>Query to be executed after a connection is established, but before
+allowing the connection to be used by any clients. If the query raises errors,
+they are logged but ignored otherwise.</p>
+
+<h3 id="pool_mode-1">pool_mode</h3>
+
+<p>Set the pool mode specific to this database. If not set,
+the default <code class="language-plaintext highlighter-rouge">pool_mode</code> is used.</p>
+
+<h3 id="max_db_connections-1">max_db_connections</h3>
+
+<p>Configure a database-wide maximum (i.e. all pools within the database will
+not have more than this many server connections).</p>
+
+<h3 id="client_encoding">client_encoding</h3>
+
+<p>Ask specific <code class="language-plaintext highlighter-rouge">client_encoding</code> from server.</p>
+
+<h3 id="datestyle">datestyle</h3>
+
+<p>Ask specific <code class="language-plaintext highlighter-rouge">datestyle</code> from server.</p>
+
+<h3 id="timezone">timezone</h3>
+
+<p>Ask specific <code class="language-plaintext highlighter-rouge">timezone</code> from server.</p>
+
+<h2 id="section-users" class="clickable-header top-level-header">Section [users]</h2><i class="icon-arrow-up back-to-top"> </i>
+
+<p>This section contains key=value lines like</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>user1 = settings
+</code></pre></div></div>
+
+<p>where the key will be taken as a user name and the value as a list of
+key=value pairs of configuration settings specific for this user.
+Example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>user1 = pool_mode=session
+</code></pre></div></div>
+
+<p>Only a few settings are available here.</p>
+
+<h3 id="pool_mode-2">pool_mode</h3>
+
+<p>Set the pool mode to be used for all connections from this user. If not set, the
+database or default <code class="language-plaintext highlighter-rouge">pool_mode</code> is used.</p>
+
+<h3 id="max_user_connections-1">max_user_connections</h3>
+
+<p>Configure a maximum for the user (i.e. all pools with the user will
+not have more than this many server connections).</p>
+
+<h2 id="section-peers" class="clickable-header top-level-header">Section [peers]</h2><i class="icon-arrow-up back-to-top"> </i>
+
+<p>The section <code class="language-plaintext highlighter-rouge">[peers]</code> defines the peers that PgBouncer can forward cancellation
+requests to and where those cancellation requests will be routed.</p>
+
+<p>PgBouncer processes can be peered together in a group by defining a <code class="language-plaintext highlighter-rouge">peer_id</code>
+value and a <code class="language-plaintext highlighter-rouge">[peers]</code> section in the configs of all the PgBouncer processes.
+These PgBouncer processes can then forward cancellations requests to the process
+that it originated from.  This is needed to make cancellations work when
+multiple PgBouncer processes (possibly on different servers) are behind the same
+TCP load balancer.  Cancellation requests are sent over different TCP
+connections than the query they are cancelling, so a TCP load balancer might
+send the cancellation request connection to a different process than the one
+that it was meant for.  By peering them these cancellation requests eventually
+end up at the right process. A more in-depth explanation is provided in this
+<a href="https://www.youtube.com/watch?v=M585FfbboNA">recording of a conference talk</a>.</p>
+
+<p>The section contains key=value lines like</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>peer_id = connection string
+</code></pre></div></div>
+
+<p>Where the key will be taken as a <code class="language-plaintext highlighter-rouge">peer_id</code> and the value as a connection string,
+consisting of key=value pairs of connection parameters, described below (similar
+to libpq, but the actual libpq is not used and the set of available features is
+different).  Example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1 = host=host1.example.com
+2 = host=/tmp/pgbouncer-2  port=5555
+</code></pre></div></div>
+
+<p>Note: For peering to work, the <code class="language-plaintext highlighter-rouge">peer_id</code> of each PgBouncer process in the group
+must be unique within the peered group.  And the <code class="language-plaintext highlighter-rouge">[peers]</code> section should
+contain entries for each of those peer ids.  An example can be found in the
+examples section of these docs.  It <strong>is</strong> allowed, but not necessary, for the
+<code class="language-plaintext highlighter-rouge">[peers]</code> section to contain the <code class="language-plaintext highlighter-rouge">peer_id</code> of the PgBouncer that the config is
+for. Such an entry will be ignored, but it is allowed to config management easy.
+Because it allows using the exact same <code class="language-plaintext highlighter-rouge">[peers]</code> section for multiple
+configs.</p>
+
+<h3 id="host-1">host</h3>
+
+<p>Host name or IP address to connect to.  Host names are resolved at connection
+time, the result is cached per <code class="language-plaintext highlighter-rouge">dns_max_ttl</code> parameter.  If DNS returns several
+results, they are used in a round-robin manner.  But in general it’s not
+recommended to use a hostname that resolves to multiple IPs, because then the
+cancel request might still be forwarded to the wrong node and it would need to
+be forwarded again (which is only allowed up to three times).</p>
+
+<p>If the value begins with <code class="language-plaintext highlighter-rouge">/</code>, then a Unix socket in the file-system namespace is
+used.  If the value begins with <code class="language-plaintext highlighter-rouge">@</code>, then a Unix socket in the abstract
+namespace is used.</p>
+
+<p>Examples:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>host=localhost
+host=127.0.0.1
+host=2001:0db8:85a3:0000:0000:8a2e:0370:7334
+host=/var/run/pgbouncer-1
+</code></pre></div></div>
+
+<h3 id="port-1">port</h3>
+
+<p>Default: 6432</p>
+
+<h3 id="pool_size-1">pool_size</h3>
+
+<p>Set the maximum number of cancel requests that can be in flight to the peer at
+the same time.  It’s quite normal for cancel requests to arrive in bursts, e.g.
+when the backing Postgres server slow or down.  So it’s important for
+<code class="language-plaintext highlighter-rouge">pool_size</code> to not be so low that it cannot handle these bursts.</p>
+
+<p>If not set, the <code class="language-plaintext highlighter-rouge">default_pool_size</code> is used.</p>
+
+<h2 id="include-directive" class="clickable-header top-level-header">Include directive</h2><i class="icon-arrow-up back-to-top"> </i>
+
+<p>The PgBouncer configuration file can contain include directives, which specify
+another configuration file to read and process. This allows splitting the
+configuration file into physically separate parts. The include directives look
+like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>%include filename
+</code></pre></div></div>
+
+<p>If the file name is not an absolute path, it is taken as relative to the current
+working directory.</p>
+
+<h2 id="authentication-file-format" class="clickable-header top-level-header">Authentication file format</h2><i class="icon-arrow-up back-to-top"> </i>
+
+<p>This section describes the format of the file specified by the
+<code class="language-plaintext highlighter-rouge">auth_file</code> setting.  It is a text file in the following format:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"username1" "password" ...
+"username2" "md5abcdef012342345" ...
+"username2" "SCRAM-SHA-256$&lt;iterations&gt;:&lt;salt&gt;$&lt;storedkey&gt;:&lt;serverkey&gt;"
+</code></pre></div></div>
+
+<p>There should be at least 2 fields, surrounded by double quotes. The first
+field is the user name and the second is either a plain-text, a MD5-hashed
+password, or a SCRAM secret.  PgBouncer ignores the rest of the line.
+Double quotes in a field value can be escaped by writing two double quotes.</p>
+
+<p>PostgreSQL MD5-hashed password format:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"md5" + md5(password + username)
+</code></pre></div></div>
+
+<p>So user <code class="language-plaintext highlighter-rouge">admin</code> with password <code class="language-plaintext highlighter-rouge">1234</code> will have MD5-hashed password
+<code class="language-plaintext highlighter-rouge">md545f2603610af569b6155c45067268c6b</code>.</p>
+
+<p>PostgreSQL SCRAM secret format:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SCRAM-SHA-256$&lt;iterations&gt;:&lt;salt&gt;$&lt;storedkey&gt;:&lt;serverkey&gt;
+</code></pre></div></div>
+
+<p>See the PostgreSQL documentation and RFC 5803 for details on this.</p>
+
+<p>The passwords or secrets stored in the authentication file serve two
+purposes.  First, they are used to verify the passwords of incoming
+client connections, if a password-based authentication method is
+configured.  Second, they are used as the passwords for outgoing
+connections to the backend server, if the backend server requires
+password-based authentication (unless the password is specified
+directly in the database’s connection string).  The latter works if
+the password is stored in plain text or MD5-hashed.  SCRAM secrets can
+only be used for logging into a server if the client authentication
+also uses SCRAM, the PgBouncer database definition does not specify a
+user name, and the SCRAM secrets are identical in PgBouncer and the
+PostgreSQL server (same salt and iterations, not merely the same
+password).  This is due to an inherent security property of SCRAM: The
+stored SCRAM secret cannot by itself be used for deriving login
+credentials.</p>
+
+<p>The authentication file can be written by hand, but it’s also useful
+to generate it from some other list of users and passwords.  See
+<code class="language-plaintext highlighter-rouge">./etc/mkauth.py</code> for a sample script to generate the authentication
+file from the <code class="language-plaintext highlighter-rouge">pg_shadow</code> system table.  Alternatively, use
+<code class="language-plaintext highlighter-rouge">auth_query</code> instead of <code class="language-plaintext highlighter-rouge">auth_file</code> to avoid having to maintain a
+separate authentication file.</p>
+
+<h2 id="hba-file-format" class="clickable-header top-level-header">HBA file format</h2><i class="icon-arrow-up back-to-top"> </i>
+
+<p>The location of the HBA file is specified by the setting
+<code class="language-plaintext highlighter-rouge">auth_hba_file</code>.  It is only used if <code class="language-plaintext highlighter-rouge">auth_type</code> is set to <code class="language-plaintext highlighter-rouge">hba</code>.</p>
+
+<p>The file follows the format of the PostgreSQL <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> file
+(see <a href="https://www.postgresql.org/docs/current/auth-pg-hba-conf.html">https://www.postgresql.org/docs/current/auth-pg-hba-conf.html</a>).</p>
+
+<ul>
+  <li>Supported record types: <code class="language-plaintext highlighter-rouge">local</code>, <code class="language-plaintext highlighter-rouge">host</code>, <code class="language-plaintext highlighter-rouge">hostssl</code>, <code class="language-plaintext highlighter-rouge">hostnossl</code>.</li>
+  <li>Database field: Supports <code class="language-plaintext highlighter-rouge">all</code>, <code class="language-plaintext highlighter-rouge">sameuser</code>, <code class="language-plaintext highlighter-rouge">@file</code>, multiple names.  Not supported: <code class="language-plaintext highlighter-rouge">replication</code>, <code class="language-plaintext highlighter-rouge">samerole</code>, <code class="language-plaintext highlighter-rouge">samegroup</code>.</li>
+  <li>User name field: Supports <code class="language-plaintext highlighter-rouge">all</code>, <code class="language-plaintext highlighter-rouge">@file</code>, multiple names.  Not supported: <code class="language-plaintext highlighter-rouge">+groupname</code>.</li>
+  <li>Address field: Supports IPv4, IPv6.  Not supported: DNS names, domain prefixes.</li>
+  <li>Auth-method field: Only methods supported by PgBouncer’s <code class="language-plaintext highlighter-rouge">auth_type</code>
+are supported, plus <code class="language-plaintext highlighter-rouge">peer</code> and <code class="language-plaintext highlighter-rouge">reject</code>, but except <code class="language-plaintext highlighter-rouge">any</code> and <code class="language-plaintext highlighter-rouge">pam</code>, which only work globally.
+User name map (<code class="language-plaintext highlighter-rouge">map=</code>) parameter is not supported.</li>
+</ul>
+
+<h2 id="examples" class="clickable-header top-level-header">Examples</h2><i class="icon-arrow-up back-to-top"> </i>
+
+<p>Small example configuration:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[databases]
+template1 = host=localhost dbname=template1 auth_user=someuser
+
+[pgbouncer]
+pool_mode = session
+listen_port = 6432
+listen_addr = localhost
+auth_type = md5
+auth_file = users.txt
+logfile = pgbouncer.log
+pidfile = pgbouncer.pid
+admin_users = someuser
+stats_users = stat_collector
+</code></pre></div></div>
+
+<p>Database examples:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[databases]
+
+; foodb over Unix socket
+foodb =
+
+; redirect bardb to bazdb on localhost
+bardb = host=localhost dbname=bazdb
+
+; access to destination database will go with single user
+forcedb = host=localhost port=300 user=baz password=foo client_encoding=UNICODE datestyle=ISO
+</code></pre></div></div>
+
+<p>Example of a secure function for <code class="language-plaintext highlighter-rouge">auth_query</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CREATE OR REPLACE FUNCTION pgbouncer.user_lookup(in i_username text, out uname text, out phash text)
+RETURNS record AS $$
+BEGIN
+    SELECT usename, passwd FROM pg_catalog.pg_shadow
+    WHERE usename = i_username INTO uname, phash;
+    RETURN;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+REVOKE ALL ON FUNCTION pgbouncer.user_lookup(text) FROM public, pgbouncer;
+GRANT EXECUTE ON FUNCTION pgbouncer.user_lookup(text) TO pgbouncer;
+</code></pre></div></div>
+
+<p>Example configs for 2 peered PgBouncer processes to create a multi-core
+PgBouncer setup using <code class="language-plaintext highlighter-rouge">so_reuseport</code>. The config for the first process:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[databases]
+postgres = host=localhost dbname=postgres
+
+[peers]
+1 = host=/tmp/pgbouncer1
+2 = host=/tmp/pgbouncer2
+
+[pgbouncer]
+listen_addr=127.0.0.1
+auth_file=auth_file.conf
+so_reuseport=1
+unix_socket_dir=/tmp/pgbouncer1
+peer_id=1
+</code></pre></div></div>
+
+<p>The config for the second process:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[databases]
+postgres = host=localhost dbname=postgres
+
+[peers]
+1 = host=/tmp/pgbouncer1
+2 = host=/tmp/pgbouncer2
+
+[pgbouncer]
+listen_addr=127.0.0.1
+auth_file=auth_file.conf
+so_reuseport=1
+; only unix_socket_dir and peer_id are different
+unix_socket_dir=/tmp/pgbouncer2
+peer_id=2
+</code></pre></div></div>
+
+<h2 id="see-also" class="clickable-header top-level-header">See also</h2><i class="icon-arrow-up back-to-top"> </i>
+
+<p>pgbouncer(1) - man page for general usage, console commands</p>
+
+<p><a href="https://www.pgbouncer.org/">https://www.pgbouncer.org/</a></p>
+
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12 footer navbar-inverse navbar-fixed-bottom">
+          <p class="copyright">
+            Website © 2023 PgBouncer Authors.
+            Design © <a href="https://github.com/scotte/jekyll-clean">Scott Emmons</a>
+          </p>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<bookmark-sidebar-df5iffxbchh id="redeviation-bs-sidebar" class="notranslate" aria-hidden="true" data-theme="default" data-pos="right"><template shadowrootmode="closed"><iframe style="margin:0;padding: 0;border: none;width: 100%;height: 100%;"></iframe></template></bookmark-sidebar-df5iffxbchh><div id="redeviation-bs-indicator" data-theme="default" class="redeviation-bs-fullHeight redeviation-bs-visible" data-pos="right" style="height: 100%; top: 0%;"><div><span></span></div></div></body></html>
+</body>
+</html>

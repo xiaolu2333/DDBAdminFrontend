@@ -14,6 +14,16 @@
                 <template #buttons>
                   <vxe-button>创建</vxe-button>
                   <vxe-button>编辑</vxe-button>
+                  <el-tooltip
+                      class="box-item"
+                      effect="dark"
+                      content="查看配置说明"
+                      placement="top-start"
+                  >
+                    <el-icon size="26" @click="goToHelp">
+                      <QuestionFilled/>
+                    </el-icon>
+                  </el-tooltip>
                 </template>
               </vxe-toolbar>
 
@@ -152,11 +162,20 @@
         </el-tabs>
       </el-col>
     </el-row>
+
+    <el-dialog
+        v-model="showHelper"
+        width="40%"
+        title="pgbouncer.init配置说明"
+        :close-on-click-modal="false"
+    >
+      <iframe :src="manFilePath" class="filename" width="100%" height="600"></iframe>
+    </el-dialog>
   </div>
 </template>
 
 <script lang="ts" setup>
-import {ref} from 'vue'
+import {ref, reactive, toRefs} from "vue";
 import {VxeTablePropTypes} from 'vxe-table'
 import {ChatLineRound, Male} from '@element-plus/icons-vue'
 
@@ -177,6 +196,26 @@ const tableData = ref<RowVO[]>([
   {id: 10003, name: 'Test3', role: 'PM', sex: 'Man', age: 32, address: 'Shanghai'},
   {id: 10004, name: 'Test4', role: 'Designer', sex: 'Women', age: 24, address: 'Shanghai'}
 ])
+
+
+const state = reactive({
+  // 展示帮助手册
+  showHelper: false,
+  manFilePath: './pgbouncer.html',
+})
+
+const {
+  manFilePath,
+  showHelper,
+} = toRefs(state)
+
+
+function goToHelp() {
+  // window.open('https://www.pgbouncer.org/config.html')
+  state.showHelper = true
+}
+
+
 </script>
 
 <style scoped>
