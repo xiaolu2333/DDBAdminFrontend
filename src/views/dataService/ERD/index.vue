@@ -1,116 +1,132 @@
 <template>
-  <div class="add-foreign-key">
-    添加外键关系：
-    <el-cascader
-        v-model="cfkFromEntry"
-        :options="cfieldOptions"
-        :props="{expandTrigger: 'hover' }"
-        placeholder="From"
-    />
-    <el-cascader
-        v-model="cfkToEntry"
-        :options="cfieldOptions"
-        :props="{expandTrigger: 'hover' }"
-        placeholder="To"
-    />
-    <el-button type="primary" @click="addFKRelationship">确认</el-button>
-  </div>
-  <div class="delete-foreign-key">
-    删除外键关系：
-    <el-cascader
-        v-model="dfkFromEntry"
-        :options="dfieldOptions"
-        :props="{expandTrigger: 'hover' }"
-        placeholder="From"
-    />
-    <el-cascader
-        v-model="dfkToEntry"
-        :options="dfieldOptions"
-        :props="{expandTrigger: 'hover' }"
-        placeholder="To"
-    />
-    <el-button type="primary" @click="deleteFKRelationship">确认</el-button>
-  </div>
-  <br/>
   <div>
-    <div v-if="clickedLink || rightClickedLink">
-      <el-button v-if="clickedLink && !rightClickedLink">
-        选中连线【{{ clickedLink.from }}.{{ clickedLink.fromPort }} -> {{ clickedLink.to }}.{{ clickedLink.toPort }}】
-      </el-button>
-      <el-button v-if="(!clickedLink && rightClickedLink) || (clickedLink && rightClickedLink)">
-        选中连线【{{ rightClickedLink.from }}.{{ rightClickedLink.fromPort }} -> {{
-          rightClickedLink.to
-        }}.{{ rightClickedLink.toPort }}】
-      </el-button>
-    </div>
-    <div v-if="clickedNode || rightClickedNode">
-      <el-button v-if="clickedNode && !rightClickedNode">
-        选中节点【{{ clickedNode.key }}】
-      </el-button>
-      <el-button v-if="(!clickedNode && rightClickedNode) || (clickedNode && rightClickedNode)">
-        选中节点【{{ rightClickedNode.key }}】
-      </el-button>
-    </div>
-    <el-button-group>
-      <el-button type="primary" @click="addNode">添加节点</el-button>
-      <el-button type="primary" @click="addLink">添加边</el-button>
-      <el-button type="primary" @click="deleteNode">删除节点</el-button>
-      <el-button type="primary" @click="deleteLink">删除边</el-button>
-      <el-button type="primary" @click="save">保存</el-button>
-      <el-button type="primary" @click="load">数据融合</el-button>
-    </el-button-group>
-  </div>
-  <br/>
-  <div>
-    选择布局方式：
-    <el-select v-model="selectedLayout" class="m-2" placeholder="Select" @change="layoutOptionChange">
-      <el-option
-          v-for="item in layoutOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
+    <div class="add-foreign-key">
+      添加外键关系：
+      <el-cascader
+          v-model="cfkFromEntry"
+          :options="cfieldOptions"
+          :props="{expandTrigger: 'hover' }"
+          placeholder="From"
       />
-    </el-select>
+      <el-cascader
+          v-model="cfkToEntry"
+          :options="cfieldOptions"
+          :props="{expandTrigger: 'hover' }"
+          placeholder="To"
+      />
+      <el-button type="primary" @click="addFKRelationship">确认</el-button>
+    </div>
+    <div class="delete-foreign-key">
+      删除外键关系：
+      <el-cascader
+          v-model="dfkFromEntry"
+          :options="dfieldOptions"
+          :props="{expandTrigger: 'hover' }"
+          placeholder="From"
+      />
+      <el-cascader
+          v-model="dfkToEntry"
+          :options="dfieldOptions"
+          :props="{expandTrigger: 'hover' }"
+          placeholder="To"
+      />
+      <el-button type="primary" @click="deleteFKRelationship">确认</el-button>
+    </div>
+    <br/>
+    <div>
+      <div v-if="clickedLink || rightClickedLink">
+        <el-button v-if="clickedLink && !rightClickedLink">
+          选中连线【{{ clickedLink.from }}.{{ clickedLink.fromPort }} -> {{ clickedLink.to }}.{{ clickedLink.toPort }}】
+        </el-button>
+        <el-button v-if="(!clickedLink && rightClickedLink) || (clickedLink && rightClickedLink)">
+          选中连线【{{ rightClickedLink.from }}.{{ rightClickedLink.fromPort }} -> {{
+            rightClickedLink.to
+          }}.{{ rightClickedLink.toPort }}】
+        </el-button>
+      </div>
+      <div v-if="clickedNode || rightClickedNode">
+        <el-button v-if="clickedNode && !rightClickedNode">
+          选中节点【{{ clickedNode.key }}】
+        </el-button>
+        <el-button v-if="(!clickedNode && rightClickedNode) || (clickedNode && rightClickedNode)">
+          选中节点【{{ rightClickedNode.key }}】
+        </el-button>
+      </div>
+      <el-button-group>
+        <el-button type="primary" @click="addNode">添加节点</el-button>
+        <el-button type="primary" @click="addLink">添加边</el-button>
+        <el-button type="primary" @click="deleteNode">删除节点</el-button>
+        <el-button type="primary" @click="deleteLink">删除边</el-button>
+        <el-button type="primary" @click="save">保存</el-button>
+        <el-button type="primary" @click="load">数据融合</el-button>
+      </el-button-group>
+    </div>
+    <br/>
+    <div>
+      选择布局方式：
+      <el-select v-model="selectedLayout" class="m-2" placeholder="Select" @change="layoutOptionChange">
+        <el-option
+            v-for="item in layoutOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+        />
+      </el-select>
+    </div>
+    <br/>
+
+    <el-row :gutter="20">
+      <el-col :span="6">
+        <el-card>
+          <el-switch
+              v-model="isComplete"
+              size="large"
+              active-text="完整"
+              inactive-text="简易"
+          />
+          <el-tree
+              :data="treeData"
+              :props="defaultProps"
+              :draggable="true"
+              @node-click="handleNodeClick"
+          />
+        </el-card>
+      </el-col>
+      <el-col :span='7'>
+
+      </el-col>
+      <el-col :span="11">
+      </el-col>
+    </el-row>
+    <div>
+      <el-button
+          v-draggable
+          class="drg-btn"
+          ref="dragBtn"
+          type="success"
+          @mousedown="handleMouseDown"
+          @mouseup="handleMouseUp"
+      >拖动我
+      </el-button>
+    </div>
+    <div class="target-area">目标区域</div>
+    <div id="myDiagramDiv">
+      <canvas tabindex="0" width="1234" height="407"
+              style="position: absolute; top: 0px; left: 0px; z-index: 2; user-select: none; width: 905px; height: 299px; cursor: auto;">
+        This text is displayed if your browser does not support the Canvas HTML element.
+      </canvas>
+      <div style="position: absolute; overflow: auto; width: 905px; height: 299px; z-index: 1;">
+        <div style="position: absolute; width: 1px; height: 1px;"></div>
+      </div>
+    </div>
   </div>
-  <br/>
 
-  <el-row :gutter="20">
-    <el-col :span="6">
-      <el-card>
-        <el-switch
-            v-model="isComplete"
-            size="large"
-            active-text="完整"
-            inactive-text="简易"
-        />
-        <el-tree
-            :data="treeData"
-            :props="defaultProps"
-            :draggable="true"
-            @node-click="handleNodeClick"
-        />
-      </el-card>
-    </el-col>
-    <el-col :span="18">
-      <div style="height: 40vh; background-color: #c3fdd3">
-
-      </div>
-      <div id="myDiagramDiv"
-           style="border: 1px solid black; height: 600px; position: relative; -webkit-tap-highlight-color: rgba(255, 255, 255, 0); cursor: auto;">
-        <canvas tabindex="0" width="1234" height="407"
-                style="position: absolute; top: 0px; left: 0px; z-index: 2; user-select: none; width: 905px; height: 299px; cursor: auto;">
-          This text is displayed if your browser does not support the Canvas HTML element.
-        </canvas>
-        <div style="position: absolute; overflow: auto; width: 905px; height: 299px; z-index: 1;">
-          <div style="position: absolute; width: 1px; height: 1px;"></div>
-        </div>
-      </div>
-    </el-col>
-  </el-row>
 </template>
 
 <script setup>
 import {onMounted, reactive, toRefs, ref} from 'vue'
+import {vDraggable} from '@neodrag/vue';
+
 
 import {GetERDData} from '@/api/dataService/ERD.js'
 import {GetDataTree, CreateNode} from '@/api/dataManage/dataTree.js'
@@ -158,7 +174,11 @@ const state = reactive({
   // 被右键单击的边
   rightClickedLink: null,
 
-  // 表节点元素
+  // 鼠标松开时的坐标
+  mouseUpPosition: {
+    x: 0,
+    y: 0
+  },
 })
 
 const {
@@ -181,9 +201,14 @@ const {
   clickedLink,
   rightClickedNode,
   rightClickedLink,
+
+  mouseUpPosition,
 } = toRefs(state)
 
 let myDiagram = null
+const dragBtn = reactive({
+  data: "我被拖动到目标区域内",
+})
 
 /************************ tree ************************/
 const handleNodeClick = (data) => {
@@ -194,8 +219,8 @@ const handleNodeClick = (data) => {
 /**************************** 按钮事件 ******************************/
 // 添加外键关系
 const addFKRelationship = () => {
-  console.log('from:', cfkFromEntry.value)
-  console.log('to:', cfkToEntry.value)
+  // console.log('from:', cfkFromEntry.value)
+  // console.log('to:', cfkToEntry.value)
   let temp = {
     from: cfkFromEntry.value[0],
     fromPort: cfkFromEntry.value[1],
@@ -205,7 +230,7 @@ const addFKRelationship = () => {
   // linkDataList.value.push(temp)
 
   myDiagram.model.addLinkData(temp)
-  console.log('linkDataList.value:', linkDataList.value)
+  // console.log('linkDataList.value:', linkDataList.value)
   refreshDfieldOptions()
 }
 
@@ -234,6 +259,78 @@ const deleteFKRelationship = () => {
   }
 }
 
+
+/**
+ * 按钮上的鼠标按下事件
+ * @param e
+ */
+function handleMouseDown(e) {
+  e = e || event;
+  if (e.preventDefault) {
+    // 阻止默认浏览器动作(W3C)
+    e.preventDefault();
+    // 显示鼠标按下的位置
+    console.log('鼠标按下：', e.clientX, e.clientY);
+  } else {
+    e.returnValue = false;
+  }
+}
+
+/**
+ * 按钮上的鼠标松开事件
+ */
+function handleMouseUp(e) {
+  e = e || event;
+  if (e.preventDefault) {
+    // 阻止默认浏览器动作(W3C)
+    e.preventDefault();
+    // 显示鼠标松开的位置
+    console.log('鼠标松开：', e.clientX, e.clientY);
+    state.mouseUpPosition.x = e.clientX;
+    state.mouseUpPosition.y = e.clientY;
+    if (isMouseUpInRect('target-area')) {
+      console.log('鼠标松开在目标区域内');
+      alert(dragBtn.data)
+      // 将 dragBtn.data 显示在目标区域内
+      document.getElementsByClassName('target-area')[0].innerHTML = "一个按钮被拖动到我的区域内了"
+    } else {
+      console.log('鼠标松开在目标区域外');
+    }
+  } else {
+    e.returnValue = false;
+  }
+}
+
+/**
+ * 获取指定元素的坐标范围
+ * @param elClassName
+ */
+function getRect(elClassName) {
+  let rect = document.getElementsByClassName(elClassName)[0].getBoundingClientRect();
+  const axis = {
+    left: rect.left + document.body.scrollLeft,
+    top: rect.top + document.body.scrollTop,
+    width: rect.width,
+    height: rect.height
+  };
+  console.log('元素坐标范围：', axis);
+  return axis;
+}
+
+/**
+ * 判断鼠标松开的位置是否在指定元素的坐标范围内
+ */
+function isMouseUpInRect(elClassName) {
+  let axis = getRect(elClassName);
+  let x = state.mouseUpPosition.x;
+  let y = state.mouseUpPosition.y;
+  if (x >= axis.left && x <= axis.left + axis.width && y >= axis.top && y <= axis.top + axis.height) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 /***************************** 选择器事件 ******************************/
 /**
  * 选择布局方式
@@ -241,7 +338,7 @@ const deleteFKRelationship = () => {
  */
 const layoutOptionChange = (val) => {
   state.selectedLayout = val
-  console.log('selectedLayout:', state.selectedLayout)
+  // console.log('selectedLayout:', state.selectedLayout)
   if (val === 'ForceDirectedLayout') {
     myDiagram.layout = new go.ForceDirectedLayout()
   } else if (val === 'GridLayout') {
@@ -262,7 +359,7 @@ const refreshDfieldOptions = () => {
 
   state.dfieldOptions = state.cfieldOptions
 
-  console.log('state.dfieldOptions:', state.dfieldOptions)
+  // console.log('state.dfieldOptions:', state.dfieldOptions)
 }
 
 
@@ -442,14 +539,14 @@ function init() {
         state.rightClickedLink = undefined
         let part = e.subject.part;
         if (part instanceof go.Node) {
-          console.log("Clicked on Node：" + part.data.key);
+          // console.log("Clicked on Node：" + part.data.key);
           state.clickedNode = part.data
-          console.log('state.clickedNode', state.clickedNode)
+          // console.log('state.clickedNode', state.clickedNode)
         }
         if (part instanceof go.Link) {
-          console.log("Clicked on Link：" + part.data.from + " to " + part.data.to);
+          // console.log("Clicked on Link：" + part.data.from + " to " + part.data.to);
           state.clickedLink = part.data
-          console.log('state.clickedLink', state.clickedLink)
+          // console.log('state.clickedLink', state.clickedLink)
         }
       });
   /**
@@ -463,14 +560,14 @@ function init() {
         state.rightClickedLink = undefined
         let part = e.subject.part;
         if (part instanceof go.Node) {
-          console.log("right Clicked on Node：" + part.data.key);
+          // console.log("right Clicked on Node：" + part.data.key);
           state.rightClickedNode = part.data
-          console.log('state.rightClickedNode', state.rightClickedNode)
+          // console.log('state.rightClickedNode', state.rightClickedNode)
         }
         if (part instanceof go.Link) {
-          console.log("right Clicked on Link：" + part.data.from + " to " + part.data.to);
+          // console.log("right Clicked on Link：" + part.data.from + " to " + part.data.to);
           state.rightClickedLink = part.data
-          console.log('state.rightClickedLink', state.rightClickedLink)
+          // console.log('state.rightClickedLink', state.rightClickedLink)
         }
       });
 
@@ -541,7 +638,7 @@ function changeColor(e, obj) {
  * @param obj
  */
 function reLayout(e, obj) {
-  console.log('reLayout')
+  // console.log('reLayout')
 }
 
 /**
@@ -582,16 +679,16 @@ onMounted(() => {
   state.selectedLayout = 'LayeredDigraphLayout'
 
   GetDataTree().then(res => {
-    console.log('res:', res)
+    console.log('获取树形数据:', res)
     state.treeData = res.data.data
   })
 
   GetERDData().then(res => {
-    console.log('res.data.data: ', res.data.data)
+    // console.log('res.data.data: ', res.data.data)
     state.nodeDataList = res.data.data.nodeDataArray
-    console.log('GetERDData state.nodeDataList', state.nodeDataList)
+    // console.log('GetERDData state.nodeDataList', state.nodeDataList)
     linkDataList.value = res.data.data.linkDataArray
-    console.log('GetERDData linkDataList.value', linkDataList.value)
+    // console.log('GetERDData linkDataList.value', linkDataList.value)
 
     res.data.data.nodeDataArray.forEach(item => {
       state.entryOptions.push({
@@ -612,7 +709,7 @@ onMounted(() => {
         })
       }
     })
-    console.log('GetERDData state.cfieldOptions', state.cfieldOptions)
+    // console.log('GetERDData state.cfieldOptions', state.cfieldOptions)
 
     refreshDfieldOptions()
     init()
@@ -621,9 +718,18 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.drg-btn {
+  z-index: 10000 !important;
+}
+
 #myDiagramDiv {
   background-color: #F8F8F8;
   border: 1px solid #aaa;
+  height: 600px;
+  position: relative;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  cursor: auto;
+  z-index: 1000;
 }
 
 /* CSS for the traditional context menu */
@@ -675,5 +781,12 @@ onMounted(() => {
 .show-menu, .menu-item:hover .ctxmenu {
   display: block;
   opacity: 1;
+}
+
+.target-area {
+  width: 500px;
+  height: 300px;
+  border: 1px solid #999;
+  background-color: #f1fff5;
 }
 </style>

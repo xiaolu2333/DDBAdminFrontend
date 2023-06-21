@@ -1,54 +1,71 @@
 <template>
+  <h2>元素拖动demo</h2>
   <div>
     <div class="main">
-      <el-row :gutter="20">
-        <el-col :span="4">
-          <!-- 拖拽源 -->
-          <div class="content-siadeNav">
-            <div class="title">tree列表：</div>
-            <el-tree
-                :data="data"
-                ref="tree1"
-                draggable
-                default-expand-all
-                :allow-drop="returnFalse"
-                @node-drag-start="handleDragstart"
-                @node-drag-end="handleDragend"
-            >
-              <template
-                  #default="{node,data}"
-                  :style="{cursor: data.path ? 'move' : 'not-allowed'}"
+      <el-card style="height: 650px;">
+        <el-row :gutter="20">
+          <el-col :span="4">
+            <!-- 拖拽源 -->
+            <div class="content-siadeNav">
+              <div class="title">tree列表：</div>
+              <el-tree
+                  :data="data"
+                  ref="tree1"
+                  draggable
+                  default-expand-all
+                  :allow-drop="returnFalse"
+                  @node-drag-start="handleDragstart"
+                  @node-drag-end="handleDragend"
               >
-                {{ data.label }}
-              </template>
-            </el-tree>
-          </div>
-        </el-col>
-        <!-- 拖放位置 -->
-        <el-col :span="20">
-          <div class="content">
-            <div id="frame_13">
-              <div
-                  draggable="true"
-                  class="main_frame"
-                  ref="main_frame_0"
-                  @dragstart="ondragstart($event, 'main_frame_0', videoStream[0].path)"
-                  @dragenter="ondragenter($event)"
-                  @dragover="ondragover($event)"
-                  @dragleave="ondragleave($event)"
-                  @drop="ondrop($event, item)"
-              >
-                {{ videoStream[0] }}
-              </div>
-              <div class="secondary_frame_right">
+                <template
+                    #default="{node,data}"
+                    :style="{cursor: data.path ? 'move' : 'not-allowed'}"
+                >
+                  {{ data.label }}
+                </template>
+              </el-tree>
+            </div>
+          </el-col>
+          <!-- 拖放位置 -->
+          <el-col :span="20">
+            <div class="content">
+              <div id="frame_13">
                 <div
                     draggable="true"
+                    class="main_frame"
+                    ref="main_frame_0"
+                    @dragstart="ondragstart($event, 'main_frame_0', videoStream[0].path)"
+                    @dragenter="ondragenter($event)"
+                    @dragover="ondragover($event)"
+                    @dragleave="ondragleave($event)"
+                    @drop="ondrop($event, item)"
+                >
+                  {{ videoStream[0] }}
+                </div>
+                <div class="secondary_frame_right">
+                  <div
+                      draggable="true"
+                      class="secondary_frame"
+                      :id="'secondary_frame_' + (index + 1)"
+                      :ref="'secondary_frame_' + (index + 1)"
+                      v-for="(element, index) in videoStream_1"
+                      :key="index"
+                      @dragstart="ondragstart($event, 'secondary_frame_' + (index + 1), videoStream_1[index].path)"
+                      @dragenter="ondragenter($event)"
+                      @dragover="ondragover($event)"
+                      @dragleave="ondragleave($event)"
+                      @drop="ondrop($event, item)"
+                  >
+                    {{ element }}
+                  </div>
+                </div>
+                <div
+                    v-for="(element, index) in videoStream_2" :key="index"
+                    draggable="true"
                     class="secondary_frame"
-                    :id="'secondary_frame_' + (index + 1)"
-                    :ref="'secondary_frame_' + (index + 1)"
-                    v-for="(element, index) in videoStream_1"
-                    :key="index"
-                    @dragstart="ondragstart($event, 'secondary_frame_' + (index + 1), videoStream_1[index].path)"
+                    :id="'secondary_frame_' + (index + 5)"
+                    :ref="'secondary_frame_' + (index + 5)"
+                    @dragstart="ondragstart($event, 'secondary_frame_' + (index + 5), videoStream_2[index].path)"
                     @dragenter="ondragenter($event)"
                     @dragover="ondragover($event)"
                     @dragleave="ondragleave($event)"
@@ -57,33 +74,36 @@
                   {{ element }}
                 </div>
               </div>
-              <div
-                  v-for="(element, index) in videoStream_2" :key="index"
-                  draggable="true"
-                  class="secondary_frame"
-                  :id="'secondary_frame_' + (index + 5)"
-                  :ref="'secondary_frame_' + (index + 5)"
-                  @dragstart="ondragstart($event, 'secondary_frame_' + (index + 5), videoStream_2[index].path)"
-                  @dragenter="ondragenter($event)"
-                  @dragover="ondragover($event)"
-                  @dragleave="ondragleave($event)"
-                  @drop="ondrop($event, item)"
-              >
-                {{ element }}
-              </div>
             </div>
-          </div>
-        </el-col>
-      </el-row>
+          </el-col>
+        </el-row>
+      </el-card>
+    </div>
+    <div>
+      <el-button
+          v-draggable
+          ref="dragBtn"
+          type="success"
+          @mousedown="handleMouseDown"
+          @mouseup="handleMouseUp"
+          style="z-index: 200"
+      >拖动我
+      </el-button>
+      <div class="target-area">目标区域</div>
     </div>
   </div>
 </template>
 
 <script setup>
 import {onMounted, ref, reactive, toRefs} from "vue";
+import {vDraggable} from '@neodrag/vue';
 
 const tableRef = ref(null)
 const tree1 = ref(null)
+const dragBtn = reactive({
+  data: "我被拖动到目标区域内",
+})
+
 const state = reactive({
   data: [
     {
@@ -173,7 +193,13 @@ const state = reactive({
   videoStream_1: [],
   videoStream_2: [],
   currentId: '',
-  item: ''
+  item: '',
+
+  // 鼠标松开时的坐标
+  mouseUpPosition: {
+    x: 0,
+    y: 0
+  },
 })
 const {
   data,
@@ -181,7 +207,8 @@ const {
   videoStream_1,
   videoStream_2,
   currentId,
-  item
+  item,
+  mouseUpPosition,
 } = toRefs(state)
 
 
@@ -274,6 +301,74 @@ function ondrop(e, item) {
   console.log('元素落在目标区域');
 }
 
+/**
+ * 按钮上的鼠标按下事件
+ * @param e
+ */
+function handleMouseDown(e) {
+  e = e || event;
+  if (e.preventDefault) {
+    // 阻止默认浏览器动作(W3C)
+    e.preventDefault();
+    // 显示鼠标按下的位置
+    console.log('鼠标按下：', e.clientX, e.clientY);
+  } else {
+    e.returnValue = false;
+  }
+}
+
+/**
+ * 按钮上的鼠标松开事件
+ */
+function handleMouseUp(e) {
+  e = e || event;
+  if (e.preventDefault) {
+    // 阻止默认浏览器动作(W3C)
+    e.preventDefault();
+    // 显示鼠标松开的位置
+    console.log('鼠标松开：', e.clientX, e.clientY);
+    state.mouseUpPosition.x = e.clientX;
+    state.mouseUpPosition.y = e.clientY;
+    if (isMouseUpInRect('target-area')) {
+      console.log('鼠标松开在目标区域内');
+    } else {
+      console.log('鼠标松开在目标区域外');
+    }
+  } else {
+    e.returnValue = false;
+  }
+}
+
+/**
+ * 获取指定元素的坐标范围
+ * @param elClassName
+ */
+function getRect(elClassName) {
+  let rect = document.getElementsByClassName(elClassName)[0].getBoundingClientRect();
+  const axis = {
+    left: rect.left + document.body.scrollLeft,
+    top: rect.top + document.body.scrollTop,
+    width: rect.width,
+    height: rect.height
+  };
+  console.log('元素坐标范围：', axis);
+  return axis;
+}
+
+/**
+ * 判断鼠标松开的位置是否在指定元素的坐标范围内
+ */
+function isMouseUpInRect(elClassName) {
+  let axis = getRect(elClassName);
+  let x = state.mouseUpPosition.x;
+  let y = state.mouseUpPosition.y;
+  if (x >= axis.left && x <= axis.left + axis.width && y >= axis.top && y <= axis.top + axis.height) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 
 onMounted(() => {
   if (state.videoStream.length > 2) {
@@ -353,5 +448,13 @@ onMounted(() => {
     width: 320px;
     height: 180px;
   }
+}
+
+.target-area {
+  width: 500px;
+  height: 300px;
+  border: 1px solid #999;
+  background-color: #f1fff5;
+  float: right;
 }
 </style>
