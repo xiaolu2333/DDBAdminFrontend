@@ -47,6 +47,11 @@ import gojs from 'gojs'
 
 app.config.globalProperties.$echarts = gojs;
 
+// 挂载antv g6
+import G6 from '@antv/g6';
+
+app.config.globalProperties.$echarts = G6;
+
 
 // 挂载Vue应用实例
 app.mount('#app');
