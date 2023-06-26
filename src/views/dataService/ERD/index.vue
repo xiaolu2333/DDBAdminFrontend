@@ -398,15 +398,18 @@ function init() {
             fromLinkable: false,                                    // 不允许从重新选择出
             toLinkable: false,                                      // 不允许从重新选择进
           },
-          $(go.Shape,                                                         // 形状配置
-              {
-                width: 12, height: 12, column: 0, strokeWidth: 2, margin: 4,  // 形状属性
-                // but disallow drawing links from or to this shape:
-                fromLinkable: false, toLinkable: false
-              },
-              new go.Binding("figure", "figure"),
-              new go.Binding("fill", "color")
-          ),
+          // $(go.Shape,                                                         // 形状配置
+          //     {
+          //       width: 12, height: 12, column: 0, strokeWidth: 2, margin: 4,  // 形状属性
+          //       // but disallow drawing links from or to this shape:
+          //       fromLinkable: false, toLinkable: false
+          //     },
+          //     new go.Binding("figure", "figure"),
+          //     new go.Binding("fill", "color")
+          // ),
+          $(go.Shape, "RoundedRectangle", {fill: "white"}),
+          // 添加图标
+          $(go.Picture, {source: "public/favicon.ico", width: 20, height: 20}),
           $(go.TextBlock,                                                     // 文本配置
               {
                 margin: new go.Margin(0, 5), column: 1,
