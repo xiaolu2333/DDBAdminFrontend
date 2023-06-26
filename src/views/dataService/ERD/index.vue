@@ -459,9 +459,19 @@ function init() {
           $(go.Panel,
               "Vertical",                                 // 垂直布局
               $(go.Panel, "Auto",                         // header 自动布局
-                  {stretch: go.GraphObject.Horizontal},     // 水平拉伸，使得header宽度与父节点一致
+                  // {stretch: go.GraphObject.Horizontal},     // 水平拉伸，使得header宽度与父节点一致
+                  // $(go.Shape,                               // header形状
+                  //     {fill: "#1570A6", stroke: null}       // 填充色为蓝色，边框色为空
+                  // ),
                   $(go.Shape,                               // header形状
-                      {fill: "#1570A6", stroke: null}),       // 填充色为蓝色，边框色为空
+                      {margin: new go.Margin(5, 0), row: 0},     // 设置margin和row，使得图标和文本在同一行
+                      {fill: "transparent", stroke: "transparent"},     // 设置填充色和边框色为透明
+                  ),
+                  // 统一添加图标
+                  $(go.Picture,
+                      {source: "public/table.svg"},
+                      {width: 16, height: 16}
+                  ),
                   $(go.TextBlock,                           // header文本
                       {
                         alignment: go.Spot.Center,
