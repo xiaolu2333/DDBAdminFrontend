@@ -407,9 +407,20 @@ function init() {
           //     new go.Binding("figure", "figure"),
           //     new go.Binding("fill", "color")
           // ),
-          $(go.Shape, "RoundedRectangle", {fill: "white"}),
+          $(go.Shape,
+              "RoundedRectangle",                               // 形状为圆角矩形
+              {width: 18, height: 18},
+              {margin: new go.Margin(5, 0), column: 0},     // 设置margin和column，使得图标和文本在同一列
+              {fill: "transparent", stroke: "transparent"},     // 设置填充色和边框色为透明
+          ),
           // 添加图标
-          $(go.Picture, {source: "public/favicon.ico", width: 20, height: 20}),
+          $(go.Picture,
+              // 根据icon字段来显示不同的图标
+              new go.Binding("source", "icon", function (icon) {
+                return "public/" + icon + ".svg";
+              }),
+              {width: 16, height: 16}
+          ),
           $(go.TextBlock,                                                     // 文本配置
               {
                 margin: new go.Margin(0, 5), column: 1,
@@ -426,7 +437,8 @@ function init() {
                 font: "13px sans-serif",
                 alignment: go.Spot.Left
               },
-              new go.Binding("text", "info"))               // 绑定文本块为nodeDataArray中的每项的info
+              new go.Binding("text", "info")             // 绑定文本块为nodeDataArray中的每项的info
+          )
       );
 
   /**
