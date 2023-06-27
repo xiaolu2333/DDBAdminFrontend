@@ -452,38 +452,43 @@ function init() {
               {
                 fill: "#EEEEEE",  // 填充色
                 stroke: "black",  // 边框色
-                strokeWidth: 1,   // 边框宽度
+                strokeWidth: 0.5,   // 边框宽度
               }
           ),
-          // 节点内容包含 header 以及 items 列表
+          // 自定义面板
           $(go.Panel,
-              "Vertical",                                 // 垂直布局
-              $(go.Panel, "Auto",                         // header 自动布局
-                  // {stretch: go.GraphObject.Horizontal},     // 水平拉伸，使得header宽度与父节点一致
-                  // $(go.Shape,                               // header形状
-                  //     {fill: "#1570A6", stroke: null}       // 填充色为蓝色，边框色为空
-                  // ),
-                  $(go.Shape,                               // header形状
+              // 使用 Vertical 布局，内容从上到下排列
+              "Vertical",
+
+              // 自定义面板，充当header，用于显示节点名称
+              $(go.Panel,
+                  "Auto",
+                  // header形状
+                  $(go.Shape,
                       {margin: new go.Margin(5, 0), row: 0},     // 设置margin和row，使得图标和文本在同一行
-                      {fill: "transparent", stroke: "transparent"},     // 设置填充色和边框色为透明
+                      {fill: "#transparent", stroke: "transparent"},  // 设置填充色和边框色为透明
                   ),
-                  // 统一添加图标
+                  // header图标
                   $(go.Picture,
                       {source: "public/table.svg"},
-                      {width: 16, height: 16}
+                      {width: 16, height: 16},
                   ),
-                  $(go.TextBlock,                           // header文本
+                  // header文本
+                  $(go.TextBlock,
                       {
                         alignment: go.Spot.Center,
                         margin: 4,
-                        stroke: "white",                      // 文本色为白色
-                        font: "bold 12pt sans-serif"
+                        stroke: "#254b9c",                                  // 文本色为白色
+                        font: "bold 12pt sans-serif",
                       },
-                      new go.Binding("text", "key")         // 绑定文本为nodeDataArray中的key
-                  )
+                      new go.Binding("text", "key")     // 绑定文本为nodeDataArray中的key
+                  ),
               ),
-              $(go.Panel, "Table",                                    // items Table布局
-                  {                                                     // Table属性
+              // 自定义面板，充当items，用于显示节点的fields
+              $(go.Panel,
+                  "Table",
+                  // Table属性
+                  {
                     padding: 2,
                     minSize: new go.Size(100, 10),
                     defaultStretch: go.GraphObject.Horizontal,          // 水平拉伸
@@ -491,7 +496,8 @@ function init() {
                   },
                   new go.Binding("itemArray", "fields")     // 绑定itemArray为nodeDataArray中的fields
               ),  // end Table Panel of items
-              {                                                   // 对象右键菜单
+              // 对象右键菜单
+              {
                 contextMenu:     // define a context menu for each node
                     $("ContextMenu",  // that has one button
                         $("ContextMenuButton",
