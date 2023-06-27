@@ -162,6 +162,9 @@ const state = reactive({
   entryOptions: [],
   // 节点背景颜色
   nodeColor: "#ffffff",
+  // 眼睛
+  isOpenEye: true,
+  eyeStatus: 'eye-open',
 
   // 添加外键关系时的下拉框选项
   cfieldOptions: [],
@@ -194,6 +197,8 @@ const state = reactive({
     x: 0,
     y: 0
   },
+
+  counter: 0
 })
 
 const {
@@ -207,6 +212,8 @@ const {
   linkDataList,
   entryOptions,
   nodeColor,
+  isOpenEye,
+  eyeStatus,
 
   cfieldOptions,
   dfieldOptions,
@@ -222,6 +229,8 @@ const {
   dialog,
 
   mouseUpPosition,
+
+  counter
 } = toRefs(state)
 
 let myDiagram = null
@@ -436,7 +445,7 @@ function init() {
           $(go.Picture,
               // 根据icon字段来显示不同的图标
               new go.Binding("source", "icon", function (icon) {
-                return "public/" + icon + ".svg";
+                return "/" + icon + ".svg";
               }),
               {width: 16, height: 16}
           ),
@@ -477,9 +486,59 @@ function init() {
           // 自定义面板
           $(go.Panel,
               "Vertical",                                 // 垂直布局
-              $(go.Panel, "Auto",                         // header 自动布局
-                  {stretch: go.GraphObject.Horizontal},     // 水平拉伸，使得header宽度与父节点一致
-                  // $(go.Shape,                               // header形状
+              $(go.Panel, "Auto",                         // schema
+                  {stretch: go.GraphObject.Horizontal},     // 水平拉伸，使得宽度与父节点一致
+                  $(go.Shape,
+                      {fill: "#e9e9e9", stroke: "transparent"},  // 设置填充色和边框色为透明
+                  ),
+                  // 按钮
+                  $("Button",
+                      {
+                        alignment: go.Spot.BottomLeft, alignmentFocus: go.Spot.BottomLeft,
+                        click: function (e, obj) {
+                          // console.log(obj.part.data)
+                          if (state.isOpenEye) {
+                            state.eyeStatus = 'eye-open'
+                          } else {
+                            state.eyeStatus = 'eye-close'
+                          }
+                          state.isOpenEye = !state.isOpenEye
+                          console.log('eyeStatus:', state.eyeStatus)
+                        }
+                      },
+                      $(go.Picture,
+                          // 根据icon字段来显示不同的图标
+                          new go.Binding("source", eyeStatus.value, function (eyeStatus) {
+                            console.log(eyeStatus)
+                            if (eyeStatus.value === 'eye-open') {
+                              return "睁眼.svg";
+                            } else {
+                              return "闭眼.svg";
+                            }
+                          }),
+                          {
+                            // 左对齐
+                            alignment: go.Spot.Left,
+                            width: 20,
+                            height: 20
+                          }
+                      ),
+                  ),
+                  // 按钮
+                  $("Button",
+                      {
+                        alignment: go.Spot.BottomRight, alignmentFocus: go.Spot.BottomRight,
+                        click: function (e, obj) {
+                          state.counter++
+                          console.log('state.counter:', state.counter)
+                        }
+                      },
+                      $(go.Shape, "PlusLine", {width: 14, height: 14})
+                  )
+              ),
+              $(go.Panel, "Auto",                         // schema
+                  {stretch: go.GraphObject.Horizontal},     // 水平拉伸，使得宽度与父节点一致
+                  // $(go.Shape,                               // 形状
                   //     {fill: "#1570A6", stroke: null}),       // 填充色为蓝色，边框色为空
                   // header形状
                   $(go.Shape,
@@ -488,14 +547,14 @@ function init() {
                   // header图标
                   $(go.Picture,
                       {
-                        source: "public/schema.svg",
+                        source: "/schema.svg",
                         // 左对齐
                         alignment: go.Spot.Left,
                         width: 25,
                         height: 25
                       }
                   ),
-                  $(go.TextBlock,                           // header文本
+                  $(go.TextBlock,                           // 文本
                       {
                         alignment: go.Spot.Left,              // 文本左对齐
                         margin: new go.Margin(4, 0, 4, 25),
@@ -505,9 +564,9 @@ function init() {
                       new go.Binding("text", "schema")         // 绑定文本为nodeDataArray中的schema
                   )
               ),
-              $(go.Panel, "Auto",                         // header 自动布局
-                  {stretch: go.GraphObject.Horizontal},     // 水平拉伸，使得header宽度与父节点一致
-                  // $(go.Shape,                               // header形状
+              $(go.Panel, "Auto",                         // table
+                  {stretch: go.GraphObject.Horizontal},     // 水平拉伸，使得宽度与父节点一致
+                  // $(go.Shape,                               // 形状
                   //     {fill: "#1570A6", stroke: null}),       // 填充色为蓝色，边框色为空
                   // header形状
                   $(go.Shape,
@@ -516,14 +575,14 @@ function init() {
                   // header图标
                   $(go.Picture,
                       {
-                        source: "public/table.svg",
+                        source: "/table.svg",
                         // 左对齐
                         alignment: go.Spot.Left,
                         width: 25,
                         height: 25
                       }
                   ),
-                  $(go.TextBlock,                           // header文本
+                  $(go.TextBlock,                           // 文本
                       {
                         alignment: go.Spot.Left,              // 文本左对齐
                         margin: new go.Margin(4, 0, 4, 25),
