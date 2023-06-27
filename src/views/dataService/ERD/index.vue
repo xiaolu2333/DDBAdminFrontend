@@ -457,32 +457,62 @@ function init() {
           ),
           // 自定义面板
           $(go.Panel,
-              // 使用 Vertical 布局，内容从上到下排列
-              "Vertical",
-
-              // 自定义面板，充当header，用于显示节点名称
-              $(go.Panel,
-                  "Auto",
+              "Vertical",                                 // 垂直布局
+              $(go.Panel, "Auto",                         // header 自动布局
+                  {stretch: go.GraphObject.Horizontal},     // 水平拉伸，使得header宽度与父节点一致
+                  // $(go.Shape,                               // header形状
+                  //     {fill: "#1570A6", stroke: null}),       // 填充色为蓝色，边框色为空
                   // header形状
                   $(go.Shape,
-                      {margin: new go.Margin(5, 0), row: 0},     // 设置margin和row，使得图标和文本在同一行
-                      {fill: "#transparent", stroke: "transparent"},  // 设置填充色和边框色为透明
+                      {fill: "#1570A6", stroke: "transparent"},  // 设置填充色和边框色为透明
                   ),
                   // header图标
                   $(go.Picture,
-                      {source: "public/table.svg"},
-                      {width: 16, height: 16},
-                  ),
-                  // header文本
-                  $(go.TextBlock,
                       {
-                        alignment: go.Spot.Center,
-                        margin: 4,
-                        stroke: "#254b9c",                                  // 文本色为白色
-                        font: "bold 12pt sans-serif",
-                      },
-                      new go.Binding("text", "key")     // 绑定文本为nodeDataArray中的key
+                        source: "public/schema.svg",
+                        // 左对齐
+                        alignment: go.Spot.Left,
+                        width: 25,
+                        height: 25
+                      }
                   ),
+                  $(go.TextBlock,                           // header文本
+                      {
+                        alignment: go.Spot.Left,              // 文本左对齐
+                        margin: new go.Margin(4, 0, 4, 25),
+                        stroke: "black",                      // 文本色为白色
+                        font: "bold 12pt sans-serif"
+                      },
+                      new go.Binding("text", "schema")         // 绑定文本为nodeDataArray中的schema
+                  )
+              ),
+              $(go.Panel, "Auto",                         // header 自动布局
+                  {stretch: go.GraphObject.Horizontal},     // 水平拉伸，使得header宽度与父节点一致
+                  // $(go.Shape,                               // header形状
+                  //     {fill: "#1570A6", stroke: null}),       // 填充色为蓝色，边框色为空
+                  // header形状
+                  $(go.Shape,
+                      {fill: "#1570A6", stroke: "transparent"},  // 设置填充色和边框色为透明
+                  ),
+                  // header图标
+                  $(go.Picture,
+                      {
+                        source: "public/table.svg",
+                        // 左对齐
+                        alignment: go.Spot.Left,
+                        width: 25,
+                        height: 25
+                      }
+                  ),
+                  $(go.TextBlock,                           // header文本
+                      {
+                        alignment: go.Spot.Left,              // 文本左对齐
+                        margin: new go.Margin(4, 0, 4, 25),
+                        stroke: "black",                      // 文本色为白色
+                        font: "bold 12pt sans-serif"
+                      },
+                      new go.Binding("text", "key")         // 绑定文本为nodeDataArray中的key
+                  )
               ),
               // 自定义面板，充当items，用于显示节点的fields
               $(go.Panel,
@@ -495,23 +525,27 @@ function init() {
                     itemTemplate: fieldTemplate                         // 指定item模板为上面定义的fieldTemplate
                   },
                   new go.Binding("itemArray", "fields")     // 绑定itemArray为nodeDataArray中的fields
-              ),  // end Table Panel of items
+              ),
               // 对象右键菜单
               {
-                contextMenu:     // define a context menu for each node
-                    $("ContextMenu",  // that has one button
+                contextMenu:                    // define a context menu for each node
+                    $("ContextMenu",
                         $("ContextMenuButton",
-                            $(go.TextBlock, "改变节点背景颜色"),
+                            $(go.TextBlock,
+                                {margin: 3, textAlign: "left", font: "bold 10pt sans-serif"},
+                                "改变节点背景颜色"),
                             {click: changeColor,},
                         ),
                         $("ContextMenuButton",
-                            $(go.TextBlock, "改变节点字体颜色"),
+                            $(go.TextBlock,
+                                {margin: 3, textAlign: "left", font: "bold 10pt sans-serif"},
+                                "改变节点背景颜色"),
                             {click: changeColor},
                         )
-                    )  // end Adornment
+                    )
               }
-          )  // end Vertical Panel
-      );  // end Node
+          )
+      );
 
   /**
    * 定义连线模板
@@ -519,12 +553,11 @@ function init() {
   myDiagram.linkTemplate =
       $(go.Link,
           {                           // 连线属性
-            reshapable: true,             // 连线可调整
             routing: go.Link.AvoidsNodes, // 连线避开节点
             corner: 5,                    // 连线拐角弧度
             curve: go.Link.JumpOver,      // 连线绕过节点
-            toShortLength: 2,             // 入连线端点距离节点距离
-            fromShortLength: 4            // 出连线端点距离节点距离
+            toShortLength: 6,             // 入连线端点距离节点距离
+            fromShortLength: 2            // 出连线端点距离节点距离
           },
           $(go.Shape, {strokeWidth: 1.5}),  // 连线形状属性
           $(go.Shape, {toArrow: "Standard", stroke: null})  // 连线箭头属性
@@ -608,20 +641,20 @@ function init() {
   myDiagram.contextMenu =
       $("ContextMenu",
           $("ContextMenuButton",
-              $(go.TextBlock, "撤销"),
+              $(go.TextBlock, {margin: 3, textAlign: "left", font: "bold 10pt sans-serif"}, "撤销"),
               {click: undo},
               new go.Binding("visible", "", function (o) {
                 return o.diagram.commandHandler.canUndo();
               }).ofObject()),
           $("ContextMenuButton",
-              $(go.TextBlock, "重做"),
+              $(go.TextBlock, {margin: 3, textAlign: "left", font: "bold 10pt sans-serif"}, "重做"),
               {click: redo},
               new go.Binding("visible", "", function (o) {
                 return o.diagram.commandHandler.canRedo();
               }).ofObject()),
           // no binding, always visible button:
           $("ContextMenuButton",
-              $(go.TextBlock, "创建新节点"),
+              $(go.TextBlock, {margin: 3, textAlign: "left", font: "bold 10pt sans-serif"}, "创建新节点"),
               {click: newNode})
       );
 
