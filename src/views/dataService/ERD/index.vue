@@ -52,14 +52,14 @@
           选中节点【{{ rightClickedNode.key }}】
         </el-button>
       </div>
-      <el-button-group>
-        <el-button type="primary" @click="addNode">添加节点</el-button>
-        <el-button type="primary" @click="addLink">添加边</el-button>
-        <el-button type="primary" @click="deleteNode">删除节点</el-button>
-        <el-button type="primary" @click="deleteLink">删除边</el-button>
-        <el-button type="primary" @click="save">保存</el-button>
-        <el-button type="primary" @click="load">数据融合</el-button>
-      </el-button-group>
+      <!--      <el-button-group>-->
+      <!--        <el-button type="primary" @click="addNode">添加节点</el-button>-->
+      <!--        <el-button type="primary" @click="addLink">添加边</el-button>-->
+      <!--        <el-button type="primary" @click="deleteNode">删除节点</el-button>-->
+      <!--        <el-button type="primary" @click="deleteLink">删除边</el-button>-->
+      <!--        <el-button type="primary" @click="save">保存</el-button>-->
+      <!--        <el-button type="primary" @click="load">数据融合</el-button>-->
+      <!--      </el-button-group>-->
     </div>
     <br/>
     <div>
@@ -93,23 +93,21 @@
         </el-card>
       </el-col>
       <el-col :span='7'>
-
+        <el-button
+            v-draggable
+            class="drg-btn"
+            ref="dragBtn"
+            type="success"
+            @mousedown="handleMouseDown"
+            @mouseup="handleMouseUp"
+        >拖动我
+        </el-button>
       </el-col>
       <el-col :span="11">
+        <div class="target-area">目标区域</div>
       </el-col>
     </el-row>
-    <div>
-      <el-button
-          v-draggable
-          class="drg-btn"
-          ref="dragBtn"
-          type="success"
-          @mousedown="handleMouseDown"
-          @mouseup="handleMouseUp"
-      >拖动我
-      </el-button>
-    </div>
-    <div class="target-area">目标区域</div>
+
     <div id="myDiagramDiv">
       <canvas tabindex="0" width="1234" height="407"
               style="position: absolute; top: 0px; left: 0px; z-index: 2; user-select: none; width: 905px; height: 299px; cursor: auto;">
@@ -119,6 +117,14 @@
         <div style="position: absolute; width: 1px; height: 1px;"></div>
       </div>
     </div>
+
+    <el-dialog
+        v-model="dialog.visible"
+        :title="dialog.title"
+        :lock-scroll="false"
+    >
+      {{ dialog.data }}
+    </el-dialog>
   </div>
 
 </template>
@@ -154,6 +160,9 @@ const state = reactive({
   // 关系/边数据
   linkDataList: [],
   entryOptions: [],
+  // 节点背景颜色
+  nodeColor: "#ffffff",
+
   // 添加外键关系时的下拉框选项
   cfieldOptions: [],
   // 删除外键关系时的下拉框选项
@@ -174,6 +183,12 @@ const state = reactive({
   // 被右键单击的边
   rightClickedLink: null,
 
+  dialog: {
+    visible: false,
+    title: "",
+    data: {}
+  },
+
   // 鼠标松开时的坐标
   mouseUpPosition: {
     x: 0,
@@ -191,6 +206,8 @@ const {
   nodeDataList,
   linkDataList,
   entryOptions,
+  nodeColor,
+
   cfieldOptions,
   dfieldOptions,
   cfkFromEntry,
@@ -201,6 +218,8 @@ const {
   clickedLink,
   rightClickedNode,
   rightClickedLink,
+
+  dialog,
 
   mouseUpPosition,
 } = toRefs(state)
@@ -450,7 +469,7 @@ function init() {
           new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
           $(go.Shape,           // 节点形状属性
               {
-                fill: "#EEEEEE",  // 填充色
+                fill: state.nodeColor,  // 填充色
                 stroke: "black",  // 边框色
                 strokeWidth: 0.5,   // 边框宽度
               }
@@ -464,7 +483,7 @@ function init() {
                   //     {fill: "#1570A6", stroke: null}),       // 填充色为蓝色，边框色为空
                   // header形状
                   $(go.Shape,
-                      {fill: "#1570A6", stroke: "transparent"},  // 设置填充色和边框色为透明
+                      {fill: "#e9e9e9", stroke: "transparent"},  // 设置填充色和边框色为透明
                   ),
                   // header图标
                   $(go.Picture,
@@ -492,7 +511,7 @@ function init() {
                   //     {fill: "#1570A6", stroke: null}),       // 填充色为蓝色，边框色为空
                   // header形状
                   $(go.Shape,
-                      {fill: "#1570A6", stroke: "transparent"},  // 设置填充色和边框色为透明
+                      {fill: "#e9e9e9", stroke: "transparent"},  // 设置填充色和边框色为透明
                   ),
                   // header图标
                   $(go.Picture,
@@ -533,14 +552,16 @@ function init() {
                         $("ContextMenuButton",
                             $(go.TextBlock,
                                 {margin: 3, textAlign: "left", font: "bold 10pt sans-serif"},
-                                "改变节点背景颜色"),
+                                "改变节点背景颜色"
+                            ),
                             {click: changeColor,},
                         ),
                         $("ContextMenuButton",
                             $(go.TextBlock,
                                 {margin: 3, textAlign: "left", font: "bold 10pt sans-serif"},
-                                "改变节点背景颜色"),
-                            {click: changeColor},
+                                "弹出对话框"
+                            ),
+                            {click: showDialog},
                         )
                     )
               }
@@ -662,36 +683,40 @@ function init() {
 
 
 /**
- * 对象右键菜单回调函数
+ * 对象右键菜单回调函数：改变节点背景颜色
  * @param e
  * @param obj
  */
 function changeColor(e, obj) {
-  alert('changeColor')
   myDiagram.commit((d) => {
     // 获取被点击的菜单
     let contextmenu = obj.part;
     // 获取节点信息
     let nodeData = contextmenu.data;
-    // 计算下一种颜色
-    let newColor = "lightblue";
-    switch (nodeData.color) {
-      case "lightblue":
-        newColor = "lightgreen";
-        break;
-      case "lightgreen":
-        newColor = "lightyellow";
-        break;
-      case "lightyellow":
-        newColor = "orange";
-        break;
-      case "orange":
-        newColor = "lightblue";
-        break;
-    }
+    // 选择新的颜色
+    let colorOptions = ["#f1fff5", "#96b1eb", "#f4eafe", "#e2a50b"];
+    state.nodeColor = colorOptions[Math.floor(Math.random() * colorOptions.length)];
+    console.log('state.nodeColor', state.nodeColor)
     // 修改节点数据
-    d.model.set(nodeData, "color", newColor);
+    d.model.set(nodeData, "color", state.nodeColor);
   }, "changed color");
+}
+
+/**
+ * 对象右键菜单回调函数：弹出对话框
+ * @param e
+ * @param obj
+ */
+function showDialog(e, obj) {
+  console.log('showDialog: ', e, obj)
+  // 获取被点击的菜单
+  let contextmenu = obj.part;
+  // 获取节点信息
+  let nodeData = contextmenu.data;
+  console.log('nodeData', nodeData)
+  state.dialog.visible = true
+  state.dialog.title = '节点信息'
+  state.dialog.data = nodeData
 }
 
 
