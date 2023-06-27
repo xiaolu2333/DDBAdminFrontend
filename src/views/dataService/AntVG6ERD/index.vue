@@ -72,7 +72,6 @@ onMounted(() => {
 
 
 const g6 = (data: GraphData | TreeGraphData | undefined) => {
-
   // 实例化 minimap 插件
   const minimap = new G6.Minimap({
     size: [100, 100],
@@ -170,7 +169,7 @@ const g6 = (data: GraphData | TreeGraphData | undefined) => {
 </script>
 
 <style scoped>
-/*#mountNode {*/
-/*  background-color: #f1fff5;*/
-/*}*/
+#mountNode {
+  background-color: #f1fff5;
+}
 </style>

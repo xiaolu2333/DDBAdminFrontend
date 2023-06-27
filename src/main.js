@@ -52,6 +52,11 @@ import G6 from '@antv/g6';
 
 app.config.globalProperties.$echarts = G6;
 
+// 挂载antv x6
+import {Graph} from '@antv/x6';
+
+app.config.globalProperties.$echarts = Graph;
+
 
 // 挂载Vue应用实例
 app.mount('#app');

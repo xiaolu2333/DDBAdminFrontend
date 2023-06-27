@@ -293,6 +293,14 @@ const routes = [
                 meta: {
                     title: "AntVG6ERD",
                 }
+            },
+            {
+                path: "/dataService/AntVX6ERD",
+                name: "AntVX6ERD",
+                component: () => import("@/views/dataService/AntVX6ERD/index.vue"),
+                meta: {
+                    title: "AntVX6ERD",
+                }
             }
         ]
     }
