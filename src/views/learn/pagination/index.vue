@@ -7,7 +7,7 @@
     <!--      <li v-for="i in dbExtendedInfo.usageDynamic" :key="i" class="infinite-list-item">{{ i.user }}</li>-->
     <!--    </ul>-->
 
-    <div class='management-dynamic'>
+    <div class='management-dynamic' style="height: 45vh">
       <p style='font-size: 15px; font-weight: bolder'>管理操作动态</p>
       <vxe-table
           border
@@ -17,6 +17,7 @@
           :data='dbExtendedInfo.managementDynamic'
           align="center"
           empty-text="暂无数据！"
+          height="100%"
       >
         <div v-if="dbExtendedInfo.managementDynamic.length > 0">
           <vxe-column type="seq" title="序号" width="60"/>
