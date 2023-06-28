@@ -165,6 +165,8 @@ const state = reactive({
   // 关系/边数据
   linkDataList: [],
   entryOptions: [],
+  // 边数据，显示用
+  edgeDataList: [],
   // 节点背景颜色
   nodeColor: "#ffffff",
   // 眼睛
@@ -216,6 +218,7 @@ const {
   nodeDataList,
   linkDataList,
   entryOptions,
+  edgeDataList,
   nodeColor,
   isOpenEye,
   eyeStatus,
@@ -751,7 +754,14 @@ function init() {
                                 "弹出对话框"
                             ),
                             {click: showDialog},
-                        )
+                        ),
+                        $("ContextMenuButton",
+                            $(go.TextBlock,
+                                {margin: 3, textAlign: "left", font: "bold 10pt sans-serif"},
+                                "删除节点"
+                            ),
+                            {click: deleteNode},
+                        ),
                     )
               }
           )
@@ -784,7 +794,7 @@ function init() {
             linkFromPortIdProperty: "fromPort", // 连线起始端口属性
             linkToPortIdProperty: "toPort",     // 连线结束端口属性
             nodeDataArray: state.nodeDataList,  // 节点数据
-            linkDataArray: state.linkDataList   // 连线数据
+            linkDataArray: state.edgeDataList   // 连线数据
           });
 
 
@@ -908,6 +918,42 @@ function showDialog(e, obj) {
   state.dialog.data = nodeData
 }
 
+/**
+ * 对象右键菜单回调函数：删除节点
+ * @param e
+ * @param obj
+ */
+function deleteNode(e, obj) {
+  myDiagram.commit((d) => {
+    // 获取被点击的菜单
+    let contextmenu = obj.part;
+    // 获取节点信息
+    let nodeData = contextmenu.data;
+
+    // 删除节点相关的连线
+    deleteLink(nodeData.key)
+
+    // 删除节点数据
+    myDiagram.model.removeNodeData(nodeData);
+  }, "delete node");
+}
+
+/**
+ * 对象右键菜单回调函数：删除连线
+ * @param nodeKey
+ */
+function deleteLink(nodeKey) {
+  myDiagram.commit((d) => {
+    // 删除 myDiagram.model中 from 或 to 是 nodeKey 的数据
+    myDiagram.model.removeLinkDataCollection(myDiagram.model.linkDataArray.filter((item) => {
+      return item.from === nodeKey || item.to === nodeKey
+    }))
+
+    // state.edgeDataList中的相关数据会被删除
+    console.log('state.edgeDataList:', state.edgeDataList)
+  }, "delete link");
+}
+
 
 /*********************************** 背景右键菜单回调函数 ***********************************/
 /**
@@ -963,6 +1009,7 @@ function updateModelData() {
   state.nodeDataList = model.nodeDataArray
   console.log('state.nodeDataList', state.nodeDataList)
 
+  // 更新节点选项
   state.entryOptions = []
   state.nodeDataList.forEach(item => {
     state.entryOptions.push({
@@ -971,6 +1018,7 @@ function updateModelData() {
     })
   })
 
+  // 更新字段选项
   state.cfieldOptions = state.nodeDataList.map(item => {
     return {
       value: item.key,
@@ -985,6 +1033,8 @@ function updateModelData() {
   })
 
   refreshDfieldOptions()
+
+  // 更新边选项
 
 
   // model.startTransaction("modified data");
@@ -1025,6 +1075,7 @@ onMounted(() => {
     // console.log('GetERDData state.nodeDataList', state.nodeDataList)
     linkDataList.value = res.data.data.linkDataArray
     // console.log('GetERDData linkDataList.value', linkDataList.value)
+    edgeDataList.value = linkDataList.value
 
     res.data.data.nodeDataArray.forEach(item => {
       state.entryOptions.push({
