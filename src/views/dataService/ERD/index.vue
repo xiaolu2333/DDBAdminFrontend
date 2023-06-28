@@ -1,121 +1,123 @@
 <template>
   <div>
-    <div class="add-foreign-key">
-      添加外键关系：
-      <el-cascader
-          v-model="cfkFromEntry"
-          :options="cfieldOptions"
-          :props="{expandTrigger: 'hover' }"
-          placeholder="From"
-      />
-      <el-cascader
-          v-model="cfkToEntry"
-          :options="cfieldOptions"
-          :props="{expandTrigger: 'hover' }"
-          placeholder="To"
-      />
-      <el-button type="primary" @click="addFKRelationship">确认</el-button>
-    </div>
-    <div class="delete-foreign-key">
-      删除外键关系：
-      <el-cascader
-          v-model="dfkFromEntry"
-          :options="dfieldOptions"
-          :props="{expandTrigger: 'hover' }"
-          placeholder="From"
-      />
-      <el-cascader
-          v-model="dfkToEntry"
-          :options="dfieldOptions"
-          :props="{expandTrigger: 'hover' }"
-          placeholder="To"
-      />
-      <el-button type="primary" @click="deleteFKRelationship">确认</el-button>
-    </div>
-    <br/>
-    <div>
-      <div v-if="clickedLink || rightClickedLink">
-        <el-button v-if="clickedLink && !rightClickedLink">
-          选中连线【{{ clickedLink.from }}.{{ clickedLink.fromPort }} -> {{ clickedLink.to }}.{{ clickedLink.toPort }}】
-        </el-button>
-        <el-button v-if="(!clickedLink && rightClickedLink) || (clickedLink && rightClickedLink)">
-          选中连线【{{ rightClickedLink.from }}.{{ rightClickedLink.fromPort }} -> {{
-            rightClickedLink.to
-          }}.{{ rightClickedLink.toPort }}】
-        </el-button>
-      </div>
-      <div v-if="clickedNode || rightClickedNode">
-        <el-button v-if="clickedNode && !rightClickedNode">
-          选中节点【{{ clickedNode.key }}】
-        </el-button>
-        <el-button v-if="(!clickedNode && rightClickedNode) || (clickedNode && rightClickedNode)">
-          选中节点【{{ rightClickedNode.key }}】
-        </el-button>
-      </div>
-      <!--      <el-button-group>-->
-      <!--        <el-button type="primary" @click="addNode">添加节点</el-button>-->
-      <!--        <el-button type="primary" @click="addLink">添加边</el-button>-->
-      <!--        <el-button type="primary" @click="deleteNode">删除节点</el-button>-->
-      <!--        <el-button type="primary" @click="deleteLink">删除边</el-button>-->
-      <!--        <el-button type="primary" @click="save">保存</el-button>-->
-      <!--        <el-button type="primary" @click="load">数据融合</el-button>-->
-      <!--      </el-button-group>-->
-    </div>
-    <br/>
-    <div>
-      选择布局方式：
-      <el-select v-model="selectedLayout" class="m-2" placeholder="Select" @change="layoutOptionChange">
-        <el-option
-            v-for="item in layoutOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+    <el-card>
+      <div class="add-foreign-key">
+        添加外键关系：
+        <el-cascader
+            v-model="cfkFromEntry"
+            :options="cfieldOptions"
+            :props="{expandTrigger: 'hover' }"
+            placeholder="From"
         />
-      </el-select>
-    </div>
+        <el-cascader
+            v-model="cfkToEntry"
+            :options="cfieldOptions"
+            :props="{expandTrigger: 'hover' }"
+            placeholder="To"
+        />
+        <el-button type="primary" @click="addFKRelationship">确认</el-button>
+      </div>
+      <div class="delete-foreign-key">
+        删除外键关系：
+        <el-cascader
+            v-model="dfkFromEntry"
+            :options="dfieldOptions"
+            :props="{expandTrigger: 'hover' }"
+            placeholder="From"
+        />
+        <el-cascader
+            v-model="dfkToEntry"
+            :options="dfieldOptions"
+            :props="{expandTrigger: 'hover' }"
+            placeholder="To"
+        />
+        <el-button type="primary" @click="deleteFKRelationship">确认</el-button>
+      </div>
+    </el-card>
+
+    <el-card>
+      <div>
+        <div v-if="clickedLink || rightClickedLink">
+          <el-button v-if="clickedLink && !rightClickedLink">
+            选中连线【{{ clickedLink.from }}.{{ clickedLink.fromPort }} -> {{ clickedLink.to }}.{{ clickedLink.toPort }}】
+          </el-button>
+          <el-button v-if="(!clickedLink && rightClickedLink) || (clickedLink && rightClickedLink)">
+            选中连线【{{ rightClickedLink.from }}.{{ rightClickedLink.fromPort }} -> {{
+              rightClickedLink.to
+            }}.{{ rightClickedLink.toPort }}】
+          </el-button>
+        </div>
+        <div v-if="clickedNode || rightClickedNode">
+          <el-button v-if="clickedNode && !rightClickedNode">
+            选中节点【{{ clickedNode.key }}】
+          </el-button>
+          <el-button v-if="(!clickedNode && rightClickedNode) || (clickedNode && rightClickedNode)">
+            选中节点【{{ rightClickedNode.key }}】
+          </el-button>
+        </div>
+        <!--      <el-button-group>-->
+        <!--        <el-button type="primary" @click="addNode">添加节点</el-button>-->
+        <!--        <el-button type="primary" @click="addLink">添加边</el-button>-->
+        <!--        <el-button type="primary" @click="deleteNode">删除节点</el-button>-->
+        <!--        <el-button type="primary" @click="deleteLink">删除边</el-button>-->
+        <!--        <el-button type="primary" @click="save">保存</el-button>-->
+        <!--        <el-button type="primary" @click="load">数据融合</el-button>-->
+        <!--      </el-button-group>-->
+      </div>
+    </el-card>
+    <el-card>
+      <div>
+        选择布局方式：
+        <el-select v-model="selectedLayout" class="m-2" placeholder="Select" @change="layoutOptionChange">
+          <el-option
+              v-for="item in layoutOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+          />
+        </el-select>
+      </div>
+    </el-card>
     <br/>
 
-    <el-row :gutter="20">
-      <el-col :span="6">
-        <el-card>
-          <el-switch
-              v-model="isComplete"
-              size="large"
-              active-text="完整"
-              inactive-text="简易"
-          />
-          <el-tree
-              :data="treeData"
-              :props="defaultProps"
-              :draggable="true"
-              @node-click="handleNodeClick"
-          />
-        </el-card>
-      </el-col>
-      <el-col :span='7'>
-        <el-button
-            v-draggable
-            class="drg-btn"
-            ref="dragBtn"
-            type="success"
-            @mousedown="handleMouseDown"
-            @mouseup="handleMouseUp"
-        >拖动我
-        </el-button>
-      </el-col>
-      <el-col :span="11">
-        <div class="target-area">目标区域</div>
-      </el-col>
-    </el-row>
-
-    <div id="myDiagramDiv">
-      <canvas tabindex="0" width="1234" height="407"
-              style="position: absolute; top: 0px; left: 0px; z-index: 2; user-select: none; width: 905px; height: 299px; cursor: auto;">
-        This text is displayed if your browser does not support the Canvas HTML element.
-      </canvas>
-      <div style="position: absolute; overflow: auto; width: 905px; height: 299px; z-index: 1;">
-        <div style="position: absolute; width: 1px; height: 1px;"></div>
-      </div>
+    <div>
+      <el-row>
+        <el-col :span="6">
+          <div id="paletteZone"
+               style="height: 400px; margin-right: 2px; background-color: lightblue; padding: 10px;">
+            <el-switch
+                v-model="isComplete"
+                size="large"
+                active-text="完整"
+                inactive-text="简易"
+            />
+            <el-tree
+                :data="treeData"
+                :props="defaultProps"
+                :draggable="true"
+                @node-click="handleNodeClick"
+            >
+              <template #default="scope">
+                <span>{{ scope.node.label }}</span>
+              </template>
+            </el-tree>
+            <div class="draggable" draggable="true" _msttexthash="2520700" _msthash="89">水</div>
+            <div class="draggable" draggable="true" style="" _msttexthash="4243642" _msthash="90">咖啡</div>
+            <div class="draggable" draggable="true" style="" _msttexthash="3056690" _msthash="91">茶</div>
+          </div>
+        </el-col>
+        <el-col :span="18">
+          <div id="myDiagramDiv">
+            <canvas tabindex="0" width="1234" height="407"
+                    style="position: absolute; top: 0px; left: 0px; z-index: 2; user-select: none; width: 905px; height: 299px; cursor: auto;">
+              This text is displayed if your browser does not support the Canvas HTML element.
+            </canvas>
+            <div style="position: absolute; overflow: auto; width: 905px; height: 299px; z-index: 1;">
+              <div style="position: absolute; width: 1px; height: 1px;"></div>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
     </div>
 
     <el-dialog
@@ -233,7 +235,8 @@ const {
   counter
 } = toRefs(state)
 
-let myDiagram = null
+let dragged = ref(null)
+let myDiagram = ref(null)
 const dragBtn = reactive({
   data: "我被拖动到目标区域内",
 })
@@ -287,47 +290,6 @@ const deleteFKRelationship = () => {
   }
 }
 
-
-/**
- * 按钮上的鼠标按下事件
- * @param e
- */
-function handleMouseDown(e) {
-  e = e || event;
-  if (e.preventDefault) {
-    // 阻止默认浏览器动作(W3C)
-    e.preventDefault();
-    // 显示鼠标按下的位置
-    console.log('鼠标按下：', e.clientX, e.clientY);
-  } else {
-    e.returnValue = false;
-  }
-}
-
-/**
- * 按钮上的鼠标松开事件
- */
-function handleMouseUp(e) {
-  e = e || event;
-  if (e.preventDefault) {
-    // 阻止默认浏览器动作(W3C)
-    e.preventDefault();
-    // 显示鼠标松开的位置
-    console.log('鼠标松开：', e.clientX, e.clientY);
-    state.mouseUpPosition.x = e.clientX;
-    state.mouseUpPosition.y = e.clientY;
-    if (isMouseUpInRect('target-area')) {
-      console.log('鼠标松开在目标区域内');
-      alert(dragBtn.data)
-      // 将 dragBtn.data 显示在目标区域内
-      document.getElementsByClassName('target-area')[0].innerHTML = "一个按钮被拖动到我的区域内了"
-    } else {
-      console.log('鼠标松开在目标区域外');
-    }
-  } else {
-    e.returnValue = false;
-  }
-}
 
 /**
  * 获取指定元素的坐标范围
@@ -396,6 +358,171 @@ const refreshDfieldOptions = () => {
  * diagram 初始化
  */
 function init() {
+  // This event should only fire on the drag targets.
+  // Instead of finding every drag target,
+  // we can add the event to the document and disregard
+  // all elements that are not of class "draggable"
+  document.addEventListener("dragstart", event => {
+    if (event.target.className !== "draggable") return;
+    // Some data must be set to allow drag
+    event.dataTransfer.setData("text", event.target.textContent);
+
+    // store a reference to the dragged element and the offset of the mouse from the center of the element
+    dragged = event.target;
+    dragged.offsetX = event.offsetX - dragged.clientWidth / 2;
+    dragged.offsetY = event.offsetY - dragged.clientHeight / 2;
+    // Objects during drag will have a red border
+    event.target.style.border = "2px solid red";
+  }, false);
+
+  // This event resets styles after a drag has completed (successfully or not)
+  document.addEventListener("dragend", event => {
+    // reset the border of the dragged element
+    dragged.style.border = "";
+    onHighlight(null);
+  }, false);
+
+  // Next, events intended for the drop target - the Diagram div
+
+  const div = document.getElementById("myDiagramDiv");
+  div.addEventListener("dragenter", event => {
+    // Here you could also set effects on the Diagram,
+    // such as changing the background color to indicate an acceptable drop zone
+
+    // Requirement in some browsers, such as Internet Explorer
+    event.preventDefault();
+  }, false);
+
+  div.addEventListener("dragover", event => {
+    // We call preventDefault to allow a drop
+    // But on divs that already contain an element,
+    // we want to disallow dropping
+
+    if (div === myDiagram.div) {
+      const can = event.target;
+      const pixelratio = myDiagram.computePixelRatio();
+
+      // if the target is not the canvas, we may have trouble, so just quit:
+      if (!(can instanceof HTMLCanvasElement)) return;
+
+      const bbox = can.getBoundingClientRect();
+      let bbw = bbox.width;
+      if (bbw === 0) bbw = 0.001;
+      let bbh = bbox.height;
+      if (bbh === 0) bbh = 0.001;
+      const mx = event.clientX - bbox.left * ((can.width / pixelratio) / bbw);
+      const my = event.clientY - bbox.top * ((can.height / pixelratio) / bbh);
+      const point = myDiagram.transformViewToDoc(new go.Point(mx, my));
+      const part = myDiagram.findPartAt(point, true);
+      onHighlight(part);
+    }
+
+    if (event.target.className === "dropzone") {
+      // Disallow a drop by returning before a call to preventDefault:
+      return;
+    }
+
+    // Allow a drop on everything else
+    event.preventDefault();
+  }, false);
+
+  div.addEventListener("dragleave", event => {
+    // reset background of potential drop target
+    if (event.target.className == "dropzone") {
+      event.target.style.background = "";
+    }
+    onHighlight(null);
+  }, false);
+
+  div.addEventListener("drop", event => {
+    // prevent default action
+    // (open as link for some elements in some browsers)
+    event.preventDefault();
+
+    // Dragging onto a Diagram
+    if (div === myDiagram.div) {
+      const can = event.target;
+      const pixelratio = myDiagram.computePixelRatio();
+
+      // if the target is not the canvas, we may have trouble, so just quit:
+      if (!(can instanceof HTMLCanvasElement)) return;
+
+      const bbox = can.getBoundingClientRect();
+      let bbw = bbox.width;
+      if (bbw === 0) bbw = 0.001;
+      let bbh = bbox.height;
+      if (bbh === 0) bbh = 0.001;
+      const mx = event.clientX - bbox.left * ((can.width / pixelratio) / bbw);
+      const my = event.clientY - bbox.top * ((can.height / pixelratio) / bbh);
+      const point = myDiagram.transformViewToDoc(new go.Point(mx, my));
+      // if there's nothing at that point
+      if (myDiagram.findPartAt(point) === null) {
+        // a return here doesn't allow the drop to happen
+        // return;
+      }
+      // otherwise create a new node at the drop point
+      myDiagram.startTransaction('new node');
+      const newdata = {
+        // assuming the locationSpot is Spot.Center:
+        location: myDiagram.transformViewToDoc(new go.Point(mx - dragged.offsetX, my - dragged.offsetY)),
+        text: event.dataTransfer.getData('text'),
+        color: "lightyellow"
+      };
+      myDiagram.model.addNodeData(newdata);
+      const newnode = myDiagram.findNodeForData(newdata);
+      if (newnode) {
+        myDiagram.select(newnode);
+        onDrop(newnode, point);
+      }
+      myDiagram.commitTransaction('new node');
+
+      // remove dragged element from its old location, if checkbox is checked
+      if (document.getElementById('removeCheckBox').checked) dragged.parentNode.removeChild(dragged);
+    }
+
+    // If we were using drag data, we could get it here, ie:
+    // const data = event.dataTransfer.getData('text');
+  }, false);
+
+
+  // this is called on a stationary node or link during an external drag-and-drop into a Diagram
+  function onHighlight(part) {  // may be null
+    const oldskips = myDiagram.skipsUndoManager;
+    myDiagram.skipsUndoManager = true;
+    myDiagram.startTransaction("highlight");
+    if (part !== null) {
+      myDiagram.highlight(part);
+    } else {
+      myDiagram.clearHighlighteds();
+    }
+    myDiagram.commitTransaction("highlight");
+    myDiagram.skipsUndoManager = oldskips;
+  }
+
+  // this is called upon an external drop in this diagram,
+  // after a new node has been created and selected
+  function onDrop(newNode, point) {
+    const it = myDiagram.findPartsAt(point).iterator;
+    while (it.next()) {
+      const part = it.value;
+      if (part === newNode) continue;
+      // the drop happened on some Part -- call its mouseDrop handler
+      if (part && part.mouseDrop) {
+        const e = new go.InputEvent();
+        e.diagram = myDiagram;
+        e.documentPoint = point;
+        e.viewPoint = myDiagram.transformDocToView(point);
+        e.up = true;
+        myDiagram.lastInput = e;
+        // should be running in a transaction already
+        part.mouseDrop(e, part);
+        return;
+      }
+    }
+    // didn't find anything to drop onto
+  }
+
+
   let $ = go.GraphObject.make;
 
   /**
@@ -486,56 +613,56 @@ function init() {
           // 自定义面板
           $(go.Panel,
               "Vertical",                                 // 垂直布局
-              $(go.Panel, "Auto",                         // schema
-                  {stretch: go.GraphObject.Horizontal},     // 水平拉伸，使得宽度与父节点一致
-                  $(go.Shape,
-                      {fill: "#e9e9e9", stroke: "transparent"},  // 设置填充色和边框色为透明
-                  ),
-                  // 按钮
-                  $("Button",
-                      {
-                        alignment: go.Spot.BottomLeft, alignmentFocus: go.Spot.BottomLeft,
-                        click: function (e, obj) {
-                          // console.log(obj.part.data)
-                          if (state.isOpenEye) {
-                            state.eyeStatus = 'eye-open'
-                          } else {
-                            state.eyeStatus = 'eye-close'
-                          }
-                          state.isOpenEye = !state.isOpenEye
-                          console.log('eyeStatus:', state.eyeStatus)
-                        }
-                      },
-                      $(go.Picture,
-                          // 根据icon字段来显示不同的图标
-                          new go.Binding("source", eyeStatus.value, function (eyeStatus) {
-                            console.log(eyeStatus)
-                            if (eyeStatus.value === 'eye-open') {
-                              return "睁眼.svg";
-                            } else {
-                              return "闭眼.svg";
-                            }
-                          }),
-                          {
-                            // 左对齐
-                            alignment: go.Spot.Left,
-                            width: 20,
-                            height: 20
-                          }
-                      ),
-                  ),
-                  // 按钮
-                  $("Button",
-                      {
-                        alignment: go.Spot.BottomRight, alignmentFocus: go.Spot.BottomRight,
-                        click: function (e, obj) {
-                          state.counter++
-                          console.log('state.counter:', state.counter)
-                        }
-                      },
-                      $(go.Shape, "PlusLine", {width: 14, height: 14})
-                  )
-              ),
+              // $(go.Panel, "Auto",                         // schema
+              //     {stretch: go.GraphObject.Horizontal},     // 水平拉伸，使得宽度与父节点一致
+              //     $(go.Shape,
+              //         {fill: "#e9e9e9", stroke: "transparent"},  // 设置填充色和边框色为透明
+              //     ),
+              //     // 按钮
+              //     $("Button",
+              //         {
+              //           alignment: go.Spot.BottomLeft, alignmentFocus: go.Spot.BottomLeft,
+              //           click: function (e, obj) {
+              //             // console.log(obj.part.data)
+              //             if (state.isOpenEye) {
+              //               state.eyeStatus = 'eye-open'
+              //             } else {
+              //               state.eyeStatus = 'eye-close'
+              //             }
+              //             state.isOpenEye = !state.isOpenEye
+              //             console.log('eyeStatus:', state.eyeStatus)
+              //           }
+              //         },
+              //         $(go.Picture,
+              //             // 根据icon字段来显示不同的图标
+              //             new go.Binding("source", eyeStatus.value, function (eyeStatus) {
+              //               console.log(eyeStatus)
+              //               if (eyeStatus.value === 'eye-open') {
+              //                 return "睁眼.svg";
+              //               } else {
+              //                 return "闭眼.svg";
+              //               }
+              //             }),
+              //             {
+              //               // 左对齐
+              //               alignment: go.Spot.Left,
+              //               width: 20,
+              //               height: 20
+              //             }
+              //         ),
+              //     ),
+              //     // 按钮
+              //     $("Button",
+              //         {
+              //           alignment: go.Spot.BottomRight, alignmentFocus: go.Spot.BottomRight,
+              //           click: function (e, obj) {
+              //             state.counter++
+              //             console.log('state.counter:', state.counter)
+              //           }
+              //         },
+              //         $(go.Shape, "PlusLine", {width: 14, height: 14})
+              //     )
+              // ),
               $(go.Panel, "Auto",                         // schema
                   {stretch: go.GraphObject.Horizontal},     // 水平拉伸，使得宽度与父节点一致
                   // $(go.Shape,                               // 形状
