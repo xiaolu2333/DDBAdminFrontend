@@ -53,9 +53,17 @@ const init = () => {
 
   // 创建画布
   const graph = new Graph({
+    // 指定容器
     container: document.getElementById('container'),
-    width: 600,
-    height: 400,
+    // 背景设置
+    background: {
+      color: '#fffbe6', // 设置画布背景颜色
+    },
+    // 使用网格
+    grid: {
+      size: 10,      // 网格大小 10px
+      visible: true, // 渲染网格背景
+    },
   });
 
   // 渲染布局结果
