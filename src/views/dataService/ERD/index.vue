@@ -1,6 +1,9 @@
 <template>
   <div>
     <el-card>
+      <el-button @click="newNode" disabled>创建节点</el-button>
+    </el-card>
+    <el-card>
       <div class="add-foreign-key">
         添加外键关系：
         <el-cascader
@@ -38,22 +41,22 @@
     <el-card>
       <div>
         <div v-if="clickedLink || rightClickedLink">
-          <el-button v-if="clickedLink && !rightClickedLink">
+          <span v-if="clickedLink && !rightClickedLink">
             选中连线【{{ clickedLink.from }}.{{ clickedLink.fromPort }} -> {{ clickedLink.to }}.{{ clickedLink.toPort }}】
-          </el-button>
-          <el-button v-if="(!clickedLink && rightClickedLink) || (clickedLink && rightClickedLink)">
+          </span>
+          <span v-if="(!clickedLink && rightClickedLink) || (clickedLink && rightClickedLink)">
             选中连线【{{ rightClickedLink.from }}.{{ rightClickedLink.fromPort }} -> {{
               rightClickedLink.to
             }}.{{ rightClickedLink.toPort }}】
-          </el-button>
+          </span>
         </div>
         <div v-if="clickedNode || rightClickedNode">
-          <el-button v-if="clickedNode && !rightClickedNode">
+          <span v-if="clickedNode && !rightClickedNode">
             选中节点【{{ clickedNode.key }}】
-          </el-button>
-          <el-button v-if="(!clickedNode && rightClickedNode) || (clickedNode && rightClickedNode)">
+          </span>
+          <span v-if="(!clickedNode && rightClickedNode) || (clickedNode && rightClickedNode)">
             选中节点【{{ rightClickedNode.key }}】
-          </el-button>
+          </span>
         </div>
         <!--      <el-button-group>-->
         <!--        <el-button type="primary" @click="addNode">添加节点</el-button>-->
@@ -923,12 +926,70 @@ function reLayout(e, obj) {
  */
 function newNode(e, obj) {
   e.diagram.commit(function (d) {
-    let data = {};
+    let data = {
+      schema: "public",
+      key: "Record4",
+      "fields": [
+        {
+          "name": "fieRecord4-1111111111111111",
+          "info": "char var",
+          "color": "#FFB900",
+          "figure": "Diamond",
+          'icon': '主键'
+        },
+        {"name": "fieRecord4-2222", "info": "char var", "color": "#F25022", "figure": "Rectangle", 'icon': '字段'},
+        {
+          "name": "fieRecord4-33333333333333333333333",
+          "info": "real",
+          "color": "#00BCF2",
+          "figure": "Rectangle",
+          'icon': '字段'
+        }
+      ],
+      "loc": "380 0"
+    };
     d.model.addNodeData(data);
     let part = d.findPartForData(data);  // must be same data reference, not a new {}
     // set location to saved mouseDownPoint in ContextMenuTool
     part.location = d.toolManager.contextMenuTool.mouseDownPoint;
+
+    updateModelData()
   }, 'new node');
+}
+
+// 更新模型数据：节点与边
+function updateModelData() {
+  let model = myDiagram.model;
+  state.nodeDataList = model.nodeDataArray
+  console.log('state.nodeDataList', state.nodeDataList)
+
+  state.entryOptions = []
+  state.nodeDataList.forEach(item => {
+    state.entryOptions.push({
+      value: item.key,
+      label: item.key,
+    })
+  })
+
+  state.cfieldOptions = state.nodeDataList.map(item => {
+    return {
+      value: item.key,
+      label: item.key,
+      children: item.fields.map(field => {
+        return {
+          value: field.name,
+          label: field.name
+        }
+      })
+    }
+  })
+
+  refreshDfieldOptions()
+
+
+  // model.startTransaction("modified data");
+  // model.setDataProperty(model.modelData, "date", new Date().toDateString());
+  // model.commitTransaction("modified data");
 }
 
 /**
