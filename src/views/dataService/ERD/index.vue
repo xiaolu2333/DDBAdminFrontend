@@ -138,9 +138,7 @@
 import {onMounted, reactive, toRefs, ref} from 'vue'
 import {vDraggable} from '@neodrag/vue';
 
-
-import {GetERDData} from '@/api/dataService/ERD.js'
-import {GetDataTree, CreateNode} from '@/api/dataManage/dataTree.js'
+import {GetERDData, GetTreeData} from '@/api/dataService/ERD.js'
 
 const state = reactive({
   isComplete: true,
@@ -434,7 +432,7 @@ function init() {
 
   div.addEventListener("dragleave", event => {
     // reset background of potential drop target
-    if (event.target.className == "dropzone") {
+    if (event.target.className === "dropzone") {
       event.target.style.background = "";
     }
     onHighlight(null);
@@ -482,8 +480,8 @@ function init() {
       }
       myDiagram.commitTransaction('new node');
 
-      // remove dragged element from its old location, if checkbox is checked
-      if (document.getElementById('removeCheckBox').checked) dragged.parentNode.removeChild(dragged);
+      // // remove dragged element from its old location, if checkbox is checked
+      // if (document.getElementById('removeCheckBox').checked) dragged.parentNode.removeChild(dragged);
     }
 
     // If we were using drag data, we could get it here, ie:
@@ -1064,7 +1062,7 @@ function redo(e, obj) {
 onMounted(() => {
   state.selectedLayout = 'LayeredDigraphLayout'
 
-  GetDataTree().then(res => {
+  GetTreeData().then(res => {
     console.log('获取树形数据:', res)
     state.treeData = res.data.data
   })
