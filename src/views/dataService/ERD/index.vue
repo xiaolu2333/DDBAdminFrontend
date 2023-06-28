@@ -99,14 +99,15 @@
                 :props="defaultProps"
                 :draggable="true"
                 @node-click="handleNodeClick"
+                @node-drag-start="handleNodeDragStart"
             >
               <template #default="scope">
                 <span>{{ scope.node.label }}</span>
               </template>
             </el-tree>
-            <div class="draggable" draggable="true" _msttexthash="2520700" _msthash="89">水</div>
-            <div class="draggable" draggable="true" style="" _msttexthash="4243642" _msthash="90">咖啡</div>
-            <div class="draggable" draggable="true" style="" _msttexthash="3056690" _msthash="91">茶</div>
+            <!--            <div class="draggable" draggable="true" _msttexthash="2520700" _msthash="89">数据一</div>-->
+            <!--            <div class="draggable" draggable="true" style="" _msttexthash="4243642" _msthash="90">数据二</div>-->
+            <!--            <div class="draggable" draggable="true" style="" _msttexthash="3056690" _msthash="91">数据三</div>-->
           </div>
         </el-col>
         <el-col :span="18">
@@ -165,6 +166,8 @@ const state = reactive({
   entryOptions: [],
   // 边数据，显示用
   edgeDataList: [],
+  // 被拖动的节点
+  draggedNode: null,
   // 节点背景颜色
   nodeColor: "#ffffff",
   // 眼睛
@@ -217,6 +220,7 @@ const {
   linkDataList,
   entryOptions,
   edgeDataList,
+  draggedNode,
   nodeColor,
   isOpenEye,
   eyeStatus,
@@ -250,6 +254,10 @@ const handleNodeClick = (data) => {
   console.log(data)
 }
 
+const handleNodeDragStart = (data) => {
+  state.draggedNode = data
+  console.log('draggedNode:', state.draggedNode)
+}
 
 /**************************** 按钮事件 ******************************/
 // 添加外键关系
@@ -384,11 +392,14 @@ function init() {
     // reset the border of the dragged element
     dragged.style.border = "";
     onHighlight(null);
+
+
   }, false);
 
   // Next, events intended for the drop target - the Diagram div
 
   const div = document.getElementById("myDiagramDiv");
+
   div.addEventListener("dragenter", event => {
     // Here you could also set effects on the Diagram,
     // such as changing the background color to indicate an acceptable drop zone
@@ -443,12 +454,13 @@ function init() {
     // (open as link for some elements in some browsers)
     event.preventDefault();
 
-    // Dragging onto a Diagram
+    // 元素拖入画布
     if (div === myDiagram.div) {
       const can = event.target;
       const pixelratio = myDiagram.computePixelRatio();
 
       // if the target is not the canvas, we may have trouble, so just quit:
+      // 未拖入画布，则不处理
       if (!(can instanceof HTMLCanvasElement)) return;
 
       const bbox = can.getBoundingClientRect();
@@ -466,18 +478,19 @@ function init() {
       }
       // otherwise create a new node at the drop point
       myDiagram.startTransaction('new node');
-      const newdata = {
-        // assuming the locationSpot is Spot.Center:
-        location: myDiagram.transformViewToDoc(new go.Point(mx - dragged.offsetX, my - dragged.offsetY)),
-        text: event.dataTransfer.getData('text'),
-        color: "lightyellow"
-      };
-      myDiagram.model.addNodeData(newdata);
-      const newnode = myDiagram.findNodeForData(newdata);
-      if (newnode) {
-        myDiagram.select(newnode);
-        onDrop(newnode, point);
+
+      const nodeData = state.draggedNode.data.data
+      console.log('nodeData:', nodeData)
+      try {
+        myDiagram.model.addNodeData(nodeData);
+        onDrop(nodeData, point);
+        updateModelData()
+        console.log('myDiagram.model.nodeDataArray:', myDiagram.model.nodeDataArray)
+      } catch (e) {
+        alert('请使用table节点！')
       }
+
+
       myDiagram.commitTransaction('new node');
 
       // // remove dragged element from its old location, if checkbox is checked
