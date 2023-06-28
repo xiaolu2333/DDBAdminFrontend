@@ -9,7 +9,9 @@ import {GridLayout} from '@antv/layout' // umd模式下， const { GridLayout } 
 
 
 const init = () => {
+  // 定义数据集
   const data = {
+    // 节点数据
     nodes: [
       {
         id: 'node1',
@@ -28,6 +30,7 @@ const init = () => {
         }
       }
     ],
+    // 边数据
     edges: [
       {
         source: 'node1',
@@ -45,14 +48,17 @@ const init = () => {
     cols: 4,
   })
 
+  // 使用布局对数据进行布局计算
+  const newModel = gridLayout.layout(data)
+
+  // 创建画布
   const graph = new Graph({
     container: document.getElementById('container'),
     width: 600,
     height: 400,
   });
 
-  const newModel = gridLayout.layout(data)
-
+  // 渲染布局结果
   graph.fromJSON(newModel)
 }
 
@@ -62,7 +68,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-#container {
-  background-color: #f1fff5;
-}
+/*#container {*/
+/*  background-color: #f1fff5;*/
+/*}*/
 </style>

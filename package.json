@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@antv/g6": "^4.8.17",
+    "@antv/layout": "^0.3.23",
     "@antv/x6": "^2.11.1",
     "@element-plus/icons-vue": "^2.0.10",
     "@neodrag/vue": "^2.0.3",
