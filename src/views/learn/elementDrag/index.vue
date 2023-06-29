@@ -1,84 +1,84 @@
 <template>
   <h2>元素拖动demo</h2>
   <div>
-    <div class="main">
-      <el-card style="height: 650px;">
-        <el-row :gutter="20">
-          <el-col :span="4">
-            <!-- 拖拽源 -->
-            <div class="content-siadeNav">
-              <div class="title">tree列表：</div>
-              <el-tree
-                  :data="data"
-                  ref="tree1"
-                  draggable
-                  default-expand-all
-                  :allow-drop="returnFalse"
-                  @node-drag-start="handleDragstart"
-                  @node-drag-end="handleDragend"
-              >
-                <template
-                    #default="{node,data}"
-                    :style="{cursor: data.path ? 'move' : 'not-allowed'}"
-                >
-                  {{ data.label }}
-                </template>
-              </el-tree>
-            </div>
-          </el-col>
-          <!-- 拖放位置 -->
-          <el-col :span="20">
-            <div class="content">
-              <div id="frame_13">
-                <div
-                    draggable="true"
-                    class="main_frame"
-                    ref="main_frame_0"
-                    @dragstart="ondragstart($event, 'main_frame_0', videoStream[0].path)"
-                    @dragenter="ondragenter($event)"
-                    @dragover="ondragover($event)"
-                    @dragleave="ondragleave($event)"
-                    @drop="ondrop($event, item)"
-                >
-                  {{ videoStream[0] }}
-                </div>
-                <div class="secondary_frame_right">
-                  <div
-                      draggable="true"
-                      class="secondary_frame"
-                      :id="'secondary_frame_' + (index + 1)"
-                      :ref="'secondary_frame_' + (index + 1)"
-                      v-for="(element, index) in videoStream_1"
-                      :key="index"
-                      @dragstart="ondragstart($event, 'secondary_frame_' + (index + 1), videoStream_1[index].path)"
-                      @dragenter="ondragenter($event)"
-                      @dragover="ondragover($event)"
-                      @dragleave="ondragleave($event)"
-                      @drop="ondrop($event, item)"
-                  >
-                    {{ element }}
-                  </div>
-                </div>
-                <div
-                    v-for="(element, index) in videoStream_2" :key="index"
-                    draggable="true"
-                    class="secondary_frame"
-                    :id="'secondary_frame_' + (index + 5)"
-                    :ref="'secondary_frame_' + (index + 5)"
-                    @dragstart="ondragstart($event, 'secondary_frame_' + (index + 5), videoStream_2[index].path)"
-                    @dragenter="ondragenter($event)"
-                    @dragover="ondragover($event)"
-                    @dragleave="ondragleave($event)"
-                    @drop="ondrop($event, item)"
-                >
-                  {{ element }}
-                </div>
-              </div>
-            </div>
-          </el-col>
-        </el-row>
-      </el-card>
-    </div>
+    <!--    <div class="main">-->
+    <!--      <el-card style="height: 650px;">-->
+    <!--        <el-row :gutter="20">-->
+    <!--          <el-col :span="4">-->
+    <!--            &lt;!&ndash; 拖拽源 &ndash;&gt;-->
+    <!--            <div class="content-siadeNav">-->
+    <!--              <div class="title">tree列表：</div>-->
+    <!--              <el-tree-->
+    <!--                  :data="data"-->
+    <!--                  ref="tree1"-->
+    <!--                  draggable-->
+    <!--                  default-expand-all-->
+    <!--                  :allow-drop="returnFalse"-->
+    <!--                  @node-drag-start="handleDragstart"-->
+    <!--                  @node-drag-end="handleDragend"-->
+    <!--              >-->
+    <!--                <template-->
+    <!--                    #default="{node,data}"-->
+    <!--                    :style="{cursor: data.path ? 'move' : 'not-allowed'}"-->
+    <!--                >-->
+    <!--                  {{ data.label }}-->
+    <!--                </template>-->
+    <!--              </el-tree>-->
+    <!--            </div>-->
+    <!--          </el-col>-->
+    <!--          &lt;!&ndash; 拖放位置 &ndash;&gt;-->
+    <!--          <el-col :span="20">-->
+    <!--            <div class="content">-->
+    <!--              <div id="frame_13">-->
+    <!--                <div-->
+    <!--                    draggable="true"-->
+    <!--                    class="main_frame"-->
+    <!--                    ref="main_frame_0"-->
+    <!--                    @dragstart="ondragstart($event, 'main_frame_0', videoStream[0].path)"-->
+    <!--                    @dragenter="ondragenter($event)"-->
+    <!--                    @dragover="ondragover($event)"-->
+    <!--                    @dragleave="ondragleave($event)"-->
+    <!--                    @drop="ondrop($event, item)"-->
+    <!--                >-->
+    <!--                  {{ videoStream[0] }}-->
+    <!--                </div>-->
+    <!--                <div class="secondary_frame_right">-->
+    <!--                  <div-->
+    <!--                      draggable="true"-->
+    <!--                      class="secondary_frame"-->
+    <!--                      :id="'secondary_frame_' + (index + 1)"-->
+    <!--                      :ref="'secondary_frame_' + (index + 1)"-->
+    <!--                      v-for="(element, index) in videoStream_1"-->
+    <!--                      :key="index"-->
+    <!--                      @dragstart="ondragstart($event, 'secondary_frame_' + (index + 1), videoStream_1[index].path)"-->
+    <!--                      @dragenter="ondragenter($event)"-->
+    <!--                      @dragover="ondragover($event)"-->
+    <!--                      @dragleave="ondragleave($event)"-->
+    <!--                      @drop="ondrop($event, item)"-->
+    <!--                  >-->
+    <!--                    {{ element }}-->
+    <!--                  </div>-->
+    <!--                </div>-->
+    <!--                <div-->
+    <!--                    v-for="(element, index) in videoStream_2" :key="index"-->
+    <!--                    draggable="true"-->
+    <!--                    class="secondary_frame"-->
+    <!--                    :id="'secondary_frame_' + (index + 5)"-->
+    <!--                    :ref="'secondary_frame_' + (index + 5)"-->
+    <!--                    @dragstart="ondragstart($event, 'secondary_frame_' + (index + 5), videoStream_2[index].path)"-->
+    <!--                    @dragenter="ondragenter($event)"-->
+    <!--                    @dragover="ondragover($event)"-->
+    <!--                    @dragleave="ondragleave($event)"-->
+    <!--                    @drop="ondrop($event, item)"-->
+    <!--                >-->
+    <!--                  {{ element }}-->
+    <!--                </div>-->
+    <!--              </div>-->
+    <!--            </div>-->
+    <!--          </el-col>-->
+    <!--        </el-row>-->
+    <!--      </el-card>-->
+    <!--    </div>-->
     <div>
       <el-button
           v-draggable
@@ -89,7 +89,8 @@
           style="z-index: 200"
       >拖动我
       </el-button>
-      <div class="target-area">目标区域</div>
+      <!--      <div class="target-area">本页元素：目标区域</div>-->
+      <TargetArea/>
     </div>
   </div>
 </template>
@@ -97,6 +98,7 @@
 <script setup>
 import {onMounted, ref, reactive, toRefs} from "vue";
 import {vDraggable} from '@neodrag/vue';
+import {TargetArea} from "@/components/learn/index";
 
 const tableRef = ref(null)
 const tree1 = ref(null)
@@ -450,11 +452,11 @@ onMounted(() => {
   }
 }
 
-.target-area {
-  width: 500px;
-  height: 300px;
-  border: 1px solid #999;
-  background-color: #f1fff5;
-  float: right;
-}
+//.target-area {
+//  width: 500px;
+//  height: 300px;
+//  border: 1px solid #999;
+//  background-color: #f1fff5;
+//  float: right;
+//}
 </style>
