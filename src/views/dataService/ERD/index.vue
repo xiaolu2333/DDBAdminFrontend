@@ -98,6 +98,8 @@
                 :data="treeData"
                 :props="defaultProps"
                 :draggable="true"
+                :allow-drag="allowDrag"
+                :allow-drop="allowDrop"
                 @node-click="handleNodeClick"
                 @node-drag-start="handleNodeDragStart"
             >
@@ -251,10 +253,34 @@ const dragBtn = reactive({
 
 /************************ tree ************************/
 const handleNodeClick = (data) => {
-  console.log(data)
+  // console.log(data)
 }
 
-const handleNodeDragStart = (data) => {
+/**
+ * 检查是否允许拖拽
+ */
+function allowDrag(node) {
+  // console.log('allowDrag:', node)
+  return node.data.node_type === 'table';
+}
+
+/**
+ * 检查是否能被放置
+ * @param draggingNode 被拖拽的节点
+ * @param dropNode 目标节点
+ * @param type 放置的类型
+ */
+function allowDrop(draggingNode, dropNode, type) {
+  // console.log('allowDrop:', draggingNode, dropNode, type)
+  return draggingNode.data.node_type === 'table' && dropNode.data.node_type === 'db' && type === 'inner';
+}
+
+/**
+ * 拖拽节点时获取节点数据
+ * @param data
+ * @param event
+ */
+const handleNodeDragStart = (data, event) => {
   state.draggedNode = data
   console.log('draggedNode:', state.draggedNode)
 }
