@@ -42,6 +42,7 @@
     "lint-staged": "^13.2.3",
     "rollup-plugin-bundle-analyzer": "^1.6.6",
     "vite": "^4.3.9",
+    "vite-plugin-progress": "^0.0.7",
     "vitest": "^0.32.2",
     "webpack-bundle-analyzer": "^4.9.0"
   },
