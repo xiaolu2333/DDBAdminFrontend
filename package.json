@@ -40,8 +40,10 @@
     "happy-dom": "^9.20.3",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.3",
+    "rollup-plugin-bundle-analyzer": "^1.6.6",
     "vite": "^4.3.9",
-    "vitest": "^0.32.2"
+    "vitest": "^0.32.2",
+    "webpack-bundle-analyzer": "^4.9.0"
   },
   "type": "module",
   "lint-staged": {
