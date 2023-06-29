@@ -2,7 +2,8 @@
 
 import {createApp} from 'vue';
 import App from './App.vue';
-
+import { createPinia } from 'pinia'
+const pinia = createPinia()
 import router from './router';
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
@@ -37,6 +38,9 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 
 // 挂载vxe-table
 app.use(useTable);
+
+// 通过 app.use() 方法全局注册Pinia
+app.use(pinia)
 
 // 挂载echarts
 // Vue.prototype.$echarts = echarts;    //vue2的挂载方式

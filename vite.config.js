@@ -49,4 +49,8 @@ export default defineConfig({
         open: true,
         include: ["./src/components/**/*.{test,spec}.ts"],
     },
+    build: {
+        // 修改大小，kb
+        chunkSizeWarningLimit: 5000,
+    }
 });
