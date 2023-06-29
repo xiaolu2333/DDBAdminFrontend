@@ -1,86 +1,93 @@
 <template>
   <div>
-    <el-card>
-      <el-button @click="newNode" disabled>创建节点</el-button>
-    </el-card>
-    <el-card>
-      <div class="add-foreign-key">
-        添加外键关系：
-        <el-cascader
-            v-model="cfkFromEntry"
-            :options="cfieldOptions"
-            :props="{expandTrigger: 'hover' }"
-            placeholder="From"
-        />
-        <el-cascader
-            v-model="cfkToEntry"
-            :options="cfieldOptions"
-            :props="{expandTrigger: 'hover' }"
-            placeholder="To"
-        />
-        <el-button type="primary" @click="addFKRelationship">确认</el-button>
-      </div>
-      <div class="delete-foreign-key">
-        删除外键关系：
-        <el-cascader
-            v-model="dfkFromEntry"
-            :options="dfieldOptions"
-            :props="{expandTrigger: 'hover' }"
-            placeholder="From"
-        />
-        <el-cascader
-            v-model="dfkToEntry"
-            :options="dfieldOptions"
-            :props="{expandTrigger: 'hover' }"
-            placeholder="To"
-        />
-        <el-button type="primary" @click="deleteFKRelationship">确认</el-button>
-      </div>
-    </el-card>
-
-    <el-card>
-      <div>
-        <div v-if="clickedLink || rightClickedLink">
+    <div class="demo-collapse">
+      <el-collapse v-model="activeCollapseItemName" accordion>
+        <el-card>
+          <el-collapse-item title="操作" name="1">
+            <el-card>
+              <el-button @click="newNode" disabled>创建节点</el-button>
+            </el-card>
+            <el-card>
+              <div class="add-foreign-key">
+                添加外键关系：
+                <el-cascader
+                    v-model="cfkFromEntry"
+                    :options="cfieldOptions"
+                    :props="{expandTrigger: 'hover' }"
+                    placeholder="From"
+                />
+                <el-cascader
+                    v-model="cfkToEntry"
+                    :options="cfieldOptions"
+                    :props="{expandTrigger: 'hover' }"
+                    placeholder="To"
+                />
+                <el-button type="primary" @click="addFKRelationship">确认</el-button>
+              </div>
+              <div class="delete-foreign-key">
+                删除外键关系：
+                <el-cascader
+                    v-model="dfkFromEntry"
+                    :options="dfieldOptions"
+                    :props="{expandTrigger: 'hover' }"
+                    placeholder="From"
+                />
+                <el-cascader
+                    v-model="dfkToEntry"
+                    :options="dfieldOptions"
+                    :props="{expandTrigger: 'hover' }"
+                    placeholder="To"
+                />
+                <el-button type="primary" @click="deleteFKRelationship">确认</el-button>
+              </div>
+            </el-card>
+            <el-card>
+              <div>
+                <div v-if="clickedLink || rightClickedLink">
           <span v-if="clickedLink && !rightClickedLink">
             选中连线【{{ clickedLink.from }}.{{ clickedLink.fromPort }} -> {{ clickedLink.to }}.{{ clickedLink.toPort }}】
           </span>
-          <span v-if="(!clickedLink && rightClickedLink) || (clickedLink && rightClickedLink)">
+                  <span v-if="(!clickedLink && rightClickedLink) || (clickedLink && rightClickedLink)">
             选中连线【{{ rightClickedLink.from }}.{{ rightClickedLink.fromPort }} -> {{
-              rightClickedLink.to
-            }}.{{ rightClickedLink.toPort }}】
+                      rightClickedLink.to
+                    }}.{{ rightClickedLink.toPort }}】
           </span>
-        </div>
-        <div v-if="clickedNode || rightClickedNode">
+                </div>
+                <div v-if="clickedNode || rightClickedNode">
           <span v-if="clickedNode && !rightClickedNode">
             选中节点【{{ clickedNode.key }}】
           </span>
-          <span v-if="(!clickedNode && rightClickedNode) || (clickedNode && rightClickedNode)">
+                  <span v-if="(!clickedNode && rightClickedNode) || (clickedNode && rightClickedNode)">
             选中节点【{{ rightClickedNode.key }}】
           </span>
-        </div>
-        <!--      <el-button-group>-->
-        <!--        <el-button type="primary" @click="addNode">添加节点</el-button>-->
-        <!--        <el-button type="primary" @click="addLink">添加边</el-button>-->
-        <!--        <el-button type="primary" @click="deleteNode">删除节点</el-button>-->
-        <!--        <el-button type="primary" @click="deleteLink">删除边</el-button>-->
-        <!--        <el-button type="primary" @click="save">保存</el-button>-->
-        <!--        <el-button type="primary" @click="load">数据融合</el-button>-->
-        <!--      </el-button-group>-->
-      </div>
-    </el-card>
-    <el-card>
-      <div>
-        选择布局方式：
-        <el-select v-model="selectedLayout" class="m-2" placeholder="Select" @change="layoutOptionChange">
-          <el-option
-              v-for="item in layoutOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-          />
-        </el-select>
-      </div>
-    </el-card>
+                </div>
+                <!--      <el-button-group>-->
+                <!--        <el-button type="primary" @click="addNode">添加节点</el-button>-->
+                <!--        <el-button type="primary" @click="addLink">添加边</el-button>-->
+                <!--        <el-button type="primary" @click="deleteNode">删除节点</el-button>-->
+                <!--        <el-button type="primary" @click="deleteLink">删除边</el-button>-->
+                <!--        <el-button type="primary" @click="save">保存</el-button>-->
+                <!--        <el-button type="primary" @click="load">数据融合</el-button>-->
+                <!--      </el-button-group>-->
+              </div>
+            </el-card>
+            <el-card>
+              <div>
+                选择布局方式：
+                <el-select v-model="selectedLayout" class="m-2" placeholder="Select" @change="layoutOptionChange">
+                  <el-option
+                      v-for="item in layoutOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                  />
+                </el-select>
+              </div>
+            </el-card>
+          </el-collapse-item>
+        </el-card>
+      </el-collapse>
+    </div>
     <br/>
 
     <div>
@@ -208,7 +215,8 @@ const state = reactive({
     y: 0
   },
 
-  counter: 0
+  counter: 0,
+  activeCollapseItemName: "1"
 })
 
 const {
@@ -242,7 +250,8 @@ const {
 
   mouseUpPosition,
 
-  counter
+  counter,
+  activeCollapseItemName
 } = toRefs(state)
 
 let dragged = ref(null)
