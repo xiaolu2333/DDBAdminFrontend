@@ -218,6 +218,14 @@ const routes = [
                 meta: {
                     title: "使用ElForm",
                 }
+            },
+            {
+                name: "reactiveLayout",
+                path: "/learning/reactiveLayout",
+                component: () => import("@/views/learn/reactiveLayout/index.vue"),
+                meta: {
+                    title: "响应式布局",
+                }
             }
         ]
     },
