@@ -210,6 +210,14 @@ const routes = [
                 meta: {
                     title: "元素拖拽",
                 }
+            },
+            {
+                name: "useElForm",
+                path: "/learning/useElForm",
+                component: () => import("@/views/learn/useElForm/index.vue"),
+                meta: {
+                    title: "使用ElForm",
+                }
             }
         ]
     },
