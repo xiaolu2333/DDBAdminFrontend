@@ -24,6 +24,7 @@
     "gojs": "^2.3.8",
     "mockjs": "^1.1.0",
     "pinia": "^2.1.4",
+    "rollup-plugin-bundle-analyzer": "^1.6.6",
     "sass": "^1.58.3",
     "sass-loader": "^13.2.0",
     "vue": "3.3.4",
@@ -38,7 +39,8 @@
     "happy-dom": "^9.10.9",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.2",
-    "vite": "^4.0.0",
+    "vite": "^4.3.9",
+    "vite-plugin-progress": "^0.0.7",
     "vitest": "^0.31.0"
   },
   "type": "module",

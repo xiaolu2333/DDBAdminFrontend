@@ -4,10 +4,19 @@ import {fileURLToPath, URL} from 'node:url';
 
 import {defineConfig} from 'vite';
 import vue from '@vitejs/plugin-vue';
+import bundleAnalyzer from "rollup-plugin-bundle-analyzer";
+import progress from 'vite-plugin-progress'
+
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [vue()],
+    plugins: [
+        // 打包进度条
+        progress(),
+        // 打包分析
+        bundleAnalyzer(),
+        vue()
+    ],
     resolve: {
         alias: {
             // 重命名路径别名
@@ -49,4 +58,8 @@ export default defineConfig({
         open: true,
         include: ["./src/components/**/*.{test,spec}.ts"],
     },
+    build: {
+        // 修改大小，kb
+        chunkSizeWarningLimit: 5000,
+    }
 });
