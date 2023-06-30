@@ -57,6 +57,10 @@ import {Graph} from '@antv/x6';
 
 app.config.globalProperties.$echarts = Graph;
 
+import {createPinia} from 'pinia'
+
+app.use(createPinia())
+
 
 // 挂载Vue应用实例
 app.mount('#app');

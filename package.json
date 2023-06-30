@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "vite",
+    "dev:dev": "vite --mode dev",
     "build": "vite build",
+    "build:dev": "vite build --mode dev",
     "preview": "vite preview",
     "test": "vitest",
     "coverage": "vitest run --coverage",
@@ -21,9 +23,10 @@
     "element-plus": "^2.2.32",
     "gojs": "^2.3.8",
     "mockjs": "^1.1.0",
+    "pinia": "^2.1.4",
     "sass": "^1.58.3",
     "sass-loader": "^13.2.0",
-    "vue": "^3.2.45",
+    "vue": "3.3.4",
     "vue-router": "^4.0.13",
     "vxe-table": "^4.3.12",
     "xe-utils": "^3.5.7"

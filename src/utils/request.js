@@ -6,8 +6,8 @@ import {ElMessage, ElMessageBox} from 'element-plus'
 
 // 通过 process.env 来获取环境变量
 // console.log(process.env.NODE_ENV + "环境: " + process.env.VUE_APP_API);
-// 执行 npm run dev 时，默认读取 .env.development 中的环境变量，输出 development环境: /devAPI)
-// 执行 npm run build 时，默认读取 .env.production 中的环境变量，输出 production环境: /prodAPI)
+// 执行 npm run dev 时，默认读取 .env.dev.development 中的环境变量，输出 development环境: /devAPI)
+// 执行 npm run build 时，默认读取 .env.dev.production 中的环境变量，输出 production环境: /prodAPI)
 // 我们就可以使用不同的环境变量来区分不同的环境，具体就是在API前添加环境变量值，从而请求不同环境下的接口
 // 然后就可以用环境变量来替换 axios 中的 baseURL，从而实现不同环境下的接口请求。
 

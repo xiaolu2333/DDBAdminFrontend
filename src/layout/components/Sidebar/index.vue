@@ -1,8 +1,12 @@
 <template>
-  <div class="logo-container">
-    <img class="logo" src="@/assets/images/logo.svg" width="100" height="100" alt="管理后台logo"/>
-    <span>XXX管理系统</span>
-  </div>
+  <el-row class="logo-container">
+    <el-col :span="6">
+      <img class="logo" src="@/assets/images/logo.svg" width="60" height="60" alt="管理后台logo"/>
+    </el-col>
+    <el-col :span="14">
+      <span class="title">{{ appStore.getTitle }}</span>
+    </el-col>
+  </el-row>
   <!--router属性是必须的-->
   <el-menu
       router
@@ -83,6 +87,9 @@
 
 <script setup>
 import {useRouter} from "vue-router";
+import {useAppStore} from '@/stores/app'
+
+const appStore = useAppStore()
 
 // 获取路由实例对象
 const router = useRouter();
@@ -96,5 +103,23 @@ const routersOptions = router.options.routes
 </script>
 
 <style lang="scss" scoped>
-
+.logo-container:hover {
+  cursor: pointer;
+  background-color: #73b8ff;
+  color: #ffffff;
+}
+.logo {
+  /* 水平居中 */
+  margin: 10px auto;
+  /* 垂直居中 */
+  display: block;
+}
+.title {
+  /* 水平居中 */
+  text-align: center;
+  /* 垂直居中 */
+  line-height: 80px;
+  /* 文字均匀分布 */
+  text-justify: distribute-all-lines;
+}
 </style>
