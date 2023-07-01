@@ -14,74 +14,80 @@
       background-color="#2c3e50"
       text-color="#fff"
       active-text-color="#00a0e9"
+      :unique-opened="true"
   >
-    <template v-for="item in routersOptions" :key="item.path">
-      <el-sub-menu v-if="item.name==='Home' && item.children" :index="item.path">
-        <template #title>
-          <el-icon>
-            <House/>
-          </el-icon>
-          <span>{{ item.meta && item.meta.title }}</span>
-        </template>
-        <template v-for="child in item.children" :key="child.path">
-          <el-menu-item :index="child.path">
-            {{ child.meta && child.meta.title }}
-          </el-menu-item>
-        </template>
-      </el-sub-menu>
-      <el-sub-menu v-if="item.name==='System' && item.children" :index="item.path">
-        <template #title>
-          <el-icon>
-            <Setting/>
-          </el-icon>
-          <span>{{ item.meta && item.meta.title }}</span>
-        </template>
-        <template v-for="child in item.children" :key="child.path">
-          <el-menu-item :index="child.path">
-            {{ child.meta && child.meta.title }}
-          </el-menu-item>
-        </template>
-      </el-sub-menu>
-      <el-sub-menu v-if="item.name==='DataManage' && item.children" :index="item.path">
-        <template #title>
-          <el-icon>
-            <Coin/>
-          </el-icon>
-          <span>{{ item.meta && item.meta.title }}</span>
-        </template>
-        <template v-for="child in item.children" :key="child.path">
-          <el-menu-item :index="child.path">
-            {{ child.meta && child.meta.title }}
-          </el-menu-item>
-        </template>
-      </el-sub-menu>
-      <el-sub-menu v-if="item.name==='Learning' && item.children" :index="item.path">
-        <template #title>
-          <el-icon>
-            <Setting/>
-          </el-icon>
-          <span>{{ item.meta && item.meta.title }}</span>
-        </template>
-        <template v-for="child in item.children" :key="child.path">
-          <el-menu-item :index="child.path">
-            {{ child.meta && child.meta.title }}
-          </el-menu-item>
-        </template>
-      </el-sub-menu>
-      <el-sub-menu v-if="item.name==='DataService' && item.children" :index="item.path">
-        <template #title>
-          <el-icon>
-            <Service/>
-          </el-icon>
-          <span>{{ item.meta && item.meta.title }}</span>
-        </template>
-        <template v-for="child in item.children" :key="child.path">
-          <el-menu-item :index="child.path">
-            {{ child.meta && child.meta.title }}
-          </el-menu-item>
-        </template>
-      </el-sub-menu>
-    </template>
+    <el-scrollbar
+        style="height: 80vh; overflow: auto;"
+    >
+      <template v-for=" item in routersOptions
+    " :key="item.path">
+        <el-sub-menu v-if="item.name==='Home' && item.children" :index="item.path">
+          <template #title>
+            <el-icon>
+              <House/>
+            </el-icon>
+            <span>{{ item.meta && item.meta.title }}</span>
+          </template>
+          <template v-for="child in item.children" :key="child.path">
+            <el-menu-item :index="child.path">
+              {{ child.meta && child.meta.title }}
+            </el-menu-item>
+          </template>
+        </el-sub-menu>
+        <el-sub-menu v-if="item.name==='System' && item.children" :index="item.path">
+          <template #title>
+            <el-icon>
+              <Setting/>
+            </el-icon>
+            <span>{{ item.meta && item.meta.title }}</span>
+          </template>
+          <template v-for="child in item.children" :key="child.path">
+            <el-menu-item :index="child.path">
+              {{ child.meta && child.meta.title }}
+            </el-menu-item>
+          </template>
+        </el-sub-menu>
+        <el-sub-menu v-if="item.name==='DataManage' && item.children" :index="item.path">
+          <template #title>
+            <el-icon>
+              <Coin/>
+            </el-icon>
+            <span>{{ item.meta && item.meta.title }}</span>
+          </template>
+          <template v-for="child in item.children" :key="child.path">
+            <el-menu-item :index="child.path">
+              {{ child.meta && child.meta.title }}
+            </el-menu-item>
+          </template>
+        </el-sub-menu>
+        <el-sub-menu v-if="item.name==='Learning' && item.children" :index="item.path">
+          <template #title>
+            <el-icon>
+              <Setting/>
+            </el-icon>
+            <span>{{ item.meta && item.meta.title }}</span>
+          </template>
+          <template v-for="child in item.children" :key="child.path">
+            <el-menu-item :index="child.path">
+              {{ child.meta && child.meta.title }}
+            </el-menu-item>
+          </template>
+        </el-sub-menu>
+        <el-sub-menu v-if="item.name==='DataService' && item.children" :index="item.path">
+          <template #title>
+            <el-icon>
+              <Service/>
+            </el-icon>
+            <span>{{ item.meta && item.meta.title }}</span>
+          </template>
+          <template v-for="child in item.children" :key="child.path">
+            <el-menu-item :index="child.path">
+              {{ child.meta && child.meta.title }}
+            </el-menu-item>
+          </template>
+        </el-sub-menu>
+      </template>
+    </el-scrollbar>
   </el-menu>
 </template>
 
@@ -108,12 +114,14 @@ const routersOptions = router.options.routes
   background-color: #73b8ff;
   color: #ffffff;
 }
+
 .logo {
   /* 水平居中 */
   margin: 10px auto;
   /* 垂直居中 */
   display: block;
 }
+
 .title {
   /* 水平居中 */
   text-align: center;
