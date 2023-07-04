@@ -2,18 +2,11 @@
 /* 封装 axios 拦截器 */
 
 import axios from "axios";
-import {ElMessage, ElMessageBox} from 'element-plus'
-
-// 通过 process.env 来获取环境变量
-// console.log(process.env.NODE_ENV + "环境: " + process.env.VUE_APP_API);
-// 执行 npm run dev 时，默认读取 .env.dev.development 中的环境变量，输出 development环境: /devAPI)
-// 执行 npm run build 时，默认读取 .env.dev.production 中的环境变量，输出 production环境: /prodAPI)
-// 我们就可以使用不同的环境变量来区分不同的环境，具体就是在API前添加环境变量值，从而请求不同环境下的接口
-// 然后就可以用环境变量来替换 axios 中的 baseURL，从而实现不同环境下的接口请求。
+import {ElMessage} from 'element-plus'
 
 // 创建实例
 const service = axios.create({
-    baseURL: 'http://127.0.0.1:8000', // api 的 base_url
+    baseURL: import.meta.env.VITE_API_URL_PATH,
     timeout: 30000,
 });
 

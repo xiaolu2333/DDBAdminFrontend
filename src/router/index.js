@@ -234,6 +234,14 @@ const routes = [
         meta: {
           title: "响应式布局",
         }
+      },
+      {
+        name: "buildApp",
+        path: "/learning/buildApp",
+        component: () => import("@/views/learn/buildApp/index.vue"),
+        meta: {
+            title: "打包构建App",
+        }
       }
     ]
   },
