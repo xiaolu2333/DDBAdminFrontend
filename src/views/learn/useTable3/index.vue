@@ -13,6 +13,12 @@
         border
         ref="tableRef"
         :data="tableData"
+        :header-align="'center'"
+        :align="'center'"
+        :height="440"
+        :width="200"
+        :row-config="{keyField: 'id', isHover: true}"
+        :checkbox-config="{highlight:true, checkRowKeys:selectDataOriginIds}"
         @checkbox-all="selectAllChangeEvent"
         @checkbox-change="selectChangeEvent"
         @checkbox-range-change="selectRangeChangeEvent"
@@ -57,7 +63,7 @@ interface RowVO {
 }
 
 const dialogVisible = ref(false)
-const tableRef = ref<VxeTableInstance<RowVO>>()
+const tableRef = ref<VxeTableInstance>()
 const tableData = ref<RowVO[]>([
   {id: 10001, name: 'Test1', role: 'Develop', sex: 'Man', age: 28, address: 'test abc', selected: true},
   {id: 10002, name: 'Test2', role: 'Test', sex: 'Women', age: 22, address: 'Guangzhou'},
@@ -68,6 +74,8 @@ const tableData = ref<RowVO[]>([
 const selectData = ref<RowVO[]>([])
 // 保存原始选中的数据
 const selectDataOrigin = ref<RowVO[]>([])
+// 保存原始选中的数据的id
+const selectDataOriginIds = ref<string[]>([])
 
 
 //
@@ -77,7 +85,7 @@ const showDialog = () => {
 }
 
 // 选中所有事件
-const selectAllChangeEvent: VxeTableEvents.CheckboxAll<RowVO> = ({checked}) => {
+const selectAllChangeEvent: VxeTableEvents.CheckboxAll = ({checked}) => {
   const $table = tableRef.value
   if ($table) {
     const records = $table.getCheckboxRecords()
@@ -88,7 +96,7 @@ const selectAllChangeEvent: VxeTableEvents.CheckboxAll<RowVO> = ({checked}) => {
 
 
 // 选中事件
-const selectChangeEvent: VxeTableEvents.CheckboxChange<RowVO> = ({checked}) => {
+const selectChangeEvent: VxeTableEvents.CheckboxChange = ({checked}) => {
   const $table = tableRef.value
   if ($table) {
     const records = $table.getCheckboxRecords()
@@ -98,7 +106,7 @@ const selectChangeEvent: VxeTableEvents.CheckboxChange<RowVO> = ({checked}) => {
 }
 
 // 选中范围事件
-const selectRangeChangeEvent: VxeTableEvents.CheckboxRangeChange<RowVO> = ({checked, records}) => {
+const selectRangeChangeEvent: VxeTableEvents.CheckboxRangeChange = ({checked, records}) => {
   const $table = tableRef.value
   // 如果selected=true，则设置为选中状态
   if ($table) {
@@ -200,9 +208,15 @@ const getSelectedEvent = () => {
 }
 
 onMounted(() => {
-  getSelectedEvent()
-  console.log('tableData', tableData.value)
-  console.log('selectData', selectData.value)
-  console.log('selectDataOrigin', selectDataOrigin.value)
+  selectData.value = []
+  selectDataOrigin.value = []
+  selectDataOriginIds.value = []
+  tableData.value.forEach((item) => {
+    if (item.selected) {
+      selectData.value.push(item)
+      selectDataOrigin.value.push(item)
+      selectDataOriginIds.value.push(item.id.toString())
+    }
+  })
 })
 </script>
