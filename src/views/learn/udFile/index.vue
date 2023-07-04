@@ -98,6 +98,35 @@
           </el-card>
         </el-col>
       </el-row>
+
+      <el-row :gutter="30">
+        <el-col :span="12">
+          <el-card>
+            <template #header>
+              【在表单数据中文件断点续传】
+            </template>
+            <el-form :model="formData3" ref='dataFormRef3' label-width="120px">
+              <el-form-item label="姓名" prop='name' @input="change3">
+                <el-input v-model="formData3.name"/>
+              </el-form-item>
+              <el-form-item label="密码" prop="password" type="password" show-password>
+                <el-input v-model="formData3.password"/>
+              </el-form-item>
+              <el-form-item label="文件" prop="file">
+                <el-input v-model="formData3.fileName"/>
+                <input type="file" @change="handleFileUpload2"/>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="submit3">提交</el-button>
+              </el-form-item>
+            </el-form>
+          </el-card>
+        </el-col>
+        <el-col :span="12">
+          选择文件<input type="file" ref="file2">
+          <el-button @click="test">文件分块上传</el-button>
+        </el-col>
+      </el-row>
     </el-card>
   </div>
 
@@ -105,11 +134,16 @@
 <script setup>
 import {reactive, ref, toRefs} from 'vue'
 import {ElMessage} from 'element-plus'
-import {UploadFile, UploadFormFile, DownloadFileByStream, DownloadFileByURL} from '@/api/learn/uploadAndDownloadFile.js'
+import {
+  UploadFile, UploadFormFile, UploadFileByBreakpoint,
+  DownloadFileByStream, DownloadFileByURL
+} from '@/api/learn/uploadAndDownloadFile.js'
 
 const file = ref("file")
 const upload = ref()
+const file2 = ref("file2")
 const state = reactive({
+  fileObj: null,
   // 原生文件上传
   formData1: {
     name: "",
@@ -124,11 +158,20 @@ const state = reactive({
     fileName: "",
     file: null,
   },
+  // 原生文件断点续传
+  formData3: {
+    name: "",
+    password: "",
+    file: null,
+    fileName: "",
+  },
   dataFileList: [],
 })
 const {
+  fileObj,
   formData1,
   formData2,
+  formData3,
   dataFileList,
 } = toRefs(state)
 
@@ -314,6 +357,80 @@ function submit2() {
       .catch((error) => {
         console.log(error);
       });
+}
+
+
+/*************************** 文件断点续传 ***************************/
+function handleFileUpload2(event) {
+  console.log("event:", event)
+  const file = event.target.files[0]
+  state.formData3.fileName = file.name
+  const reader = new FileReader()
+  reader.readAsDataURL(file)
+  reader.onload = () => {
+    state.formData3.file = reader.result
+  }
+}
+
+
+function submit3() {
+  // 创建表单对象
+  let formData = new FormData();
+  // 添加要上传的文件到表单对象中
+  formData.append("file", formData3.value.file);
+  formData.append("name", formData3.value.name);
+  formData.append("password", formData3.value.password);
+  formData.append("fileName", formData3.value.fileName);
+  UploadFormFile(formData)
+      .then((response) => {
+        console.log(response.data);
+        ElMessage.success("上传成功")
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+}
+
+function change3(data) {
+  console.log("data:", data)
+  console.log("formData1:", formData1)
+}
+
+/*************************** 文件分块上传 ***************************/
+async function test() {
+  console.log('file2:', file2.value)
+  // 获取文件
+  state.fileObj = file2.value.files[0];
+  console.log("state.fileObj:", state.fileObj)
+  const CHUNK_SIZE = 1024 * 1024 * 2; // 每个文件块的大小（这里设置为1MB）
+  // 获取文件信息
+  const fileSize = state.fileObj.size;
+  const fileName = state.fileObj.name;
+  // 计算文件块数量
+  const totalChunks = Math.ceil(fileSize / CHUNK_SIZE);
+  // 上传文件块
+  for (let chunkNumber = 0; chunkNumber < totalChunks; chunkNumber++) {
+    const start = chunkNumber * CHUNK_SIZE;
+    const end = Math.min(start + CHUNK_SIZE, fileSize);
+    const chunk = state.fileObj.slice(start, end);
+    // 创建FormData对象并添加文件块
+    const formData = new FormData();
+    formData.append('file', chunk);
+    formData.append('fileName', fileName);
+    formData.append('chunkNumber', chunkNumber);
+    formData.append('totalChunks', totalChunks);
+    // 发送文件块到后端
+    UploadFileByBreakpoint(formData).then((response) => {
+      console.log(response.data);
+      if (response.code === 200) {
+        ElMessage.success("上传成功")
+      }
+    }).catch((error) => {
+      console.log(error);
+    })
+  }
+  // 文件上传完成后的操作
+  // ...
 }
 
 </script>
