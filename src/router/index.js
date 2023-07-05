@@ -242,6 +242,14 @@ const routes = [
         meta: {
             title: "打包构建App",
         }
+      },
+      {
+        name: "elementAdaptive",
+        path: "/learning/elementAdaptive",
+        component: () => import("@/views/learn/elementAdaptive/index.vue"),
+        meta: {
+            title: "元素自适应",
+        }
       }
     ]
   },
