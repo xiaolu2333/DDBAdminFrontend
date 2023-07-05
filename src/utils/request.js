@@ -7,6 +7,7 @@ import {ElMessage} from 'element-plus'
 // 创建实例
 const service = axios.create({
     baseURL: import.meta.env.VITE_API_URL_PATH,
+    // bassURL: _config.baseUrl,
     timeout: 30000,
 });
 
