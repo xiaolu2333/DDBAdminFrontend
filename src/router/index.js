@@ -250,6 +250,14 @@ const routes = [
         meta: {
             title: "元素自适应",
         }
+      },
+      {
+        name: "dragDivWidth",
+        path: "/learning/dragDivWidth",
+        component: () =>  import("@/views/learn/dragDivWidth/index.vue"),
+        meta: {
+            title: "拖动div宽度",
+        }
       }
     ]
   },
