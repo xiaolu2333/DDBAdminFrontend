@@ -5,7 +5,8 @@ export const useAppStore = defineStore('app', {
     // 推荐使用 完整类型推断的箭头函数
     state: () => {
         return {
-            title: import.meta.env.VITE_APP_TITLE,
+            // title: import.meta.env.VITE_APP_TITLE,
+            title: _commConfig.appTitle
         }
     },
 
