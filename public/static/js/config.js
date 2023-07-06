@@ -1,4 +1,4 @@
 var _commConfig = {
-    baseUrl: 'http://127.0.0.1:8000',
-    appTitle: 'MYDB子库系统',
+    baseUrl: 'http://172.28.79.200:8000/',
+    appTitle: 'MYDB系统',
 }

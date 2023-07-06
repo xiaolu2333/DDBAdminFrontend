@@ -236,14 +236,6 @@ const routes = [
         }
       },
       {
-        name: "buildApp",
-        path: "/learning/buildApp",
-        component: () => import("@/views/learn/buildApp/index.vue"),
-        meta: {
-            title: "打包构建App",
-        }
-      },
-      {
         name: "elementAdaptive",
         path: "/learning/elementAdaptive",
         component: () => import("@/views/learn/elementAdaptive/index.vue"),
@@ -332,22 +324,6 @@ const routes = [
         component: () => import("@/views/dataService/ERD/index.vue"),
         meta: {
           title: "ERD",
-        }
-      },
-      {
-        path: "/dataService/AntVG6ERD",
-        name: "AntVG6ERD",
-        component: () => import("@/views/dataService/AntVG6ERD/index.vue"),
-        meta: {
-          title: "AntVG6ERD",
-        }
-      },
-      {
-        path: "/dataService/AntVX6ERD",
-        name: "AntVX6ERD",
-        component: () => import("@/views/dataService/AntVX6ERD/index.vue"),
-        meta: {
-          title: "AntVX6ERD",
         }
       }
     ]

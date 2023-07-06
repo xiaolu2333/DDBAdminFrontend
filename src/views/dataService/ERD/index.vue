@@ -624,7 +624,7 @@ function init() {
           $(go.Picture,
               // 根据icon字段来显示不同的图标
               new go.Binding("source", "icon", function (icon) {
-                return "/" + icon + ".svg";
+                return "/static/img/" + icon + ".svg";
               }),
               {width: 16, height: 16}
           ),
@@ -726,7 +726,7 @@ function init() {
                   // header图标
                   $(go.Picture,
                       {
-                        source: "/schema.svg",
+                        source: "/static/img/schema.svg",
                         // 左对齐
                         alignment: go.Spot.Left,
                         width: 25,
@@ -754,7 +754,7 @@ function init() {
                   // header图标
                   $(go.Picture,
                       {
-                        source: "/table.svg",
+                        source: "/static/img/table.svg",
                         // 左对齐
                         alignment: go.Spot.Left,
                         width: 25,
