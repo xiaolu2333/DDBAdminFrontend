@@ -1,41 +1,61 @@
 <template>
-  <div class="ac_coupon-wrap">
-    <div class="ac_coupon-content">
-      <img src="/static/img/coupon.svg" alt="优惠券"/>
-    </div>
-  </div>
-  <br/>
+  <!--  <div class="ac_coupon-wrap">-->
+  <!--    <div class="ac_coupon-content">-->
+  <!--      <img src="/static/img/coupon.svg" alt="优惠券"/>-->
+  <!--    </div>-->
+  <!--  </div>-->
+  <!--  <br/>-->
 
-  <div class="ac_coupon-wrap1">
-    <div class="ac_coupon-content1">
-      <p>管理操作动态</p>
-      <div class="table-wrap">
-        <vxe-table
-            border
-            show-header-overflow
-            show-overflow
-            :row-config="{height: 40}"
-            :data='dbExtendedInfo.managementDynamic'
-            align="center"
-            empty-text="暂无数据！"
-            :height="450"
+  <el-card class='app-card-container' shadow='never'>
+    <template #header>
+      <div class='cus-card-header'>
+        <el-button-group class="function-toolbar">
+          <el-button>功能一</el-button>
+          <el-button>功能二</el-button>
+          <el-button>功能三</el-button>
+        </el-button-group>
+        <el-form
+            ref='queryFormRef'
+            :inline='true'
+            class="query-box"
         >
-          <div v-if="dbExtendedInfo.managementDynamic.length > 0">
-            <vxe-column type="seq" title="序号" width="60"/>
-            <vxe-column field="name" title="用户"/>
-            <vxe-column field="status" title="状态"/>
-          </div>
-        </vxe-table>
-        <vxe-pager
-            :layouts="['Sizes', 'PrevJump', 'PrevPage', 'Number', 'NextPage', 'NextJump', 'FullJump', 'Total']"
-            v-model:current-page="tablePage.pageIndex"
-            v-model:page-size="tablePage.pageSize"
-            :total="tablePage.totalRow"
-            @page-change="handleMdPageChange"
-        />
+          <el-form-item prop='ipAddress'>
+            <el-input placeholder='请输入数据库名称' clearabl/>
+          </el-form-item>
+          <el-form-item>
+            <el-button type='primary'>搜索</el-button>
+            <el-button>重置</el-button>
+          </el-form-item>
+        </el-form>
       </div>
+    </template>
+    <div class='card-table-container'>
+      <vxe-table
+          class="data-table"
+          border
+          show-header-overflow
+          show-overflow
+          :row-config="{height: 40}"
+          :data='dbExtendedInfo.managementDynamic'
+          align="center"
+          empty-text="暂无数据！"
+      >
+        <div v-if="dbExtendedInfo.managementDynamic.length > 0">
+          <vxe-column type="seq" title="序号" width="60"/>
+          <vxe-column field="name" title="用户"/>
+          <vxe-column field="status" title="状态"/>
+        </div>
+      </vxe-table>
+      <vxe-pager
+          class="pagination-toolbar"
+          :layouts="['Sizes', 'PrevJump', 'PrevPage', 'Number', 'NextPage', 'NextJump', 'FullJump', 'Total']"
+          v-model:current-page="tablePage.pageIndex"
+          v-model:page-size="tablePage.pageSize"
+          :total="tablePage.totalRow"
+          @page-change="handleMdPageChange"
+      />
     </div>
-  </div>
+  </el-card>
 </template>
 
 <script setup lang='ts'>
@@ -202,25 +222,40 @@ onMounted(() => {
   }
 }
 
-//.ac_coupon-wrap1 {
-//  height: 0; // 高度为0，全靠padding-top撑开
-//  padding-top: 100%; // padding-top设置比例为高/宽
-//  position: relative; // 相对定位，将子元素的绝对定位基准点设置为该元素
-//  background-color: #f1fff5;
-//  // 边框圆角10px，边框宽度1px，边框颜色#e6e6e6
-//  border-radius: 5px;
-//  border: 1px solid #daf7d0;
-//
-//  .ac_coupon-content1 {
-//    position: absolute; // 绝对定位，相对于父元素定位
-//    top: 0; // 顶部距离为0
-//    width: 100%;
-//    height: 100%;
-//    background-size: cover;
-//
-//    p {
-//      color: #3666ce;
-//    }
-//  }
-//}
+.app-card-container {
+  width: 100%;
+}
+
+.cus-card-header {
+  height: 32px;
+}
+
+.function-toolbar {
+  margin-bottom: 10px;
+}
+
+.query-box {
+  float: right;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.card-table-container {
+  height: 85vh;
+  width: calc(100% - 5px);
+}
+
+.data-table {
+  height: calc(100% - 150px);
+}
+
+.use-pct {
+  margin-right: 20px;
+  font-size: 15px;
+}
+
+.pagination-toolbar {
+  margin-top: 10px;
+}
+
 </style>

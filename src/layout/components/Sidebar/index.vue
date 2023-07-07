@@ -60,10 +60,10 @@
             </el-menu-item>
           </template>
         </el-sub-menu>
-        <el-sub-menu v-if="item.name==='Learning' && item.children" :index="item.path">
+        <el-sub-menu v-if="item.name==='DataService' && item.children" :index="item.path">
           <template #title>
             <el-icon>
-              <Setting/>
+              <Service/>
             </el-icon>
             <span>{{ item.meta && item.meta.title }}</span>
           </template>
@@ -73,10 +73,10 @@
             </el-menu-item>
           </template>
         </el-sub-menu>
-        <el-sub-menu v-if="item.name==='DataService' && item.children" :index="item.path">
+        <el-sub-menu v-if="item.name==='Learning' && item.children" :index="item.path">
           <template #title>
             <el-icon>
-              <Service/>
+              <Document/>
             </el-icon>
             <span>{{ item.meta && item.meta.title }}</span>
           </template>
