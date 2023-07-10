@@ -38,6 +38,7 @@
           :row-config="{height: 40}"
           :data='dbExtendedInfo.managementDynamic'
           align="center"
+          height="auto"
           empty-text="暂无数据！"
       >
         <div v-if="dbExtendedInfo.managementDynamic.length > 0">
@@ -46,15 +47,15 @@
           <vxe-column field="status" title="状态"/>
         </div>
       </vxe-table>
-      <vxe-pager
-          class="pagination-toolbar"
-          :layouts="['Sizes', 'PrevJump', 'PrevPage', 'Number', 'NextPage', 'NextJump', 'FullJump', 'Total']"
-          v-model:current-page="tablePage.pageIndex"
-          v-model:page-size="tablePage.pageSize"
-          :total="tablePage.totalRow"
-          @page-change="handleMdPageChange"
-      />
     </div>
+    <vxe-pager
+        class="pagination-toolbar"
+        :layouts="['Sizes', 'PrevJump', 'PrevPage', 'Number', 'NextPage', 'NextJump', 'FullJump', 'Total']"
+        v-model:current-page="tablePage.pageIndex"
+        v-model:page-size="tablePage.pageSize"
+        :total="tablePage.totalRow"
+        @page-change="handleMdPageChange"
+    />
   </el-card>
 </template>
 
@@ -187,75 +188,80 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.ac_coupon-wrap {
-  height: 0; // 高度为0，全靠padding-top撑开
-  padding-top: 15.16%; // padding-top设置比例为高/宽
-  position: relative; // 相对定位，将子元素的绝对定位基准点设置为该元素
-  background-color: #f1fff5;
-  // 边框圆角10px，边框宽度1px，边框颜色#e6e6e6
-  border-radius: 5px;
-  border: 1px solid #daf7d0;
-
-  .ac_coupon-content {
-    position: absolute; // 绝对定位，相对于父元素定位
-    top: 0; // 顶部距离为0
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-
-    img {
-      width: 100%; /* 图像宽度将填充父元素div的宽度 */
-      height: 100%; /* 图像高度将填充父元素div的高度 */
-      object-fit: contain; /* 图像将按比例缩放以适应父元素div的尺寸 */
-    }
-  }
-}
-
-.ac_coupon-content1 {
-  background-color: #f1fff5;
-  height: 70vh;
-  border-radius: 5px;
-  border: 1px solid #daf7d0;
-
-  .p {
-    color: #4983ff;
-  }
-}
+//.ac_coupon-wrap {
+//  height: 0; // 高度为0，全靠padding-top撑开
+//  padding-top: 15.16%; // padding-top设置比例为高/宽
+//  position: relative; // 相对定位，将子元素的绝对定位基准点设置为该元素
+//  background-color: #f1fff5;
+//  // 边框圆角10px，边框宽度1px，边框颜色#e6e6e6
+//  border-radius: 5px;
+//  border: 1px solid #daf7d0;
+//
+//  .ac_coupon-content {
+//    position: absolute; // 绝对定位，相对于父元素定位
+//    top: 0; // 顶部距离为0
+//    width: 100%;
+//    height: 100%;
+//    background-size: cover;
+//
+//    img {
+//      width: 100%; /* 图像宽度将填充父元素div的宽度 */
+//      height: 100%; /* 图像高度将填充父元素div的高度 */
+//      object-fit: contain; /* 图像将按比例缩放以适应父元素div的尺寸 */
+//    }
+//  }
+//}
+//
+//.ac_coupon-content1 {
+//  background-color: #f1fff5;
+//  height: 70vh;
+//  border-radius: 5px;
+//  border: 1px solid #daf7d0;
+//
+//  .p {
+//    color: #4983ff;
+//  }
+//}
 
 .app-card-container {
-  width: 100%;
-}
-
-.cus-card-header {
-  height: 32px;
-}
-
-.function-toolbar {
-  margin-bottom: 10px;
-}
-
-.query-box {
-  float: right;
-  height: 20px;
-  margin-right: 10px;
-}
-
-.card-table-container {
   height: 85vh;
-  width: calc(100% - 5px);
+  width: 100%;
+
+
+  .cus-card-header {
+    height: 32px;
+
+    .function-toolbar {
+      margin-bottom: 10px;
+    }
+
+    .query-box {
+      float: right;
+      height: 20px;
+      margin-right: 10px;
+    }
+  }
+
+  .card-table-container {
+    height: calc(85vh - 130px);
+    width: calc(100%);
+
+    .use-pct {
+      margin-right: 20px;
+      font-size: 15px;
+    }
+  }
+
+  .pagination-toolbar {
+  }
 }
 
-.data-table {
-  height: calc(100% - 150px);
-}
+//:deep(.el-card) {
+//  padding: 0;
+//}
 
-.use-pct {
-  margin-right: 20px;
-  font-size: 15px;
-}
-
-.pagination-toolbar {
-  margin-top: 10px;
+:deep(.el-card .el-card__body) {
+  padding: 0;
 }
 
 </style>
