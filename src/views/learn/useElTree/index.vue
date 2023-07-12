@@ -10,6 +10,7 @@
             :props="{ children: 'nodes', label: 'text', disabled: '', class: customNodeClass }"
             :expand-on-click-node='false'
             default-expand-all
+            :heilight-current="true"
         >
           <template #default="{ node, data }">
             <p v-if="node.data.type === 'schema'">
@@ -399,8 +400,12 @@ onMounted(() => {
   background-color: #f0f0f0;
 }
 
-/*:deep(.table-node) {*/
-/*  background-color: #f4eafe;*/
-/*  overflow-wrap: break-word;*/
-/*}*/
+:deep(.table-node) {
+  background-color: #f4eafe;
+  overflow-wrap: break-word;
+}
+
+:deep(.el-tree-node.is-current>.el-tree-node__content) {
+  background-color: #4983ff;
+}
 </style>
