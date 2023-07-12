@@ -1,8 +1,8 @@
 <template>
   <div>
     <el-card>
-      <el-row :gutter="30">
-        <el-col :span="6">
+      <el-row :gutter=30>
+        <el-col :span=6>
           <el-card>
             <template #header>
               【一般文件上传】
@@ -11,7 +11,7 @@
             <button @click="uploadFile">Upload</button>
           </el-card>
         </el-col>
-        <el-col :span="6">
+        <el-col :span=6>
           <el-card>
             <template #header>
               【一般文件流式下载】
@@ -19,7 +19,7 @@
             <button @click="DownloadFileStream">Download File By Stream</button>
           </el-card>
         </el-col>
-        <el-col :span="6">
+        <el-col :span=6>
           <el-card>
             <template #header>
               【一般文件URL式下载】
@@ -30,8 +30,8 @@
       </el-row>
       <br/>
 
-      <el-row :gutter="30">
-        <el-col :span="12">
+      <el-row :gutter=30>
+        <el-col :span=12>
           <el-card>
             <template #header>
               【在表单数据中上传文件】
@@ -53,7 +53,7 @@
             </el-form>
           </el-card>
         </el-col>
-        <el-col :span="12">
+        <el-col :span=12>
           <el-card>
             <template #header>
               【使用element plus的el-upload组件山川文件】
@@ -67,18 +67,18 @@
               </el-form-item>
               <el-form-item label='文件' prop='file' label-width='120px'>
                 <div style="width: 100%">
-                  <el-row gutter="6">
-                    <el-col :span="17">
+                  <el-row :gutter=6>
+                    <el-col :span=17>
                       <el-input
                           v-model="formData2.fileName"
                           disabled
                       />
                     </el-col>
-                    <el-col :span="7">
+                    <el-col :span=7>
                       <el-upload
                           ref="upload"
                           class="upload-demo"
-                          action="http://127.0.0.1:8000/test_app/upload_form_file"
+                          action=""
                           :auto-upload="false"
                           :file-list="dataFileList"
                           :on-change="handleFileChange2"
@@ -99,8 +99,8 @@
         </el-col>
       </el-row>
 
-      <el-row :gutter="30">
-        <el-col :span="12">
+      <el-row :gutter=30>
+        <el-col :span=12>
           <el-card>
             <template #header>
               【在表单数据中文件断点续传】
@@ -122,7 +122,7 @@
             </el-form>
           </el-card>
         </el-col>
-        <el-col :span="12">
+        <el-col :span=12>
           选择文件<input type="file" ref="file2">
           <el-button @click="test">文件分块上传</el-button>
         </el-col>
@@ -301,6 +301,8 @@ function handleFileUpload(event) {
 function submit1() {
   // 创建表单对象
   let formData = new FormData();
+
+  console.log("formData1.value.file:", formData1.value.file)
   // 添加要上传的文件到表单对象中
   formData.append("file", formData1.value.file);
   formData.append("name", formData1.value.name);
@@ -342,13 +344,15 @@ const handleFileChange2 = (file) => {
 function submit2() {
   // 创建表单对象
   let formData = new FormData();
+
+  console.log('formData2.value: ', formData2.value)
   // 添加要上传的文件到表单对象中
   formData.append("file", formData2.value.file);
   formData.append("name", formData2.value.name);
   formData.append("password", formData2.value.password);
   formData.append("fileName", formData2.value.fileName);
 
-  console.log('待提交的formData: ', formData.get('file'))
+  console.log('待提交的formData: ', formData)
   UploadFormFile(formData)
       .then((response) => {
         console.log(response.data);

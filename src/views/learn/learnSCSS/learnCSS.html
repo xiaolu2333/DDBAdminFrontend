@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        :root {
+            --first-color: #488cff;
+            --second-color: #ffff8c;
+        }
+
+        #firstParagraph {
+            background-color: var(--first-color);
+            color: var(--second-color);
+        }
+
+        #secondParagraph {
+            background-color: var(--second-color);
+            color: var(--first-color);
+        }
+
+        #container {
+            --first-color: #48ff32;
+        }
+
+        #thirdParagraph {
+            background-color: var(--first-color);
+            color: var(--second-color);
+        }
+    </style>
+</head>
+<body>
+<p id="firstParagraph">此段落应有蓝色背景和黄色文本。</p>
+<p id="secondParagraph">此段落应有黄色背景和蓝色文本。</p>
+<div id="container">
+    <p id="thirdParagraph">此段落应有绿色背景和黄色文本。</p>
+</div>
+</body>
+</html>

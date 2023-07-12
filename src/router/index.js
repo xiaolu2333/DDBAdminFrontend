@@ -247,6 +247,14 @@ const routes = [
                 }
             },
             {
+                name: "udPicture",
+                path: "/learning/udPicture",
+                component: () => import("@/views/learn/udPicture/index.vue"),
+                meta: {
+                    title: "前后端图片交互",
+                }
+            },
+            {
                 name: "customDirective",
                 path: "/learning/customDirective",
                 component: () => import("@/views/learn/customDirective/index.vue"),
@@ -324,6 +332,14 @@ const routes = [
                 component: () => import("@/views/learn/dragDivWidth/index.vue"),
                 meta: {
                     title: "拖动div宽度",
+                }
+            },
+            {
+                name: "learnSCSS",
+                path: "/learning/learnSCSS",
+                component: () => import("@/views/learn/learnSCSS/index.vue"),
+                meta: {
+                    title: "学习SCSS",
                 }
             }
         ]
