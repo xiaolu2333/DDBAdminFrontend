@@ -8,6 +8,7 @@
               size="large"
               active-text="完整"
               inactive-text="简易"
+              style="margin-bottom: 20px"
           />
           <el-tree
               :data="treeData"
@@ -25,7 +26,7 @@
                 @change="contextMenClick"
                 :aria-expanded="false"
                 :show-all-levels="false"
-                :style="{'left':contextMenuPositionX+5+'px','top':contextMenuPositionY-100+'px',
+                :style="{'left':contextMenuPositionX-5+'px','top':contextMenuPositionY-20+'px',
             position:'fixed',backgroundColor:'#ffffff',zIndex:'9999','height':contextMenuPositionHeight+'px'}"
             />
           </el-scrollbar>
@@ -68,7 +69,7 @@ const state = reactive({
   // 节点右键菜单
   nodeContextMenus: [] as any[],
   // 选中的右键菜单项
-  selectedContextMenu: {},
+  selectedContextMenu: '',
   // 是否展示右键菜单
   menuShow: false,
 })
@@ -78,7 +79,9 @@ const {
   defaultProps,
   contextMenus,
   contextmenuNode,
-  contextmenuPosition,
+  contextMenuPositionX,
+  contextMenuPositionY,
+  contextMenuPositionHeight,
   nodeContextMenus,
   selectedContextMenu,
   menuShow,
@@ -94,15 +97,22 @@ const handleNodeClick = (data: any) => {
  * 树节点右键菜单
  */
 const handleNodeContextMenu = (e: any, data: any) => {
-  console.log('handleNodeContextmenu:', e, data)
   state.contextMenuNode = data
-  console.log('state.contextMenuNode:', state.contextMenuNode)
   state.contextMenuPositionX = e.clientX
   state.contextMenuPositionY = e.clientY
-  state.contextMenuPositionHeight = 30 * 7
-  state.nodeContextMenus = state.contextMenus.filter((item: any) => {
-    return item.type === data.type
-  })
+
+  for (let i = 0; i < state.contextMenus.length; i++) {
+    // 将节点类型与右键菜单对象的第一个key进行比较，相同则赋值
+    // @ts-ignore
+    if (state.contextMenuNode.node_type === Object.keys(state.contextMenus[i])[0]) {
+      // 获取右键菜单对象的第一个value
+      // @ts-ignore
+      state.nodeContextMenus = Object.values(state.contextMenus[i])[0]
+    }
+  }
+  console.log('state.nodeContextMenus:', state.nodeContextMenus)
+
+  state.contextMenuPositionHeight = 35 * state.nodeContextMenus.length
 
   state.menuShow = true
 }
@@ -128,7 +138,6 @@ const contextMenClick = (e: any) => {
 /************************ init ************************/
 onMounted(() => {
   GetDataTree().then(res => {
-    console.log('res:', res)
     state.treeData = res.data.data
   })
 })

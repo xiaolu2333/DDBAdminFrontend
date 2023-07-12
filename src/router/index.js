@@ -341,6 +341,14 @@ const routes = [
                 meta: {
                     title: "学习SCSS",
                 }
+            },
+            {
+                name: "learnJS",
+                path: "/learning/learnJS",
+                component: () => import("@/views/learn/learnJS/index.vue"),
+                meta: {
+                    title: "学习JS",
+                }
             }
         ]
     },

@@ -1,73 +1,114 @@
 [
   {
-    "db": [
+    "server_group": [
       {
-        "id": "db_1",
-        "type": "db",
-        "label": "创建数据表",
-        "value": "创建数据表",
+        "id": "server_group_1",
+        "type": "server_group",
+        "label": "创建",
+        "value": "创建",
+        "children": [
+          {
+            "id": "server_group_1_1",
+            "type": "server_group",
+            "label": "创建服务器组",
+            "value": "创建服务器组",
+            "children": []
+          },
+          {
+            "id": "server_group_1_2",
+            "type": "server_group",
+            "label": "创建服务器",
+            "value": "创建服务器",
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "server_group_2",
+        "type": "server_group",
+        "label": "删除",
+        "value": "删除",
         "children": []
       },
       {
-        "id": "db_2",
-        "type": "db",
-        "label": "连接数据库",
-        "value": "连接数据库",
+        "id": "server_group_3",
+        "type": "server_group",
+        "label": "刷新",
+        "value": "刷新",
         "children": []
       },
       {
-        "id": "db_3",
-        "type": "db",
-        "label": "断开连接",
-        "value": "断开连接",
+        "id": "server_group_4",
+        "type": "server_group",
+        "label": "属性",
+        "value": "属性",
+        "children": []
+      },
+      {
+        "id": "server_group_5",
+        "type": "server_group",
+        "label": "导出",
+        "value": "导出",
+        "children": []
+      },
+      {
+        "id": "server_group_6",
+        "type": "server_group",
+        "label": "导入",
+        "value": "导入",
         "children": []
       }
     ]
   },
   {
-    "table": [
+    "server": [
       {
-        "id": "table_1",
-        "type": "table",
-        "label": "查看数据表",
-        "value": "查看数据表",
-        "children": []
-      },
-      {
-        "id": "table_2",
-        "type": "table",
-        "label": "数据融合",
-        "value": "数据融合",
-        "children": []
-      },
-      {
-        "id": "table_3",
-        "type": "table",
+        "id": "server_1",
+        "type": "server",
         "label": "创建",
         "value": "创建",
         "children": [
           {
-            "id": "table_3_1",
-            "type": "table",
-            "label": "创建数据表",
-            "value": "创建数据表",
-            "children": []
-          },
-          {
-            "id": "table_3_2",
-            "type": "table",
-            "label": "创建视图",
-            "value": "创建视图",
-            "children": []
-          },
-          {
-            "id": "table_3_3",
-            "type": "table",
-            "label": "创建索引",
-            "value": "创建索引",
+            "id": "server_1_1",
+            "type": "server",
+            "label": "创建数据库",
+            "value": "创建数据库",
             "children": []
           }
         ]
+      },
+      {
+        "id": "server_2",
+        "type": "server",
+        "label": "删除",
+        "value": "删除",
+        "children": []
+      }
+    ]
+  },
+  {
+    "db": [
+      {
+        "id": "db_1",
+        "type": "db",
+        "label": "创建",
+        "value": "创建",
+        "children": [
+          {
+            "id": "db_1_1",
+            "type": "db",
+            "label": "创建数据表",
+            "value": "创建数据表",
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "db_2",
+        "type": "db",
+        "label": "删除",
+        "value": "删除",
+        "children": []
       }
     ]
   }
