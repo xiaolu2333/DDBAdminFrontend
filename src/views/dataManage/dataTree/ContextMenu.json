@@ -24,13 +24,6 @@
         ]
       },
       {
-        "id": "server_group_2",
-        "type": "server_group",
-        "label": "删除",
-        "value": "删除",
-        "children": []
-      },
-      {
         "id": "server_group_3",
         "type": "server_group",
         "label": "刷新",
@@ -38,24 +31,17 @@
         "children": []
       },
       {
+        "id": "server_group_2",
+        "type": "server_group",
+        "label": "删除",
+        "value": "删除",
+        "children": []
+      },
+      {
         "id": "server_group_4",
         "type": "server_group",
         "label": "属性",
         "value": "属性",
-        "children": []
-      },
-      {
-        "id": "server_group_5",
-        "type": "server_group",
-        "label": "导出",
-        "value": "导出",
-        "children": []
-      },
-      {
-        "id": "server_group_6",
-        "type": "server_group",
-        "label": "导入",
-        "value": "导入",
         "children": []
       }
     ]
@@ -78,10 +64,24 @@
         ]
       },
       {
+        "id": "server_3",
+        "type": "server",
+        "label": "刷新",
+        "value": "刷新",
+        "children": []
+      },
+      {
         "id": "server_2",
         "type": "server",
         "label": "删除",
         "value": "删除",
+        "children": []
+      },
+      {
+        "id": "server_4",
+        "type": "server",
+        "label": "属性",
+        "value": "属性",
         "children": []
       }
     ]
@@ -104,10 +104,24 @@
         ]
       },
       {
+        "id": "db_3",
+        "type": "db",
+        "label": "刷新",
+        "value": "刷新",
+        "children": []
+      },
+      {
         "id": "db_2",
         "type": "db",
         "label": "删除",
         "value": "删除",
+        "children": []
+      },
+      {
+        "id": "db_4",
+        "type": "db",
+        "label": "属性",
+        "value": "属性",
         "children": []
       }
     ]

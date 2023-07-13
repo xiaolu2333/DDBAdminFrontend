@@ -39,6 +39,14 @@
       </el-col>
     </el-row>
   </div>
+
+  <el-dialog
+      :lock-scroll="false"
+      :title='dialog.title'
+      v-model='dialog.visible'
+  >
+    <span>{{ selectedContextMenu }}</span>
+  </el-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -69,9 +77,13 @@ const state = reactive({
   // 节点右键菜单
   nodeContextMenus: [] as any[],
   // 选中的右键菜单项
-  selectedContextMenu: '',
+  selectedContextMenu: [] as any[],
   // 是否展示右键菜单
   menuShow: false,
+  dialog: {
+    title: '',
+    visible: false,
+  }
 })
 const {
   isComplete,
@@ -85,6 +97,7 @@ const {
   nodeContextMenus,
   selectedContextMenu,
   menuShow,
+  dialog,
 } = toRefs(state)
 
 
@@ -110,10 +123,8 @@ const handleNodeContextMenu = (e: any, data: any) => {
       state.nodeContextMenus = Object.values(state.contextMenus[i])[0]
     }
   }
-  console.log('state.nodeContextMenus:', state.nodeContextMenus)
 
   state.contextMenuPositionHeight = 35 * state.nodeContextMenus.length
-
   state.menuShow = true
 }
 
@@ -122,14 +133,22 @@ const handleNodeContextMenu = (e: any, data: any) => {
 /**
  * 右键菜单点击事件
  */
-const contextMenClick = (e: any) => {
-  console.log('contextMenClick:', e)
-  if (e.length) {
-    const item = e[e.length - 1]
-    if (item.children) {
-      return
-    }
-    if (item.label === '新增') {
+const contextMenClick = (data: any) => {
+  state.selectedContextMenu = data
+  console.log('contextMenuNode:', state.contextMenuNode)
+  console.log('selectedContextMenu:', state.selectedContextMenu)
+
+  // 仅有一级菜单
+  if (state.selectedContextMenu.length === 1) {
+    state.dialog.title = state.selectedContextMenu[0]
+    state.dialog.visible = true
+  } else if (state.selectedContextMenu.length === 2) {
+    // 二级菜单
+    let SecondClassMenu = ['创建服务器组', '创建服务器', '创建数据库', '创建表', '创建字段', '创建索引']
+    // @ts-ignore
+    if (SecondClassMenu.includes(state.selectedContextMenu[1])) {
+      state.dialog.title = state.selectedContextMenu[1]
+      state.dialog.visible = true
     }
   }
 }
