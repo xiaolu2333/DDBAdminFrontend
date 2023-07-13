@@ -101,30 +101,23 @@
 
       <el-row :gutter=30>
         <el-col :span=12>
-          <el-card>
-            <template #header>
-              【在表单数据中文件断点续传】
-            </template>
-            <el-form :model="formData3" ref='dataFormRef3' label-width="120px">
-              <el-form-item label="姓名" prop='name' @input="change3">
-                <el-input v-model="formData3.name"/>
-              </el-form-item>
-              <el-form-item label="密码" prop="password" type="password" show-password>
-                <el-input v-model="formData3.password"/>
-              </el-form-item>
-              <el-form-item label="文件" prop="file">
-                <el-input v-model="formData3.fileName"/>
-                <input type="file" @change="handleFileUpload2"/>
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="submit3">提交</el-button>
-              </el-form-item>
-            </el-form>
-          </el-card>
+<!--          <el-card>-->
+<!--            <template #header>-->
+<!--              【文件断点续传】-->
+<!--            </template>-->
+<!--            选择文件<input type="file" ref="">-->
+<!--            <el-button type="primary" @click="startUploadFile">开始</el-button>-->
+<!--            <el-button type="primary" @click="pauseUploadFile">暂停</el-button>-->
+<!--          </el-card>-->
         </el-col>
         <el-col :span=12>
-          选择文件<input type="file" ref="file2">
-          <el-button @click="test">文件分块上传</el-button>
+          <el-card>
+            <template #header>
+              【文件分片上传】
+            </template>
+            选择文件<input type="file" ref="file2">
+            <el-button type="primary" @click="uploadFileByBlock">上传</el-button>
+          </el-card>
         </el-col>
       </el-row>
     </el-card>
@@ -401,7 +394,7 @@ function change3(data) {
 }
 
 /*************************** 文件分块上传 ***************************/
-async function test() {
+async function uploadFileByBlock() {
   console.log('file2:', file2.value)
   // 获取文件
   state.fileObj = file2.value.files[0];
