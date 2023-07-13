@@ -5,10 +5,23 @@
       draggable
       destroy-on-close
       @close="closeDialog"
-      style="height: 650px; width: 800px;"
+      style="height: 500px; width: 600px;position: relative;"
       class="dialogTab"
   >
-    1111111111
+    <p>{{ propData.id }}</p>
+    <p>{{ propData.name }}</p>
+    <template #footer>
+      <el-row style="position: absolute; bottom: 0; width: 100%; margin-left: -20px; padding: 20px 10px;">
+        <el-col :span="12" style="text-align: left!important;">
+          <el-button @click="cancelForm1" :icon="WarningFilled" :size="20"/>
+          <el-button @click="cancelForm1" :icon="QuestionFilled" :size="20"/>
+        </el-col>
+        <el-col :span="12">
+          <el-button @click="closeDialog" :icon="CircleClose">关闭</el-button>
+          <el-button type="primary" @click="submit" :icon="Checked">提交</el-button>
+        </el-col>
+      </el-row>
+    </template>
   </el-dialog>
 
 </template>
@@ -16,7 +29,7 @@
 <script lang="ts" setup>
 import {onMounted, ref, toRefs, watch, reactive, computed, h} from 'vue'
 import {ElForm, ElMessage, ElMessageBox, UploadFile} from 'element-plus'
-import {ArrowLeft, ArrowRight} from '@element-plus/icons-vue'
+import {WarningFilled, QuestionFilled, CircleClose, Checked} from '@element-plus/icons-vue'
 
 const props = defineProps<{
   componentData: any
@@ -40,7 +53,6 @@ const {
 
 
 function closeDialog() {
-  console.log('closeDialog')
   dialogVisible.value = false
 
   // 抛出关闭事件
@@ -50,8 +62,8 @@ function closeDialog() {
 
 /************************* init *************************/
 function init() {
-  dialogVisible.value = true
   console.log('propData.value', propData.value)
+  dialogVisible.value = true
 }
 
 onMounted(() => {

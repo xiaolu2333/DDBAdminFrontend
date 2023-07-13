@@ -166,16 +166,19 @@ const contextMenClick = (data: any) => {
 
 /************************ 菜单事件分发 ************************/
 function serverGroupEvent(eventName) {
-  console.log('eventName in serverGroupEvent', eventName)
-
   if (eventName === '创建服务器组') {
+    let propData = {
+      id: state.contextMenuNode.id,
+      name: state.contextMenuNode.name,
+      node_type: state.contextMenuNode.node_type
+    }
     state.showCustomComponent = true
-    state.customComponent.componentName = CreateServerGroup
-    state.customComponent.title = '创建服务器组'
-    state.customComponent.visible = true
-
-    console.log('state.customComponent in 创建服务器组', state.customComponent)
-    console.log('state.showCustomComponent in 创建服务器组', state.showCustomComponent)
+    customComponent.value = {
+      componentName: CreateServerGroup,
+      data: propData,
+      title: '创建服务器组',
+      visible: true,
+    }
   }
 
   state.selectedContextMenu = [] as any[]
@@ -183,7 +186,6 @@ function serverGroupEvent(eventName) {
 
 // 清空自定义组件信息
 function clearCustomComponent(data: boolean) {
-  console.log('data in clearCustomComponent', data)
   if (!data) {
     customComponent.value = {
       componentName: undefined as any,
@@ -192,7 +194,6 @@ function clearCustomComponent(data: boolean) {
       visible: false,
     }
     state.showCustomComponent = false
-    console.log('state.customComponent in clearCustomComponent', state.customComponent)
   }
 }
 
