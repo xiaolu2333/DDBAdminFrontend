@@ -40,13 +40,13 @@
     </el-row>
   </div>
 
-  <el-dialog
-      :lock-scroll="false"
-      :title='dialog.title'
-      v-model='dialog.visible'
-  >
-    <span>{{ selectedContextMenu }}</span>
-  </el-dialog>
+  <component
+      :is="customComponent.componentName"
+      :title="customComponent.title"
+      :componentData="customComponent.data"
+      @clear-customComponent="clearCustomComponent"
+      v-if="showCustomComponent"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -54,6 +54,14 @@ import {onMounted, toRefs, reactive} from "vue";
 
 import {GetDataTree, CreateNode} from '../../../api/dataManage/dataTree.js'
 import ContextMenu from './ContextMenu.json'
+import {
+  CreateServerGroup,
+  CreateServer,
+  CreateDatabase,
+  CreateTable,
+  CreateField,
+  CreateIndex
+} from '@/components/dataManage/index'
 
 
 const state = reactive({
@@ -80,7 +88,11 @@ const state = reactive({
   selectedContextMenu: [] as any[],
   // 是否展示右键菜单
   menuShow: false,
-  dialog: {
+  // 是否展示自定义组件
+  showCustomComponent: false,
+  customComponent: {
+    componentName: undefined as any,
+    data: {},
     title: '',
     visible: false,
   }
@@ -97,7 +109,8 @@ const {
   nodeContextMenus,
   selectedContextMenu,
   menuShow,
-  dialog,
+  showCustomComponent,
+  customComponent,
 } = toRefs(state)
 
 
@@ -135,24 +148,53 @@ const handleNodeContextMenu = (e: any, data: any) => {
  */
 const contextMenClick = (data: any) => {
   state.selectedContextMenu = data
-  console.log('contextMenuNode:', state.contextMenuNode)
-  console.log('selectedContextMenu:', state.selectedContextMenu)
 
   // 仅有一级菜单
   if (state.selectedContextMenu.length === 1) {
-    state.dialog.title = state.selectedContextMenu[0]
-    state.dialog.visible = true
   } else if (state.selectedContextMenu.length === 2) {
     // 二级菜单
     let SecondClassMenu = ['创建服务器组', '创建服务器', '创建数据库', '创建表', '创建字段', '创建索引']
     // @ts-ignore
     if (SecondClassMenu.includes(state.selectedContextMenu[1])) {
-      state.dialog.title = state.selectedContextMenu[1]
-      state.dialog.visible = true
+      if (state.selectedContextMenu[1] === '创建服务器组') {
+        serverGroupEvent(state.selectedContextMenu[1])
+      }
     }
   }
 }
 
+
+/************************ 菜单事件分发 ************************/
+function serverGroupEvent(eventName) {
+  console.log('eventName in serverGroupEvent', eventName)
+
+  if (eventName === '创建服务器组') {
+    state.showCustomComponent = true
+    state.customComponent.componentName = CreateServerGroup
+    state.customComponent.title = '创建服务器组'
+    state.customComponent.visible = true
+
+    console.log('state.customComponent in 创建服务器组', state.customComponent)
+    console.log('state.showCustomComponent in 创建服务器组', state.showCustomComponent)
+  }
+
+  state.selectedContextMenu = [] as any[]
+}
+
+// 清空自定义组件信息
+function clearCustomComponent(data: boolean) {
+  console.log('data in clearCustomComponent', data)
+  if (!data) {
+    customComponent.value = {
+      componentName: undefined as any,
+      data: {},
+      title: '',
+      visible: false,
+    }
+    state.showCustomComponent = false
+    console.log('state.customComponent in clearCustomComponent', state.customComponent)
+  }
+}
 
 /************************ init ************************/
 onMounted(() => {
