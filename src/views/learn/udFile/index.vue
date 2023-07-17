@@ -98,17 +98,19 @@
           </el-card>
         </el-col>
       </el-row>
+      <br/>
 
       <el-row :gutter=30>
         <el-col :span=12>
-<!--          <el-card>-->
-<!--            <template #header>-->
-<!--              【文件断点续传】-->
-<!--            </template>-->
-<!--            选择文件<input type="file" ref="">-->
-<!--            <el-button type="primary" @click="startUploadFile">开始</el-button>-->
-<!--            <el-button type="primary" @click="pauseUploadFile">暂停</el-button>-->
-<!--          </el-card>-->
+          <el-card>
+            <template #header>
+              【文件断点续传】
+            </template>
+            选择文件<input type="file" ref="" @change="handleFileChange3">
+            <el-button type="primary" @click="startUploadFile">开始</el-button>
+            <el-button type="primary" @click="pauseUploadFile">暂停</el-button>
+            <el-progress :percentage="percentage"/>
+          </el-card>
         </el-col>
         <el-col :span=12>
           <el-card>
@@ -122,14 +124,18 @@
       </el-row>
     </el-card>
   </div>
-
 </template>
+
 <script setup>
 import {reactive, ref, toRefs} from 'vue'
 import {ElMessage} from 'element-plus'
 import {
-  UploadFile, UploadFormFile, UploadFileByBreakpoint,
-  DownloadFileByStream, DownloadFileByURL
+  DownloadFileByStream,
+  DownloadFileByURL,
+  UploadFile,
+  UploadFileByBlock,
+  UploadFileByBreakpoint,
+  UploadFormFile
 } from '@/api/learn/uploadAndDownloadFile.js'
 
 const file = ref("file")
@@ -152,6 +158,7 @@ const state = reactive({
     file: null,
   },
   // 原生文件断点续传
+  uploadedIndex: [],
   formData3: {
     name: "",
     password: "",
@@ -159,6 +166,10 @@ const state = reactive({
     fileName: "",
   },
   dataFileList: [],
+  // 进度条
+  percentage: 0,
+  // 是否暂停
+  isPause: false,
 })
 const {
   fileObj,
@@ -166,6 +177,8 @@ const {
   formData2,
   formData3,
   dataFileList,
+  percentage,
+  isPause,
 } = toRefs(state)
 
 /*************************** 一般文件上传与下载 ***************************/
@@ -358,14 +371,61 @@ function submit2() {
 
 
 /*************************** 文件断点续传 ***************************/
-function handleFileUpload2(event) {
-  console.log("event:", event)
-  const file = event.target.files[0]
-  state.formData3.fileName = file.name
-  const reader = new FileReader()
-  reader.readAsDataURL(file)
-  reader.onload = () => {
-    state.formData3.file = reader.result
+function handleFileChange3(event) {
+  state.fileObj = event.target.files[0];
+}
+
+function startUploadFile() {
+  isPause.value = true;
+  uploadFileByBreakpoint()
+}
+
+function pauseUploadFile() {
+  isPause.value = false;
+}
+
+async function uploadFileByBreakpoint() {
+  const fileName = state.fileObj.name;
+  const fileSize = state.fileObj.size;
+  let chunkSize = 1024 * 1024; // 每个分块的大小（2MB）
+  let start = 0; // 分块的起始位置
+
+  while (start < fileSize && isPause.value) {
+
+    if (start + chunkSize >= fileSize) {
+      chunkSize = fileSize - start + 1;
+      const chunk = state.fileObj.slice(start, start + chunkSize);
+      const formData = new FormData();
+      formData.append('file', chunk);
+      formData.append('filename', fileName);
+      formData.append('chunkSize', chunkSize.toString());
+
+      const response = await UploadFileByBreakpoint(formData, start, chunkSize, fileSize);
+      console.log('response: ', response)
+
+      if (response.data.code === 200) {
+        percentage.value = 100;
+        console.log(response.headers)
+        break;
+      }
+    }
+
+    const chunk = state.fileObj.slice(start, start + chunkSize);
+    const formData = new FormData();
+    formData.append('file', chunk);
+    formData.append('filename', fileName);
+    formData.append('chunkSize', chunkSize.toString());
+
+    const response = await UploadFileByBreakpoint(formData, start, chunkSize, fileSize);
+
+    if (response.data.code === 308) {
+      percentage.value = ((start + chunkSize) / fileSize * 100).toFixed(2);
+      // 获取下一块的起始位置
+      start = parseInt(response.headers.range.split('=')[1].split('-')[0]);
+    } else {
+      // 文件上传完成
+      break;
+    }
   }
 }
 
@@ -417,7 +477,7 @@ async function uploadFileByBlock() {
     formData.append('chunkNumber', chunkNumber);
     formData.append('totalChunks', totalChunks);
     // 发送文件块到后端
-    UploadFileByBreakpoint(formData).then((response) => {
+    UploadFileByBlock(formData).then((response) => {
       console.log(response.data);
       if (response.code === 200) {
         ElMessage.success("上传成功")
