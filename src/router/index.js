@@ -26,6 +26,7 @@ const routes = [
                     title: "数据看板",
                 },
                 component: () => import("@/views/home/dashboard/index.vue"),
+                children: []
             },
             {
                 path: "/console",
@@ -34,6 +35,7 @@ const routes = [
                     title: "控制台",
                 },
                 component: () => import("@/views/home/console/index.vue"),
+                children: []
             },
         ],
     },
@@ -54,6 +56,7 @@ const routes = [
                     title: "机构管理",
                 },
                 component: () => import("@/views/system/org/index.vue"),
+                children: []
             },
             {
                 path: "/department",
@@ -62,6 +65,7 @@ const routes = [
                     title: "部门管理",
                 },
                 component: () => import("@/views/system/dept/index.vue"),
+                children: []
             },
             {
                 path: "/dict",
@@ -70,6 +74,7 @@ const routes = [
                     title: "字典管理",
                 },
                 component: () => import("@/views/system/dict/index.vue"),
+                children: []
             },
             {
                 path: "/user",
@@ -78,6 +83,7 @@ const routes = [
                     title: "用户管理",
                 },
                 component: () => import("@/views/system/user/index.vue"),
+                children: [],
                 hidden: true,
             },
             {
@@ -87,6 +93,7 @@ const routes = [
                     title: "角色管理",
                 },
                 component: () => import("@/views/system/role/index.vue"),
+                children: []
             },
         ],
     },
@@ -106,7 +113,8 @@ const routes = [
                 component: () => import("@/views/dataManage/dataTree/index.vue"),
                 meta: {
                     title: "数据树",
-                }
+                },
+                children: []
             },
             {
                 path: "/dataManage/registerCenter",
@@ -114,7 +122,8 @@ const routes = [
                 component: () => import("@/views/dataManage/registerCenter/index.vue"),
                 meta: {
                     title: "注册中心",
-                }
+                },
+                children: []
             },
             {
                 path: "/dataManage/configCenter",
@@ -122,7 +131,8 @@ const routes = [
                 component: () => import("@/views/dataManage/configCenter/index.vue"),
                 meta: {
                     title: "配置中心",
-                }
+                },
+                children: []
             }
         ]
     },
@@ -142,7 +152,8 @@ const routes = [
                 component: () => import("@/views/dataService/ERD/index.vue"),
                 meta: {
                     title: "ERD",
-                }
+                },
+                children: []
             }
         ]
     },
@@ -161,7 +172,8 @@ const routes = [
                 component: () => import("@/views/menu/tools/dashboard/index.vue"),
                 meta: {
                     title: "仪表盘",
-                }
+                },
+                children: []
             }
         ]
     },
@@ -175,172 +187,183 @@ const routes = [
         component: () => import("@/layout/index.vue"),
         children: [
             {
-                path: "/learning/tablePerms",
-                name: "tablePerms",
-                component: () => import("@/views/learn/tablePerms/index.vue"),
+                path: "/learning/web-api",
+                name: "web-api",
                 meta: {
-                    title: "数据表授权",
-                }
+                    title: "web-api",
+                },
+                children: [
+                    {
+                        path: "/learning/web-api/broadcast",
+                        name: "broadcast",
+                        component: () => import("@/views/learn/web-api/broadcast/index.vue"),
+                        meta: {
+                            title: "广播",
+                        },
+                        children: []
+                    },
+                    {
+                        path: "/learning/web-api/openWindow",
+                        name: "openWindow",
+                        component: () => import("@/views/learn/web-api/openWindow/index.vue"),
+                        meta: {
+                            title: "打开新窗口",
+                        },
+                        children: []
+                    }
+                ]
             },
             {
-                path: "/learning/openWindow",
-                name: "openWindow",
-                component: () => import("@/views/learn/openWindow/index.vue"),
+                path: "/learning/element-plus",
+                name: "element-plus",
                 meta: {
-                    title: "打开新窗口",
-                }
+                    title: "element-plus",
+                },
+                children: [
+                    {
+                        name: "useElTree",
+                        path: "/learning/element-plus/useElTree",
+                        component: () => import("@/views/learn/element-plus/useElTree/index.vue"),
+                        meta: {
+                            title: "使用ElTree",
+                        },
+                        children: []
+                    },
+                    {
+                        name: "useElForm",
+                        path: "/learning/element-plus/useElForm",
+                        component: () => import("@/views/learn/element-plus/useElForm/index.vue"),
+                        meta: {
+                            title: "使用ElForm",
+                        },
+                        children: []
+                    },
+                ]
             },
             {
-                path: "/learning/broadcast",
-                name: "broadcast",
-                component: () => import("@/views/learn/broadcast/index.vue"),
+                path: "/learning/vxe-table",
+                name: "vxe-table",
                 meta: {
-                    title: "广播",
-                }
+                    title: "vxe-table",
+                },
+                children: [
+                    {
+                        path: "/learning/vxe-table/tablePerms",
+                        name: "tablePerms",
+                        component: () => import("@/views/learn/vxe-table/tablePerms/index.vue"),
+                        meta: {
+                            title: "数据表授权",
+                        },
+                        children: []
+                    },
+                    {
+                        path: "/learning/vxe-table/saveLocalInVXETable",
+                        name: "saveLocalInVXETable",
+                        component: () => import("@/views/learn/vxe-table/saveLocalInVXETable/index.vue"),
+                        meta: {
+                            title: "VXETable局部更新",
+                        },
+                        children: []
+                    },
+                    // {
+                    //     path: "/learning/vxe-table/sortableInVXETable",
+                    //     name: "sortableInVXETable",
+                    //     component: () => import("@/views/learn/vxe-table/sortableInVXETable/index.vue"),
+                    //     meta: {
+                    //         title: "VXETable排序",
+                    //     }
+                    // },
+                    {
+                        path: "/learning/vxe-table/mergeInVXETable",
+                        name: "mergeInVXETable",
+                        component: () => import("@/views/learn/vxe-table/mergeInVXETable/index.vue"),
+                        meta: {
+                            title: "VXETable合并",
+                        },
+                        children: []
+                    },
+                    {
+                        name: "pagination",
+                        path: "/learning/vxe-table/pagination",
+                        component: () => import("@/views/learn/vxe-table/pagination/index.vue"),
+                        meta: {
+                            title: "分页",
+                        },
+                        children: []
+                    },
+                    {
+                        name: "useTable1",
+                        path: "/learning/vxe-table/useTable1",
+                        component: () => import("@/views/learn/vxe-table/useTable1/index.vue"),
+                        meta: {
+                            title: "使用Table1",
+                        },
+                        children: []
+                    },
+                    {
+                        name: "useTable2",
+                        path: "/learning/vxe-table/useTable2",
+                        component: () => import("@/views/learn/vxe-table/useTable2/index.vue"),
+                        meta: {
+                            title: "使用Table2",
+                        },
+                        children: []
+                    },
+                    {
+                        name: "useTable3",
+                        path: "/learning/vxe-table/useTable3",
+                        component: () => import("@/views/learn/vxe-table/useTable3/index.vue"),
+                        meta: {
+                            title: "使用Table3",
+                        },
+                        children: []
+                    },
+                ]
             },
             {
-                path: "/learning/saveLocalInVXETable",
-                name: "saveLocalInVXETable",
-                component: () => import("@/views/learn/saveLocalInVXETable/index.vue"),
+                name: "vue3",
+                path: "/learning/vue3",
                 meta: {
-                    title: "VXETable局部更新",
-                }
-            },
-            // {
-            //     path: "/learning/sortableInVXETable",
-            //     name: "sortableInVXETable",
-            //     component: () => import("@/views/learn/sortableInVXETable/index.vue"),
-            //     meta: {
-            //         title: "VXETable排序",
-            //     }
-            // },
-            {
-                path: "/learning/mergeInVXETable",
-                name: "mergeInVXETable",
-                component: () => import("@/views/learn/mergeInVXETable/index.vue"),
-                meta: {
-                    title: "VXETable合并",
-                }
+                    title: "vue3",
+                },
+                children: [
+                    {
+                        name: "customDirective",
+                        path: "/learning/vue3/customDirective",
+                        component: () => import("@/views/learn/vue3/customDirective/index.vue"),
+                        meta: {
+                            title: "自定义指令",
+                        },
+                        children: []
+                    },
+                ]
             },
             {
-                name: "pagination",
-                path: "/learning/pagination",
-                component: () => import("@/views/learn/pagination/index.vue"),
+                name: "前后端数据交互",
+                path: "/learning/udData",
                 meta: {
-                    title: "分页",
-                }
-            },
-            {
-                name: "useEcharts",
-                path: "/learning/useEcharts",
-                component: () => import("@/views/learn/useEcharts/index.vue"),
-                meta: {
-                    title: "使用Echarts",
-                }
-            },
-            {
-                name: "udFile",
-                path: "/learning/udFile",
-                component: () => import("@/views/learn/udFile/index.vue"),
-                meta: {
-                    title: "前后端文件交互",
-                }
-            },
-            {
-                name: "udPicture",
-                path: "/learning/udPicture",
-                component: () => import("@/views/learn/udPicture/index.vue"),
-                meta: {
-                    title: "前后端图片交互",
-                }
-            },
-            {
-                name: "customDirective",
-                path: "/learning/customDirective",
-                component: () => import("@/views/learn/customDirective/index.vue"),
-                meta: {
-                    title: "自定义指令",
-                }
-            },
-            {
-                name: "useElTree",
-                path: "/learning/useElTree",
-                component: () => import("@/views/learn/useElTree/index.vue"),
-                meta: {
-                    title: "使用ElTree",
-                }
-            },
-            {
-                name: "useTable1",
-                path: "/learning/useTable1",
-                component: () => import("@/views/learn/useTable1/index.vue"),
-                meta: {
-                    title: "使用Table1",
-                }
-            },
-            {
-                name: "useTable2",
-                path: "/learning/useTable2",
-                component: () => import("@/views/learn/useTable2/index.vue"),
-                meta: {
-                    title: "使用Table2",
-                }
-            },
-            {
-                name: "useTable3",
-                path: "/learning/useTable3",
-                component: () => import("@/views/learn/useTable3/index.vue"),
-                meta: {
-                    title: "使用Table3",
-                }
-            },
-            {
-                name: "elementDrag",
-                path: "/learning/elementDrag",
-                component: () => import("@/views/learn/elementDrag/index.vue"),
-                meta: {
-                    title: "元素拖拽",
-                }
-            },
-            {
-                name: "useElForm",
-                path: "/learning/useElForm",
-                component: () => import("@/views/learn/useElForm/index.vue"),
-                meta: {
-                    title: "使用ElForm",
-                }
-            },
-            {
-                name: "reactiveLayout",
-                path: "/learning/reactiveLayout",
-                component: () => import("@/views/learn/reactiveLayout/index.vue"),
-                meta: {
-                    title: "响应式布局",
-                }
-            },
-            {
-                name: "elementAdaptive",
-                path: "/learning/elementAdaptive",
-                component: () => import("@/views/learn/elementAdaptive/index.vue"),
-                meta: {
-                    title: "元素自适应",
-                }
-            },
-            {
-                name: "dragDivWidth",
-                path: "/learning/dragDivWidth",
-                component: () => import("@/views/learn/dragDivWidth/index.vue"),
-                meta: {
-                    title: "拖动div宽度",
-                }
-            },
-            {
-                name: "learnSCSS",
-                path: "/learning/learnSCSS",
-                component: () => import("@/views/learn/learnSCSS/index.vue"),
-                meta: {
-                    title: "学习SCSS",
-                }
+                    title: "前后端数据交互",
+                },
+                children: [
+                    {
+                        name: "udFile",
+                        path: "/learning/udData/udFile",
+                        component: () => import("@/views/learn/udData/udFile/index.vue"),
+                        meta: {
+                            title: "前后端文件交互",
+                        },
+                        children: []
+                    },
+                    {
+                        name: "udPicture",
+                        path: "/learning/udData/udPicture",
+                        component: () => import("@/views/learn/udData/udPicture/index.vue"),
+                        meta: {
+                            title: "前后端图片交互",
+                        },
+                        children: []
+                    },
+                ]
             },
             {
                 name: "learnJS",
@@ -348,7 +371,71 @@ const routes = [
                 component: () => import("@/views/learn/learnJS/index.vue"),
                 meta: {
                     title: "学习JS",
-                }
+                },
+                children: []
+            },
+            {
+                name: "learnCSS",
+                path: "/learning/learnCSS",
+                meta: {
+                    title: "学习CSS",
+                },
+                children: [
+                    {
+                        name: "reactiveLayout",
+                        path: "/learning/learnCSS/reactiveLayout",
+                        component: () => import("@/views/learn/learnCSS/reactiveLayout/index.vue"),
+                        meta: {
+                            title: "响应式布局",
+                        },
+                        children: []
+                    },
+                    {
+                        name: "elementAdaptive",
+                        path: "/learning/learnCSS/elementAdaptive",
+                        component: () => import("@/views/learn/learnCSS/elementAdaptive/index.vue"),
+                        meta: {
+                            title: "元素自适应",
+                        },
+                        children: []
+                    },
+                    {
+                        name: "dragDivWidth",
+                        path: "/learning/learnCSS/dragDivWidth",
+                        component: () => import("@/views/learn/learnCSS/dragDivWidth/index.vue"),
+                        meta: {
+                            title: "拖动div宽度",
+                        },
+                        children: []
+                    },
+                    {
+                        name: "learnSCSS",
+                        path: "/learning/learnCSS/learnSCSS",
+                        component: () => import("@/views/learn/learnCSS/learnSCSS/index.vue"),
+                        meta: {
+                            title: "学习SCSS",
+                        },
+                        children: []
+                    },
+                ]
+            },
+            {
+                name: "数据可视化",
+                path: "/learning/dataVisualization",
+                meta: {
+                    title: "数据可视化",
+                },
+                children: [
+                    {
+                        name: "useEcharts",
+                        path: "/learning/dataVisualization/useEcharts",
+                        component: () => import("@/views/learn/dataVisualization/useEcharts/index.vue"),
+                        meta: {
+                            title: "使用Echarts",
+                        },
+                        children: []
+                    },
+                ]
             }
         ]
     },

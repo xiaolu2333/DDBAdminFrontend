@@ -82,7 +82,7 @@ import {onMounted, ref, reactive} from 'vue'
 import {VXETable, VxeTableInstance, VxeColumnPropTypes} from 'vxe-table'
 import XEUtils from 'xe-utils'
 
-import {GetTestData, DirectUpdate, SaveTheUpdate} from "../../../api/learn/saveLocalInVXETable.js";
+import {GetTestData, DirectUpdate, SaveTheUpdate} from "../../../../api/learn/saveLocalInVXETable.js";
 
 
 const loading = ref(false)
@@ -229,7 +229,7 @@ const gridOptions = reactive({
 })
 
 
-import PgBouncerItems from './PgBouncerItems.json'
+import PgBouncerItems from './PgbouncerItems.json'
 
 const findList = () => {
   console.log('PgBouncerItems:', PgBouncerItems)

@@ -78,7 +78,7 @@
 import {useRoute} from 'vue-router'
 import {onMounted, reactive, toRefs} from 'vue'
 import {ElMessage} from 'element-plus'
-import {getPageData, getScrollPageData} from "../../../api/learn/pagination.js";
+import {getPageData, getScrollPageData} from "../../../../api/learn/pagination.js";
 
 import {ref} from 'vue'
 

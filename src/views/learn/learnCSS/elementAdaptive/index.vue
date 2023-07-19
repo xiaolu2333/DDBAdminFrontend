@@ -62,7 +62,7 @@
 <script setup lang='ts'>
 
 import {onMounted, reactive, toRefs} from 'vue'
-import {getPageData, getScrollPageData} from "../../../api/learn/pagination.js";
+import {getPageData, getScrollPageData} from "../../../../api/learn/pagination.js";
 
 import {ref} from 'vue'
 
