@@ -19,6 +19,7 @@
     <el-scrollbar
         style="height: 80vh; overflow: auto;"
     >
+      <!--一级菜单-->
       <template v-for=" item in routersOptions" :key="item.path">
         <el-sub-menu v-if="item.name==='Home' && item.children" :index="item.path">
           <template #title>
@@ -79,6 +80,7 @@
             </el-icon>
             <span>{{ item.meta && item.meta.title }}</span>
           </template>
+          <!--二级菜单-->
           <template v-for="child in item.children" :key="child.path">
             <el-sub-menu v-if="child?.children.length > 0" :index="child.path">
               <template #title>
@@ -87,16 +89,19 @@
                 </el-icon>
                 <span>{{ child.meta && child.meta.title }}</span>
               </template>
+              <!--三级菜单-->
               <template v-for="grandson in child.children" :key="grandson.path">
                 <el-menu-item :index="grandson.path">
-                  {{ grandson.meta && grandson.meta.title }}
+                  <template #title>
+                    <el-icon>
+                      <Document/>
+                    </el-icon>
+                    <span>{{ grandson.meta && grandson.meta.title }}</span>
+                  </template>
                 </el-menu-item>
               </template>
             </el-sub-menu>
 
-            <el-menu-item v-else :index="child.path">
-              {{ child.meta && child.meta.title }}
-            </el-menu-item>
           </template>
         </el-sub-menu>
       </template>

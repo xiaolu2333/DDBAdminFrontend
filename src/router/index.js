@@ -189,6 +189,7 @@ const routes = [
             {
                 path: "/learning/web-api",
                 name: "web-api",
+                component: () => import("@/views/learn/web-api/index.vue"),
                 meta: {
                     title: "web-api",
                 },
@@ -216,6 +217,7 @@ const routes = [
             {
                 path: "/learning/element-plus",
                 name: "element-plus",
+                component: () => import("@/views/learn/element-plus/index.vue"),
                 meta: {
                     title: "element-plus",
                 },
@@ -243,6 +245,7 @@ const routes = [
             {
                 path: "/learning/vxe-table",
                 name: "vxe-table",
+                component: () => import("@/views/learn/vxe-table/index.vue"),
                 meta: {
                     title: "vxe-table",
                 },
@@ -323,6 +326,7 @@ const routes = [
             {
                 name: "vue3",
                 path: "/learning/vue3",
+                component: () => import("@/views/learn/vue3/index.vue"),
                 meta: {
                     title: "vue3",
                 },
@@ -341,6 +345,7 @@ const routes = [
             {
                 name: "前后端数据交互",
                 path: "/learning/udData",
+                component: () => import("@/views/learn/udData/index.vue"),
                 meta: {
                     title: "前后端数据交互",
                 },
@@ -366,27 +371,19 @@ const routes = [
                 ]
             },
             {
-                name: "learnJS",
-                path: "/learning/learnJS",
-                component: () => import("@/views/learn/learnJS/index.vue"),
-                meta: {
-                    title: "学习JS",
-                },
-                children: []
-            },
-            {
                 name: "learnCSS",
                 path: "/learning/learnCSS",
+                component: () => import("@/views/learn/learnCSS/index.vue"),
                 meta: {
                     title: "学习CSS",
                 },
                 children: [
                     {
-                        name: "reactiveLayout",
-                        path: "/learning/learnCSS/reactiveLayout",
-                        component: () => import("@/views/learn/learnCSS/reactiveLayout/index.vue"),
+                        name: "dragDivWidth",
+                        path: "/learning/learnCSS/dragDivWidth",
+                        component: () => import("@/views/learn/learnCSS/dragDivWidth/index.vue"),
                         meta: {
-                            title: "响应式布局",
+                            title: "拖动div宽度",
                         },
                         children: []
                     },
@@ -399,12 +396,21 @@ const routes = [
                         },
                         children: []
                     },
+                    // {
+                    //     name: "elementDrag",
+                    //     path: "/learning/learnCSS/elementDrag",
+                    //     component: () => import("@/views/learn/learnCSS/elementDrag/index.vue"),
+                    //     meta: {
+                    //         title: "拖拽元素",
+                    //     },
+                    //     children: []
+                    // },
                     {
-                        name: "dragDivWidth",
-                        path: "/learning/learnCSS/dragDivWidth",
-                        component: () => import("@/views/learn/learnCSS/dragDivWidth/index.vue"),
+                        name: "reactiveLayout",
+                        path: "/learning/learnCSS/reactiveLayout",
+                        component: () => import("@/views/learn/learnCSS/reactiveLayout/index.vue"),
                         meta: {
-                            title: "拖动div宽度",
+                            title: "响应式布局",
                         },
                         children: []
                     },
@@ -422,6 +428,7 @@ const routes = [
             {
                 name: "数据可视化",
                 path: "/learning/dataVisualization",
+                component: () => import("@/views/learn/dataVisualization/index.vue"),
                 meta: {
                     title: "数据可视化",
                 },

@@ -7,7 +7,7 @@ import router from './router';
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
-import echarts from '../src/views/learn/useEcharts/myEcharts'
+import echarts from './views/learn/dataVisualization/useEcharts/myEcharts'
 
 
 // 创建Vue应用实例
