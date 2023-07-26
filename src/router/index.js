@@ -340,6 +340,15 @@ const routes = [
                         },
                         children: []
                     },
+                    {
+                        name: "apiDebounceAndThrottle",
+                        path: "/learning/vue3/apiDebounceAndThrottle&Throttle",
+                        component: () => import("@/views/learn/vue3/apiDebounceAndThrottle/index.vue"),
+                        meta: {
+                            title: "api防抖与节流",
+                        },
+                        children: []
+                    },
                 ]
             },
             {
@@ -443,7 +452,35 @@ const routes = [
                         children: []
                     },
                 ]
-            }
+            },
+            {
+                name: "learnJS",
+                path: "/learning/learnJS",
+                component: () => import("@/views/learn/learnJS/index.vue"),
+                meta: {
+                    title: "学习JS",
+                },
+                children: [
+                    {
+                        name: "JavaScriptObject",
+                        path: "/learning/learnJS/JavaScriptObject",
+                        component: () => import("@/views/learn/learnJS/JavaScriptObject/index.vue"),
+                        meta: {
+                            title: "JavaScript对象",
+                        },
+                        children: []
+                    },
+                    {
+                        name: "JavaScriptSkill",
+                        path: "/learning/learnJS/JavaScriptSkill",
+                        component: () => import("@/views/learn/learnJS/JavaScriptSkill/index.vue"),
+                        meta: {
+                            title: "JavaScript技术",
+                        },
+                        children: []
+                    },
+                ]
+            },
         ]
     },
 ];

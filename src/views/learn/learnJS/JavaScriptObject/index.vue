@@ -30,25 +30,24 @@
 
 import {onMounted, reactive, toRefs} from "vue";
 
-const state = reactive({
-  objOne: {
+let objOne = {
     name: '张三',
     age: 18,
     sex: '男',
-  },
+  }
+const state = reactive({
   objTwo: {
     age: 20
   }
 })
 
 const {
-  objOne,
   objTwo
 } = toRefs(state)
 
 // 通过一个对象来更新另一个对象
 function updateObjOne() {
-  console.log(objOne.value)
+  console.log(objOne)
   console.log(objTwo.value)
 
   // // 方法一：用Object.assign()方法复制自有属性值
@@ -63,10 +62,10 @@ function updateObjOne() {
 
   // 方法三：用解构赋值
   objOne.value= {
-    ...objOne.value,
+    ...objOne,
     ...objTwo.value
   }
-  console.log(objOne.value)
+  console.log('objOne:',objOne)
 }
 
 onMounted(() => {
