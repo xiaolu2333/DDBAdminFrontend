@@ -43,7 +43,12 @@
           </template>
           <template v-for="child in item.children" :key="child.path">
             <el-menu-item :index="child.path">
-              {{ child.meta && child.meta.title }}
+              <template #title>
+                <el-icon>
+                  <Setting/>
+                </el-icon>
+                <span>{{ child.meta && child.meta.title }}</span>
+              </template>
             </el-menu-item>
           </template>
         </el-sub-menu>
