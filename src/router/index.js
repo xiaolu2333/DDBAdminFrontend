@@ -95,6 +95,15 @@ const routes = [
                 component: () => import("@/views/system/role/index.vue"),
                 children: []
             },
+            {
+                name: 'Resource',
+                path: '/resource',
+                component: () => import("@/views/system/resource/index.vue"),
+                meta: {
+                    title: "资源管理"
+                },
+                children: []
+            }
         ],
     },
 
@@ -237,6 +246,15 @@ const routes = [
                         component: () => import("@/views/learn/element-plus/useElForm/index.vue"),
                         meta: {
                             title: "使用ElForm",
+                        },
+                        children: []
+                    },
+                    {
+                        name: "horizontalScrollBar",
+                        path: "/learning/element-plus/horizontalScrollBar",
+                        component: () => import("@/views/learn/element-plus/horizontalScrollBar/index.vue"),
+                        meta: {
+                            title: "水平滚动条",
                         },
                         children: []
                     },
@@ -432,6 +450,14 @@ const routes = [
                         },
                         children: []
                     },
+                    {
+                        name: "rotatePicture",
+                        path: "/learning/learnCSS/rotatePicture",
+                        component: () => import("@/views/learn/learnCSS/rotatePicture/index.vue"),
+                        meta: {
+                            title: "旋转图片",
+                        }
+                    }
                 ]
             },
             {
