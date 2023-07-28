@@ -457,6 +457,14 @@ const routes = [
                         meta: {
                             title: "旋转图片",
                         }
+                    },
+                    {
+                        name: "handleText",
+                        path: "/learning/learnCSS/handleText",
+                        component: () => import("@/views/learn/learnCSS/handleText/index.vue"),
+                        meta: {
+                            title: "处理文字",
+                        }
                     }
                 ]
             },
