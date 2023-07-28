@@ -96,6 +96,14 @@ const routes = [
                 children: []
             },
             {
+                path: "/menu",
+                name: "Menu",
+                meta: {
+                    title: "菜单管理",
+                },
+                component: () => import("@/views/system/menu/index.vue"),
+            },
+            {
                 name: 'Resource',
                 path: '/resource',
                 component: () => import("@/views/system/resource/index.vue"),

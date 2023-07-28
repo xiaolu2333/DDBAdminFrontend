@@ -1,97 +1,308 @@
 <template>
-  <div class="page-wrapper">
-    <el-card class="card-container">
-      <template #header>
-        <div class='cus-card-header'>
-          <el-button-group class="function-toolbar">
-            <el-button
-                type='primary' @click='handleCreateRole' :icon="Plus"
-            >新增
-            </el-button>
-          </el-button-group>
-          <div class="query-box">
-            <el-form
-                ref='queryFormRef'
-                :model='queryForm'
-                :inline='true'
-            >
-              <el-form-item prop='ipAddress'>
-                <el-input v-model='queryForm.name' placeholder='请输入角色名称' clearabl/>
-              </el-form-item>
-              <el-form-item>
-                <el-button type='primary' :icon='Search' @click='searchRoleByName'>搜索</el-button>
-                <el-button :icon='Refresh' @click='resetQuery'>重置</el-button>
-              </el-form-item>
-            </el-form>
-          </div>
-        </div>
-      </template>
-      <div class="table-wrapper">
-        <vxe-table
-            ref="xTable"
-            :loading="loading"
-            border
-            show-header-overflow
-            show-overflow
-            :row-config="{height: 100, isCurrent:true, isHover:true}"
-            :data="tableData"
-            align="center"
-            empty-text="暂无数据！"
-            @current-change="currentChangeEvent"
-        >
-          <vxe-column type="seq" title="序号" align="center" width="70"/>
-        </vxe-table>
-      </div>
-    </el-card>
+  <div>
+    <el-button-group>
+      <el-button type='primary' @click='handleCreate' :icon="Plus">新增</el-button>
+      <el-button type='success' @click='handleUpdate' :icon="Edit">修改</el-button>
+      <el-button type='danger' @click='handleDelete' :icon="Delete">删除</el-button>
+      <el-button type='primary' @click='handleRead' :icon="Document">详情</el-button>
+    </el-button-group>
+    <el-table
+        ref="xTreeRef"
+        row-key="id"
+        highlight-current-row
+        :data="tableData"
+        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+        @row-click='handleRowClick'
+    >
+      <el-table-column prop="name" label="name" tree-node></el-table-column>
+      <el-table-column prop="code" label="code"/>
+      <el-table-column prop="enabled" label="enabled"/>
+      <el-table-column prop="createTime" label="时间">
+        <template #default="{row}">
+          <p><span>创建时间：</span>{{ row.createTime }}</p>
+          <p><span>更新时间：</span>{{ row.updateTime }}</p>
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
+
+  <el-dialog
+      :close-on-click-modal="false"
+      :title='dialog.title'
+      v-model='dialog.visible'
+      width='600px'
+      @closed='closeDialog'
+      class="dialogTab"
+  >
+    <el-form ref='dataFormRef' :model='formData' :rules='rules'>
+      <el-form-item label="上级机构" prop='parentCode' label-width='140px'>
+        <el-tree-select
+            v-model="formData.parentCode"
+            placeholder='选择上级机构'
+            :data="orgOptions"
+            :props="{ children: 'children', value: 'code', label: 'name' }"
+            filterable
+            check-strictly
+            @change="handleOrgParentChange"
+        >
+        </el-tree-select>
+      </el-form-item>
+      <el-form-item label="机构名称" prop='name' label-width='140px'>
+        <el-input v-model="formData.name"/>
+      </el-form-item>
+      <el-form-item label="机构编码" prop='code' label-width='140px'>
+        <el-input v-model="formData.code"/>
+      </el-form-item>
+      <el-form-item label="是否启用" prop='enabled' label-width='140px'>
+        <el-radio-group v-model="formData.enabled">
+          <el-radio :label="true">是</el-radio>
+          <el-radio :label="false">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <el-row>
+        <el-col :span="12" style="text-align: left!important;">
+          <el-button :icon="WarningFilled"/>
+          <el-button :icon="QuestionFilled"/>
+        </el-col>
+        <el-col :span="12">
+          <el-button type='primary' @click='submitForm' :icon="Checked">确定</el-button>
+        </el-col>
+      </el-row>
+    </template>
+  </el-dialog>
 </template>
 
 <script lang="ts" setup>
+import {onMounted, ref, reactive, toRefs} from 'vue'
+import {ElForm, ElMessage, ElMessageBox} from 'element-plus'
+import {
+  Plus, Delete, Edit, Document, Checked, WarningFilled, QuestionFilled
+} from '@element-plus/icons-vue'
 
-import {reactive, ref, toRefs, onMounted} from "vue";
-import {VxeTableInstance} from 'vxe-table'
-import {Plus, Refresh, Search} from '@element-plus/icons-vue'
+import {GetMenuList, GetMenuDetail, CreateMenu, UpdateMenu, DeleteMenu} from '../../../api/system/resource.js'
 
-// table实例
-const xTable = ref<VxeTableInstance>()
+interface MenuData {
+  id?: number,
+  name: string,
+  path: string,
+  parent: string,
+  enabled: boolean,
+  createTime?: string,
+  updateTime?: string,
+}
 
 const state = reactive({
-  queryForm: {
-    name: ""
+  orgOptions: undefined as any,
+  tableData: [] as MenuData[],
+  selectedRow: {} as MenuData,
+  dialog: {
+    title: '',
+    visible: false,
   },
-  loading: false,
-  tableData: undefined as {},
+  formData: {
+    parent: "0"
+  } as MenuData,
+  rules: {
+    name: [
+      {required: true, message: '请输入名称', trigger: 'blur'},
+    ],
+  },
 })
 const {
-  queryForm,
-  loading,
-  tableData
+  orgOptions,
+  tableData,
+  selectedRow,
+  dialog,
+  formData,
+  rules,
 } = toRefs(state)
 
-
-/********************************* card header *********************************/
-function handleCreateRole() {
-
-}
-
-function searchRoleByName() {
-
-}
-
-function resetQuery() {
-
+/************************ table ************************/
+// tree table 行点击事件
+function handleRowClick(row: MenuData, column: any, event: any) {
+  state.selectedRow = row
+  console.log("row:", row)
 }
 
 
-onMounted(() => {
+/************************ tree ************************/
+// tree select 节点点击事件
+function handleOrgParentChange(value: any) {
+  console.log("value:", value)
+  state.formData.parent = value
+}
 
+
+/************************ dialog ************************/
+// 新增
+function handleCreate() {
+  loadOrgOptions()
+  state.dialog = {
+    title: '新增机构',
+    visible: true,
+  }
+}
+
+// 修改
+function handleUpdate() {
+  loadOrgOptions()
+  state.dialog = {
+    title: '新增机构',
+    visible: true,
+  }
+
+  // 获取详情
+  GetMenuDetail(state.selectedRow.id).then(res => {
+    console.log("res:", res)
+    state.formData = res.data.data
+  }).catch(err => {
+    console.log("err:", err)
+  })
+}
+
+async function submitForm() {
+  if (state.formData.id) {
+    // 修改
+    await UpdateMenu(state.formData).then(res => {
+      console.log("res:", res)
+      ElMessage.success('修改成功')
+      state.dialog.visible = false
+      state.formData = {
+        parent: "1",
+      } as MenuData
+
+      // 刷新表格
+      init()
+    }).catch(err => {
+      console.log("err:", err)
+      ElMessage.error('修改失败')
+    })
+  } else {
+    await CreateMenu(state.formData).then(res => {
+      console.log("res:", res)
+      ElMessage.success('创建成功')
+      state.dialog.visible = false
+      state.formData = {
+        parent: "1",
+      } as MenuData
+
+      // 刷新表格
+      init()
+    }).catch(err => {
+      console.log("err:", err)
+      ElMessage.error('创建失败')
+    })
+  }
+}
+
+// 删除
+function handleDelete() {
+  ElMessageBox.confirm('此操作将永久删除该机构, 是否继续?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    DeleteMenu(state.selectedRow.id).then(res => {
+      console.log("res:", res)
+      ElMessage.success('删除成功')
+      state.dialog.visible = false
+      state.formData = {
+        parent: "1",
+      } as MenuData
+
+      // 刷新表格
+      init()
+    }).catch(err => {
+      console.log("err:", err)
+      ElMessage.error('删除失败')
+    })
+  }).catch(() => {
+    ElMessage.info('已取消删除')
+  })
+}
+
+// 详情
+function handleRead() {
+  loadOrgOptions()
+  state.dialog = {
+    title: '新增机构',
+    visible: true,
+  }
+
+  // 获取详情
+  GetMenuDetail(state.selectedRow.id).then(res => {
+    console.log("res:", res)
+    state.formData = res.data.data
+  }).catch(err => {
+    console.log("err:", err)
+  })
+}
+
+/**
+ * 关闭数据库表单弹窗
+ */
+function closeDialog() {
+  dialog.value.visible = false
+  state.formData = {
+    parent: "0",
+  } as MenuData
+}
+
+
+/************************ utils ************************/
+// 构造机构树
+function constructTree(data) {
+  const tree = [];
+  const map = {};
+   data.forEach(node => {
+    map[node.code] = { ...node, children: [] };
+  });
+   data.forEach(node => {
+    if (node.parentCode !== "0") {
+      map[node.parentCode].children.push(map[node.code]);
+    } else {
+      tree.push(map[node.code]);
+    }
+  });
+   return tree;
+}
+
+// // 为机构树节点属性：如果有子节点，则添加 hasChildren 属性为 true，否则为 false
+// function formatTree(data) {
+//   data.forEach(item => {
+//     if (item.children.length > 0) {
+//       item.hasChildren = true;
+//       formatTree(item.children);
+//     } else {
+//       item.hasChildren = false;
+//     }
+//   });
+//   return data;
+// }
+
+/**
+ * 将 tableData 构造为树形结构，设置机构选项
+ */
+function loadOrgOptions() {
+  GetMenuList().then(res => {
+    // 将 tableData 作为 orgOptions 中的 children
+    state.orgOptions = constructTree(res.data.dataList)
+    console.log("orgOptions:", state.orgOptions)
+    console.log(state.orgOptions);
+  })
+}
+
+function init() {
+  // 获取机构列表
+  GetMenuList().then(res => {
+    state.tableData = res.data.dataList
+    console.log("tableData:", state.tableData)
+  })
+}
+
+onMounted(async () => {
+  init()
 })
 </script>
-
-<style lang="scss" scoped>
-.query-box {
-  float: right;
-  height: 20px;
-  margin-right: 10px;
-}
-</style>

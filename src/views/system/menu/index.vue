@@ -254,6 +254,25 @@ function closeDialog() {
 
 /************************ utils ************************/
 // 构造机构树
+function formatData(data) {
+  console.log("data:", data);
+  let result = [];
+  let map = {};
+  data.forEach((item) => {
+    map[item.id] = item;
+    item.children = [];
+  });
+  data.forEach((item) => {
+    if (item.parentCode !== "0") {
+      map[item.parentCode]?.children.push(item);
+    } else {
+      result.push(item);
+    }
+  });
+  console.log("result:", result);
+  return result;
+}
+
 function constructTree(data) {
   const tree = [];
   const map = {};
