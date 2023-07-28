@@ -1,8 +1,8 @@
 <template>
   <div>
-    <el-card style="height: 50vh; width: 50vw">
+    <el-card style="height: 520px;">
       <p>【数据库操作员】授权——阶段一</p>
-      <el-scrollbar style="height: 40vh;">
+      <el-scrollbar style="height: 400px;">
         <el-tree
             ref='userTreeRef'
             node-key='id'
@@ -41,9 +41,19 @@
     </el-card>
   </div>
   <br/>
-  <div class="test" style="width: 200px; height: 400px; background-color: #f1fff5; overflow-wrap: break-word">
-    222222222222222222222222222233333333333334444444444444444
-  </div>
+
+  <el-card>
+    <el-input v-model="filterText" placeholder="Filter keyword"/>
+    <el-tree
+        ref="treeRef"
+        class="filter-tree"
+        :data="data"
+        :props="defaultProps"
+        default-expand-all
+        :filter-node-method="filterNode"
+    />
+  </el-card>
+
 
   <el-dialog
       title="【数据库操作员】授权——阶段二"
@@ -101,7 +111,6 @@
       </el-row>
     </template>
   </el-dialog>
-
 </template>
 
 <script lang="ts" setup>
@@ -112,23 +121,93 @@ import {Checked, QuestionFilled, WarningFilled, Grid} from '@element-plus/icons-
 
 // 授权用户树
 const userTreeRef = ref(ElTree)
-
 const state = reactive({
   // 提示
   placeholder: "数据库管理员",
   // 可被分配权限的用户的列表
   userOptions: [] as any[],
   dialogVisible: false,
-
   testData1: [] as any[],
 })
-
 const {
   placeholder,
   userOptions,
   dialogVisible,
   testData1,
 } = toRefs(state);
+
+
+interface Tree {
+  [key: string]: any
+}
+
+const filterText = ref('')
+const treeRef = ref<InstanceType<typeof ElTree>>()
+
+const defaultProps = {
+  children: 'children',
+  label: 'label',
+}
+
+watch(filterText, (val) => {
+  treeRef.value!.filter(val)
+})
+
+const filterNode = (value: string, data: Tree) => {
+  if (!value) return true
+  return data.label.includes(value)
+}
+
+const data: Tree[] = [
+  {
+    id: 1,
+    label: 'Level one 1',
+    children: [
+      {
+        id: 4,
+        label: 'Level two 1-1',
+        children: [
+          {
+            id: 9,
+            label: 'Level three 1-1-1',
+          },
+          {
+            id: 10,
+            label: 'Level three 1-1-2',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 2,
+    label: 'Level one 2',
+    children: [
+      {
+        id: 5,
+        label: 'Level two 2-1',
+      },
+      {
+        id: 6,
+        label: 'Level two 2-2',
+      },
+    ],
+  },
+  {
+    id: 3,
+    label: 'Level one 3',
+    children: [
+      {
+        id: 7,
+        label: 'Level two 3-1',
+      },
+      {
+        id: 8,
+        label: 'Level two 3-2',
+      },
+    ],
+  },
+]
 
 
 /********************************* tree事件 *********************************/
