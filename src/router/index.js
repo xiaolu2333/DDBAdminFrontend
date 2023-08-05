@@ -2,13 +2,40 @@
 
 import {createRouter, createWebHashHistory} from "vue-router";
 
+
+// 静态路由表
 const routes = [
-    // 根路由
+    // 登录
     {
-        path: "/",
-        // 重定向到名为 Home 的路由
-        redirect: "Home",
+        path: "/login",
+        name: "Login",
+        component: () => import("@/views/system/login/login.vue"),
+        meta: {
+            title: "登录",
+            static: true,
+        }
     },
+    // 注册
+    {
+        path: "/register",
+        name: "Register",
+        component: () => import("@/views/system/login/register.vue"),
+        meta: {
+            title: "注册",
+            static: true,
+        }
+    },
+    // 404
+    {
+        path: "/404",
+        name: "404",
+        component: () => import("@/views/system/error/404.vue"),
+        meta: {
+            title: "404",
+            static: true,
+        }
+    },
+
     // Home
     {
         path: "/home",
@@ -96,14 +123,6 @@ const routes = [
                 children: []
             },
             {
-                path: "/menu",
-                name: "Menu",
-                meta: {
-                    title: "菜单管理",
-                },
-                component: () => import("@/views/system/menu/index.vue"),
-            },
-            {
                 name: 'Resource',
                 path: '/resource',
                 component: () => import("@/views/system/resource/index.vue"),
@@ -169,26 +188,6 @@ const routes = [
                 component: () => import("@/views/dataService/ERD/index.vue"),
                 meta: {
                     title: "ERD",
-                },
-                children: []
-            }
-        ]
-    },
-
-    // Menu
-    {
-        path: "/tools",
-        name: "Tools",
-        meta: {
-            title: "工具",
-        },
-        children: [
-            {
-                path: "/echarts",
-                name: "Echarts",
-                component: () => import("@/views/menu/tools/dashboard/index.vue"),
-                meta: {
-                    title: "仪表盘",
                 },
                 children: []
             }
@@ -297,7 +296,7 @@ const routes = [
                     // {
                     //     path: "/learning/vxe-table/sortableInVXETable",
                     //     name: "sortableInVXETable",
-                    //     component: () => import("@/views/learn/vxe-table/sortableInVXETable/index.vue"),
+                    //     component: () => import("@/views/learn/vxe-table/sortableInVXETable/login.vue"),
                     //     meta: {
                     //         title: "VXETable排序",
                     //     }
@@ -434,7 +433,7 @@ const routes = [
                     // {
                     //     name: "elementDrag",
                     //     path: "/learning/learnCSS/elementDrag",
-                    //     component: () => import("@/views/learn/learnCSS/elementDrag/index.vue"),
+                    //     component: () => import("@/views/learn/learnCSS/elementDrag/login.vue"),
                     //     meta: {
                     //         title: "拖拽元素",
                     //     },
@@ -531,5 +530,22 @@ const router = createRouter({
     history: createWebHashHistory(),
     routes: routes,
 });
+
+
+// 重置路由——用于退出登录时清除除公共路由外的其他路由
+export const resetRouter = () => {
+  const resetWhiteNameList = ['login', 'register', '404']
+  router.getRoutes().forEach((route) => {
+    const { name } = route
+    if (name && !resetWhiteNameList.includes(name)) {
+      router.hasRoute(name) && router.removeRoute(name)
+    }
+  })
+}
+
+// 设置路由——用于登录时设置路由
+export const setupRouter = (app) => {
+  app.use(router)
+}
 
 export default router;

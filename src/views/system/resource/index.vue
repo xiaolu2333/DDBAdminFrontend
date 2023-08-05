@@ -14,13 +14,41 @@
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
         @row-click='handleRowClick'
     >
-      <el-table-column prop="name" label="name" tree-node></el-table-column>
-      <el-table-column prop="code" label="code"/>
-      <el-table-column prop="enabled" label="enabled"/>
-      <el-table-column prop="createTime" label="时间">
+      <el-table-column prop="name" label="名称" tree-node></el-table-column>
+      <el-table-column prop="path" label="路由路径"></el-table-column>
+      <el-table-column prop="component" label="组件路径"></el-table-column>
+      <el-table-column prop="pageType" label="页面类型">
         <template #default="{row}">
-          <p><span>创建时间：</span>{{ row.createTime }}</p>
-          <p><span>更新时间：</span>{{ row.updateTime }}</p>
+          <span v-if="row.pageType === 1">主目录/模块</span>
+          <span v-else-if="row.pageType === 2">路由</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="menuType" label="菜单类型">
+        <template #default="{row}">
+          <span v-if="row.menuType === 1">用户页面</span>
+          <span v-else-if="row.menuType === 2">系统管理</span>
+          <span v-else-if="row.menuType === 3">安全管理</span>
+          <span v-else-if="row.menuType === 4">审计管理</span>
+          <span v-else-if="row.menuType === 5">运维管理</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="authType" label="权限类型">
+        <template #default="{row}">
+          <span v-if="row.authType === 1">公开</span>
+          <span v-else-if="row.authType === 2">角色授权</span>
+          <span v-else-if="row.authType === 3">用户登录</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="enable" label="是否启用">
+        <template #default="{row}">
+          <el-switch v-model="row.enable" active-color="#13ce66" inactive-color="#ff4949"
+                     @change="handleEnableChange(row)"></el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column prop="hidden" label="是否隐藏">
+        <template #default="{row}">
+          <el-switch v-model="row.hidden" active-color="#13ce66" inactive-color="#ff4949"
+                     @change="handlehiddenChange(row)"></el-switch>
         </template>
       </el-table-column>
     </el-table>
@@ -35,11 +63,11 @@
       class="dialogTab"
   >
     <el-form ref='dataFormRef' :model='formData' :rules='rules'>
-      <el-form-item label="上级机构" prop='parentCode' label-width='140px'>
+      <el-form-item label="上级菜单" prop='parentCode' label-width='140px'>
         <el-tree-select
             v-model="formData.parentCode"
-            placeholder='选择上级机构'
-            :data="orgOptions"
+            placeholder='选择上级菜单'
+            :data="menuOptions"
             :props="{ children: 'children', value: 'code', label: 'name' }"
             filterable
             check-strictly
@@ -47,11 +75,8 @@
         >
         </el-tree-select>
       </el-form-item>
-      <el-form-item label="机构名称" prop='name' label-width='140px'>
+      <el-form-item label="菜单名称" prop='name' label-width='140px'>
         <el-input v-model="formData.name"/>
-      </el-form-item>
-      <el-form-item label="机构编码" prop='code' label-width='140px'>
-        <el-input v-model="formData.code"/>
       </el-form-item>
       <el-form-item label="是否启用" prop='enabled' label-width='140px'>
         <el-radio-group v-model="formData.enabled">
@@ -94,7 +119,7 @@ interface MenuData {
 }
 
 const state = reactive({
-  orgOptions: undefined as any,
+  menuOptions: undefined as any,
   tableData: [] as MenuData[],
   selectedRow: {} as MenuData,
   dialog: {
@@ -102,7 +127,7 @@ const state = reactive({
     visible: false,
   },
   formData: {
-    parent: "0"
+    parentCode: "0"
   } as MenuData,
   rules: {
     name: [
@@ -111,7 +136,7 @@ const state = reactive({
   },
 })
 const {
-  orgOptions,
+  menuOptions,
   tableData,
   selectedRow,
   dialog,
@@ -138,18 +163,18 @@ function handleOrgParentChange(value: any) {
 /************************ dialog ************************/
 // 新增
 function handleCreate() {
-  loadOrgOptions()
+  loadmenuOptions()
   state.dialog = {
-    title: '新增机构',
+    title: '新增菜单',
     visible: true,
   }
 }
 
 // 修改
 function handleUpdate() {
-  loadOrgOptions()
+  loadmenuOptions()
   state.dialog = {
-    title: '新增机构',
+    title: '新增菜单',
     visible: true,
   }
 
@@ -162,6 +187,7 @@ function handleUpdate() {
   })
 }
 
+// 提交表单
 async function submitForm() {
   if (state.formData.id) {
     // 修改
@@ -199,7 +225,7 @@ async function submitForm() {
 
 // 删除
 function handleDelete() {
-  ElMessageBox.confirm('此操作将永久删除该机构, 是否继续?', '提示', {
+  ElMessageBox.confirm('此操作将永久删除该菜单, 是否继续?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -225,9 +251,9 @@ function handleDelete() {
 
 // 详情
 function handleRead() {
-  loadOrgOptions()
+  loadmenuOptions()
   state.dialog = {
-    title: '新增机构',
+    title: '新增菜单',
     visible: true,
   }
 
@@ -252,24 +278,24 @@ function closeDialog() {
 
 
 /************************ utils ************************/
-// 构造机构树
+// 构造菜单树
 function constructTree(data) {
   const tree = [];
   const map = {};
-   data.forEach(node => {
-    map[node.code] = { ...node, children: [] };
+  data.forEach(node => {
+    map[node.code] = {...node, children: []};
   });
-   data.forEach(node => {
-    if (node.parentCode !== "0") {
-      map[node.parentCode].children.push(map[node.code]);
+  data.forEach(node => {
+    if (node.parentId !== 0) {
+      map[node.parentId].children.push(map[node.code]);
     } else {
       tree.push(map[node.code]);
     }
   });
-   return tree;
+  return tree;
 }
 
-// // 为机构树节点属性：如果有子节点，则添加 hasChildren 属性为 true，否则为 false
+// // 为菜单树节点属性：如果有子节点，则添加 hasChildren 属性为 true，否则为 false
 // function formatTree(data) {
 //   data.forEach(item => {
 //     if (item.children.length > 0) {
@@ -283,19 +309,19 @@ function constructTree(data) {
 // }
 
 /**
- * 将 tableData 构造为树形结构，设置机构选项
+ * 将 tableData 构造为树形结构，设置菜单选项
  */
-function loadOrgOptions() {
+function loadmenuOptions() {
   GetMenuList().then(res => {
-    // 将 tableData 作为 orgOptions 中的 children
-    state.orgOptions = constructTree(res.data.dataList)
-    console.log("orgOptions:", state.orgOptions)
-    console.log(state.orgOptions);
+    // 将 tableData 作为 menuOptions 中的 children
+    state.menuOptions = constructTree(res.data.dataList)
+    console.log("menuOptions:", state.menuOptions)
+    console.log(state.menuOptions);
   })
 }
 
 function init() {
-  // 获取机构列表
+  // 获取菜单列表
   GetMenuList().then(res => {
     state.tableData = res.data.dataList
     console.log("tableData:", state.tableData)

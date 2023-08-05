@@ -47,16 +47,6 @@ import gojs from 'gojs'
 
 app.config.globalProperties.$echarts = gojs;
 
-// 挂载antv g6
-import G6 from '@antv/g6';
-
-app.config.globalProperties.$echarts = G6;
-
-// 挂载antv x6
-import {Graph} from '@antv/x6';
-
-app.config.globalProperties.$echarts = Graph;
-
 import {createPinia} from 'pinia'
 
 app.use(createPinia())
