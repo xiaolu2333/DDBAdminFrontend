@@ -48,6 +48,7 @@
         ref="treeRef"
         class="filter-tree"
         :data="data"
+        show-checkbox
         :props="defaultProps"
         default-expand-all
         :filter-node-method="filterNode"
@@ -147,6 +148,7 @@ const treeRef = ref<InstanceType<typeof ElTree>>()
 const defaultProps = {
   children: 'children',
   label: 'label',
+  disabled: (node) => node.disabled || node.type === 1
 }
 
 watch(filterText, (val) => {
@@ -170,6 +172,7 @@ const data: Tree[] = [
           {
             id: 9,
             label: 'Level three 1-1-1',
+            disabled: true,
           },
           {
             id: 10,
@@ -186,6 +189,7 @@ const data: Tree[] = [
       {
         id: 5,
         label: 'Level two 2-1',
+        type: 1, // 1: 不可选择 2: 可选择
       },
       {
         id: 6,
