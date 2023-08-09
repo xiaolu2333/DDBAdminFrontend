@@ -1,9 +1,7 @@
 <template>
   <el-menu
-      :default-active="activeIndex"
       class="top-menu"
       mode="horizontal"
-      @select="handleSelect"
   >
     <el-sub-menu index="1">
       <template #title>Workspace</template>

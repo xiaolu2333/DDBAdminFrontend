@@ -5,6 +5,13 @@ import {createRouter, createWebHashHistory} from "vue-router";
 
 // 静态路由表
 const routes = [
+    // vue router默认跳转到根路由 / ，这里我们将它重定向到 /home/dashboard
+    {
+        path: "/",
+        name: "Root",
+        redirect: "/login",
+    },
+
     // 登录
     {
         path: "/login",
@@ -47,7 +54,7 @@ const routes = [
         component: () => import("@/layout/index.vue"),
         children: [
             {
-                path: "/dashboard",
+                path: "/home/dashboard",
                 name: "Dashboard",
                 meta: {
                     title: "数据看板",
@@ -56,7 +63,7 @@ const routes = [
                 children: []
             },
             {
-                path: "/console",
+                path: "/home/console",
                 name: "Console",
                 meta: {
                     title: "控制台",
