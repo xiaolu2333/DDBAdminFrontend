@@ -522,6 +522,32 @@ const routes = [
                     },
                 ]
             },
+            {
+                name: "debug",
+                path: "/learning/debug",
+                component: () => import("@/views/learn/debug/index.vue"),
+                meta: {
+                    title: "调试",
+                },
+                children: [
+                    {
+                        name: "debugJS",
+                        path: "/learning/debug/debugJS",
+                        component: () => import("@/views/learn/debug/debugJS/index.vue"),
+                        meta: {
+                            title: "调试JS",
+                        }
+                    },
+                    {
+                        name: "debugPython",
+                        path: "/learning/debug/debugPython",
+                        component: () => import("@/views/learn/debug/debugPython/index.vue"),
+                        meta: {
+                            title: "调试Python",
+                        }
+                    }
+                ]
+            }
         ]
     },
 ];
@@ -534,18 +560,18 @@ const router = createRouter({
 
 // 重置路由——用于退出登录时清除除公共路由外的其他路由
 export const resetRouter = () => {
-  const resetWhiteNameList = ['login', 'register', '404']
-  router.getRoutes().forEach((route) => {
-    const { name } = route
-    if (name && !resetWhiteNameList.includes(name)) {
-      router.hasRoute(name) && router.removeRoute(name)
-    }
-  })
+    const resetWhiteNameList = ['login', 'register', '404']
+    router.getRoutes().forEach((route) => {
+        const {name} = route
+        if (name && !resetWhiteNameList.includes(name)) {
+            router.hasRoute(name) && router.removeRoute(name)
+        }
+    })
 }
 
 // 设置路由——用于登录时设置路由
 export const setupRouter = (app) => {
-  app.use(router)
+    app.use(router)
 }
 
 export default router;
