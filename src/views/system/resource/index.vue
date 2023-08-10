@@ -63,12 +63,12 @@
       class="dialogTab"
   >
     <el-form ref='dataFormRef' :model='formData' :rules='rules'>
-      <el-form-item label="上级菜单" prop='parentCode' label-width='140px'>
+      <el-form-item label="上级菜单" prop='parentId' label-width='140px'>
         <el-tree-select
-            v-model="formData.parentCode"
+            v-model="formData.parentId"
             placeholder='选择上级菜单'
             :data="menuOptions"
-            :props="{ children: 'children', value: 'code', label: 'name' }"
+            :props="{ children: 'children', value: 'id', label: 'name' }"
             filterable
             check-strictly
             @change="handleOrgParentChange"
@@ -78,11 +78,54 @@
       <el-form-item label="菜单名称" prop='name' label-width='140px'>
         <el-input v-model="formData.name"/>
       </el-form-item>
-      <el-form-item label="是否启用" prop='enabled' label-width='140px'>
-        <el-radio-group v-model="formData.enabled">
+      <el-form-item label="页面类型" prop='pageType' label-width='140px'>
+        <el-radio-group v-model='formData.pageType'>
+          <el-radio :label="1">主目录/模块</el-radio>
+          <el-radio :label="2">路由</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="菜单类型" prop='menuType' label-width='140px'>
+        <el-radio-group v-model='formData.menuType'>
+          <el-radio :label="1">用户页面</el-radio>
+          <el-radio :label="2">系统管理</el-radio>
+          <el-radio :label="3">安全管理</el-radio>
+          <el-radio :label="4">审计管理</el-radio>
+          <el-radio :label="5">运维管理</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="授权类型" prop='authType' label-width='140px'>
+        <el-radio-group v-model='formData.authType'>
+          1-公开 2-角色授权 3-用户登录
+          <el-radio :label="1">公开</el-radio>
+          <el-radio :label="2">授权</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="路由路径" prop='path' label-width='140px'>
+        <el-input v-model="formData.path"/>
+      </el-form-item>
+      <el-form-item label="页面路径" prop='component' label-width='140px'>
+        <el-input v-model="formData.component"/>
+      </el-form-item>
+      <el-form-item label="图标名称" prop='icon' label-width='140px'>
+        <el-input v-model="formData.icon"/>
+      </el-form-item>
+      <el-form-item label="是否启用" prop='enable' label-width='140px'>
+        <el-radio-group v-model="formData.enable">
           <el-radio :label="true">是</el-radio>
           <el-radio :label="false">否</el-radio>
         </el-radio-group>
+      </el-form-item>
+      <el-form-item label="是否隐藏" prop='hidden' label-width='140px'>
+        <el-radio-group v-model="formData.hidden">
+          <el-radio :label="true">是</el-radio>
+          <el-radio :label="false">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label='排序' prop='sort' label-width='140px'>
+        <el-input-number
+            v-model='formData.sort'
+            :min='0'
+        />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -113,22 +156,22 @@ interface MenuData {
   name: string,
   path: string,
   parent: string,
-  enabled: boolean,
+  enable: boolean,
   createTime?: string,
   updateTime?: string,
 }
 
 const state = reactive({
   menuOptions: undefined as any,
-  tableData: [] as MenuData[],
-  selectedRow: {} as MenuData,
+  tableData: [] as any[],
+  selectedRow: {} as any,
   dialog: {
     title: '',
     visible: false,
   },
   formData: {
-    parentCode: "0"
-  } as MenuData,
+    enable: true,
+  } as any,
   rules: {
     name: [
       {required: true, message: '请输入名称', trigger: 'blur'},
@@ -155,15 +198,13 @@ function handleRowClick(row: MenuData, column: any, event: any) {
 /************************ tree ************************/
 // tree select 节点点击事件
 function handleOrgParentChange(value: any) {
-  console.log("value:", value)
-  state.formData.parent = value
 }
 
 
 /************************ dialog ************************/
 // 新增
 function handleCreate() {
-  loadmenuOptions()
+  loadMenuOptions()
   state.dialog = {
     title: '新增菜单',
     visible: true,
@@ -172,7 +213,7 @@ function handleCreate() {
 
 // 修改
 function handleUpdate() {
-  loadmenuOptions()
+  loadMenuOptions()
   state.dialog = {
     title: '新增菜单',
     visible: true,
@@ -180,8 +221,8 @@ function handleUpdate() {
 
   // 获取详情
   GetMenuDetail(state.selectedRow.id).then(res => {
-    console.log("res:", res)
     state.formData = res.data.data
+    console.log("state.formData:", state.formData)
   }).catch(err => {
     console.log("err:", err)
   })
@@ -189,6 +230,8 @@ function handleUpdate() {
 
 // 提交表单
 async function submitForm() {
+  console.log("state.formData:", state.formData)
+
   if (state.formData.id) {
     // 修改
     await UpdateMenu(state.formData).then(res => {
@@ -196,8 +239,8 @@ async function submitForm() {
       ElMessage.success('修改成功')
       state.dialog.visible = false
       state.formData = {
-        parent: "1",
-      } as MenuData
+        enable: true,
+      } as any
 
       // 刷新表格
       init()
@@ -211,8 +254,8 @@ async function submitForm() {
       ElMessage.success('创建成功')
       state.dialog.visible = false
       state.formData = {
-        parent: "1",
-      } as MenuData
+        enable: true,
+      } as any
 
       // 刷新表格
       init()
@@ -235,8 +278,8 @@ function handleDelete() {
       ElMessage.success('删除成功')
       state.dialog.visible = false
       state.formData = {
-        parent: "1",
-      } as MenuData
+        enable: true,
+      } as any
 
       // 刷新表格
       init()
@@ -251,7 +294,7 @@ function handleDelete() {
 
 // 详情
 function handleRead() {
-  loadmenuOptions()
+  loadMenuOptions()
   state.dialog = {
     title: '新增菜单',
     visible: true,
@@ -278,21 +321,20 @@ function closeDialog() {
 
 
 /************************ utils ************************/
-// 构造菜单树
-function constructTree(data) {
-  const tree = [];
-  const map = {};
-  data.forEach(node => {
-    map[node.code] = {...node, children: []};
-  });
-  data.forEach(node => {
-    if (node.parentId !== 0) {
-      map[node.parentId].children.push(map[node.code]);
-    } else {
-      tree.push(map[node.code]);
-    }
-  });
-  return tree;
+// 构造菜单树 list To Tree
+const listToTree = (list) => {
+  const nodeMap = new Map()
+  const result = []
+
+  for (const node of list) {
+    node["children"] = node["children"] || []
+    nodeMap.set(node["id"], node)
+  }
+  for (const node of list) {
+    const parent = nodeMap.get(node["parentId"])
+    ;(parent ? parent.children : result).push(node)
+  }
+  return result
 }
 
 // // 为菜单树节点属性：如果有子节点，则添加 hasChildren 属性为 true，否则为 false
@@ -311,20 +353,24 @@ function constructTree(data) {
 /**
  * 将 tableData 构造为树形结构，设置菜单选项
  */
-function loadmenuOptions() {
+function loadMenuOptions() {
   GetMenuList().then(res => {
-    // 将 tableData 作为 menuOptions 中的 children
-    state.menuOptions = constructTree(res.data.dataList)
-    console.log("menuOptions:", state.menuOptions)
-    console.log(state.menuOptions);
+    let temp = listToTree(res.data.dataList)
+    state.menuOptions = [
+      {
+        id: 0,
+        name: '顶级菜单',
+        enable: true,
+        children: temp,
+      }
+    ]
   })
 }
 
 function init() {
   // 获取菜单列表
   GetMenuList().then(res => {
-    state.tableData = res.data.dataList
-    console.log("tableData:", state.tableData)
+    state.tableData = listToTree(res.data.dataList)
   })
 }
 
