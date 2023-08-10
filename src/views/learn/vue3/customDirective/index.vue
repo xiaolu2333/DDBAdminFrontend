@@ -1,4 +1,4 @@
-<template>
+<template xmlns="http://www.w3.org/1999/html">
   <p>自定义指令</p>
   <el-card>
     <p>指令控制背景颜色</p>
@@ -54,6 +54,23 @@
               </el-button>
             </el-button-group>
           </el-card>
+        </el-card>
+      </el-col>
+    </el-row>
+  </el-card>
+  <el-card>
+    <p>更多指令应用</p>
+    <el-row>
+      <el-col :span="4">
+        <el-card>
+          <el-button v-debounce="handleDebounce" type="primary">用指令实现按钮防抖</el-button>
+          <br>
+          <el-button v-throttle="handleThrottle({key:'value'})" type="primary">用指令实现按钮节流</el-button>
+        </el-card>
+      </el-col>
+      <el-col :span="12">
+        <el-card>
+
         </el-card>
       </el-col>
     </el-row>
@@ -150,5 +167,48 @@ const vBtn2 = {
     }
   },
 };
+
+
+// v-debounce 防抖：触发事件后 n 秒后才执行函数
+const vDebounce = {
+  mounted(el, binding) {
+    let timer = null;
+    el.addEventListener('click', () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
+        binding.value();
+      }, 2000);
+    });
+  },
+};
+
+// 事件处理函数无参数
+function handleDebounce() {
+  console.log("防抖")
+}
+
+// v-throttle 节流：触发事件后立即执行函数，n 秒内不再触发新的执行
+const vThrottle = {
+  mounted(el, binding) {
+    let timer = null;
+    el.addEventListener('click', () => {
+      if (!timer) {
+        timer = setTimeout(() => {
+          binding.value();
+          timer = null;
+        }, 3000);
+      }
+    });
+  },
+};
+
+// 事件处理函数有参数
+function handleThrottle(data) {
+  return () => {
+    console.log("节流：data:", data)
+  }
+}
 
 </script>
