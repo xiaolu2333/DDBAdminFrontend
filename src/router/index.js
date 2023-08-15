@@ -554,6 +554,24 @@ const routes = [
                         }
                     }
                 ]
+            },
+            {
+                name: "business",
+                path: "/learning/business",
+                component: () => import("@/views/learn/business/index.vue"),
+                meta: {
+                    title: "业务",
+                },
+                children: [
+                    {
+                        name: "btnControlByMultiFactor",
+                        path: "/learning/business/btnControlByMultiFactor",
+                        component: () => import("@/views/learn/business/btnControlByMultiFactor/index.vue"),
+                        meta: {
+                            title: "多因素控制",
+                        }
+                    }
+                ]
             }
         ]
     },
