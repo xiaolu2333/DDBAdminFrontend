@@ -14,7 +14,7 @@ export default defineConfig({
         // 打包进度条
         progress(),
         // 打包分析
-        bundleAnalyzer(),
+        bundleAnalyzer({}),
         vue()
     ],
     resolve: {

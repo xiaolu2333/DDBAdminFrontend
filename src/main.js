@@ -3,6 +3,8 @@ import {createApp} from 'vue';
 
 import router from './router';
 import {createPinia} from 'pinia'
+// 引入状态管理
+import {setupStore} from '@/store/index.js'
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
@@ -31,7 +33,7 @@ const setupAll = async () => {
     // 通过 app.use() 方法全局注册Vue Router
     app.use(router);
     // 挂载pinia
-    app.use(createPinia())
+    setupStore(app)
     // 通过 app.use() 方法全局注册Element Plus
     app.use(ElementPlus);
     // 通过 app.component() 方法全局注册Element Plus Icons

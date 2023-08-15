@@ -116,7 +116,7 @@
 
 <script setup>
 import {useRouter} from "vue-router";
-import {useAppStore} from '@/store/app'
+import {useAppStore} from '@/store/modules/app.js'
 
 const appStore = useAppStore()
 
