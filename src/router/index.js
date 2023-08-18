@@ -272,6 +272,15 @@ const routes = [
                         },
                         children: []
                     },
+                    {
+                        name:"headerEditableTable",
+                        path:"/learning/element-plus/headerEditableTable",
+                        component:()=>import("@/views/learn/element-plus/headerEditableTable/index.vue"),
+                        meta:{
+                            title:"表头可编辑表格"
+                        },
+                        children:[]
+                    }
                 ]
             },
             {
