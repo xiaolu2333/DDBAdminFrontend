@@ -29,8 +29,13 @@
           <el-tab-pane label="Config">Config</el-tab-pane>
           <el-tab-pane label="Role">Role</el-tab-pane>
           <el-tab-pane label="SQL">
-            <div>
-              <highlightjs language="JavaScript" :autodetect="false" :code="SQL"></highlightjs>
+            <div class="main">
+              <code-mirror
+                  v-model="codeVal"
+                  basic
+                  :lang="lang"
+                  style="height: 400px;"
+                  :extensions="extensions"/>
             </div>
           </el-tab-pane>
         </el-tabs>
@@ -45,7 +50,27 @@
 <script setup>
 
 import {ElForm} from "element-plus";
-import {reactive, toRefs} from "vue";
+import {reactive, ref, toRefs} from "vue";
+
+import CodeMirror from 'vue-codemirror6'
+import {oneDark} from '@codemirror/theme-one-dark'
+import {json} from '@codemirror/lang-json';
+
+const initJson = {
+  name: `maybaby`,
+  year: 25,
+  weight: 45,
+  height: 165
+}
+// 初始化
+let codeVal = ref('');
+// 转成json字符串并格式化
+codeVal.value = JSON.stringify(initJson, null, '\t')
+
+// json语言
+const lang = json();
+// 扩展
+const extensions = [oneDark];
 
 const state = reactive({
   formData: {
@@ -93,5 +118,8 @@ const submit = () => {
 </script>
 
 <style scoped>
-
+/* required! */
+.cm-editor {
+  height: 100%;
+}
 </style>
