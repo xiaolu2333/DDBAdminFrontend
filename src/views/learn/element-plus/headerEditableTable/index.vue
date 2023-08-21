@@ -1,29 +1,9 @@
 <template>
   <el-table
-      :data="showColumnsData"
-      height="60"
-      width="300"
-      ref="refTableShow"
-  >
-    <el-table-column
-        v-for="(item,index) in showColumns"
-        :key="index"
-        :prop="item.fieldShown"
-        :label="item.fieldShown"
-        width="200"
-    >
-      <template #header>
-        <el-input v-model="item.fieldShown"/>
-      </template>
-    </el-table-column>
-  </el-table>
-
-  <el-table
       :data="resColumnsData"
-      height="400"
+      height="200"
       width="300"
       ref="refTableRes"
-      :show-header="false"
   >
     <el-table-column
         v-for="(item,index) in resColumns"
@@ -33,7 +13,7 @@
         width="200"
     >
       <template #header>
-        <el-input v-model="item.field"/>
+        <el-input v-model="item.fieldFake"/>
       </template>
       <template #default="scope">
         <el-select
@@ -60,43 +40,56 @@
 </template>
 
 <script setup>
-import {ref, reactive, toRefs, onMounted} from 'vue'
+import {ref, reactive, toRefs, onMounted, nextTick} from 'vue'
 
 
 // 通过 ref="refTableRes" 获取dom
-const refTableShow = ref()
 const refTableRes = ref()
 
-const PostgreSQLDataType = []
+const PostgreSQLDataType = [
+  {
+    label: "character varying",
+    value: "character varying",
+  },
+  {
+    label: "integer",
+    value: "integer",
+  },
+]
 const state = reactive({
   resColumns: [
-    {
-      name: "用户名",
-      field: "yonghuming",
-      fieldType: "character varying",
-      remark: null
-    },
     // {
-    //   name: null,
-    //   field: "username",
+    //   name: "用户名",
+    //   field: "yonghuming",
+    //   fieldFake: "yonghuming",
     //   fieldType: "character varying",
     //   remark: null
     // },
     {
       name: null,
+      field: "username",
+      fieldFake: "username",
+      fieldType: "character varying",
+      remark: null
+    },
+    {
+      name: null,
       field: "usercode",
+      fieldFake: "usercode",
       fieldType: "character varying",
       remark: null
     },
     {
       name: null,
       field: "sex",
+      fieldFake: "sex",
       fieldType: "character varying",
       remark: null
     },
     {
       name: null,
       field: "age",
+      fieldFake: "age",
       fieldType: "integer",
       remark: null
     },
@@ -120,6 +113,35 @@ const state = reactive({
       sex: "男",
       age: "53",
     },
+    {
+      username: "李娜",
+      usercode: "code_2",
+      sex: "女",
+      age: "53",
+    },
+    {
+      username: "李娜",
+      usercode: "code_2",
+      sex: "女",
+      age: "53",
+    },
+    {
+      username: "李娜",
+      usercode: "code_2",
+      sex: "女",
+      age: "53",
+    },
+    {
+      username: "李娜",
+      usercode: "code_2",
+      sex: "女",
+      age: "53",
+    }, {
+      username: "李娜",
+      usercode: "code_2",
+      sex: "女",
+      age: "53",
+    },
   ],
 
   showColumns: [],
@@ -128,56 +150,26 @@ const state = reactive({
 const {
   resColumns,
   resColumnsData,
-
-  showColumns,
-  showColumnsData,
 } = toRefs(state)
 
 
 // 提交
 const submit = () => {
-  state.showColumns.forEach((item) => {
-    // 重命名item的key
-    Object.keys(item).forEach((key) => {
-      item[key.replace('Shown', '')] = item[key]
-      delete item[key]
-    })
+  state.resColumns.forEach((item) => {
+    item.name = item.fieldFake
+    // 删除无用的字段
+    delete item.fieldFake
   })
-  console.log('提交的showColumns', showColumns.value)
 }
 
 onMounted(() => {
-  console.log('resColumnsData', resColumnsData.value)
-  console.log('resColumns', resColumns.value)
-
-  // 做显示与实际的差异，避免两者相同，导致修改联动
-  state.resColumns.forEach((item) => {
-    let obj = {}
-    // 获取item的key
-    Object.keys(item).forEach((key) => {
-      obj[key + 'Shown'] = item[key]
-    })
-    showColumns.value.push(obj)
-  })
-
-  console.log('refTableShow:', refTableShow.value)
-
   let tableRes = refTableRes.value.layout.table.refs.bodyWrapper;
-  let tableShow = refTableShow.value.layout.table.refs.bodyWrapper;
-
   // 监听横向滚动事件
   tableRes.addEventListener(
       "scroll",
       () => {
         // 设置横向滚动条的位置
         console.log("resres");
-      },
-      true
-  );
-  tableShow.addEventListener(
-      "scroll",
-      () => {
-        console.log("showshow");
       },
       true
   );
