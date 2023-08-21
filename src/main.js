@@ -12,6 +12,9 @@ import VXETable from 'vxe-table'
 import 'vxe-table/lib/style.css'
 import echarts from './views/learn/dataVisualization/useEcharts/myEcharts'
 import gojs from 'gojs'
+import 'highlight.js/styles/atom-one-dark.css'
+import 'highlight.js/lib/common'
+import hljsVuePlugin from '@highlightjs/vue-plugin'
 
 import App from './App.vue';
 import './navigationGuards'
@@ -47,6 +50,8 @@ const setupAll = async () => {
     app.config.globalProperties.$echarts = echarts; //vue3的挂载方式
     // 挂载gojs
     app.config.globalProperties.$echarts = gojs;
+    // 挂载highlight.js
+    app.use(hljsVuePlugin)
 
     // 挂载Vue应用实例
     app.mount('#app');
