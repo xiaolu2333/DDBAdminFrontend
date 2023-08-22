@@ -6,10 +6,15 @@
       <el-form
           :model="formData"
           label-width="80px"
-          @keydown.enter="submit"
+          :rules="rules"
+          ref="form"
       >
-        <el-tabs type="border-card">
-          <el-tab-pane label="常规">
+        <el-tabs
+            type="border-card"
+            v-model="activeName"
+            @tab-change="handleTabChange"
+        >
+          <el-tab-pane label="常规" name="general">
             <el-form-item prop="name" label="名称">
               <el-input v-model="formData.name"/>
             </el-form-item>
@@ -26,16 +31,16 @@
               <el-input v-model="formData.desc"/>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="Config">Config</el-tab-pane>
-          <el-tab-pane label="Role">Role</el-tab-pane>
-          <el-tab-pane label="SQL">
+          <el-tab-pane label="Config" name="config">Config</el-tab-pane>
+          <el-tab-pane label="Role" name="role">Role</el-tab-pane>
+          <el-tab-pane label="SQL" name="sql">
             <div class="main">
               <code-mirror
-                  v-model="codeVal"
+                  v-model="SQL"
                   basic
-                  :lang="lang"
+                  :lang="codeMirrorConfig.lang"
                   style="height: 400px;"
-                  :extensions="extensions"/>
+                  :extensions="codeMirrorConfig.extensions"/>
             </div>
           </el-tab-pane>
         </el-tabs>
@@ -48,39 +53,34 @@
 </template>
 
 <script setup>
-
 import {ElForm} from "element-plus";
-import {reactive, ref, toRefs} from "vue";
+import {onMounted, reactive, ref, toRefs} from "vue";
 
 import CodeMirror from 'vue-codemirror6'
 import {oneDark} from '@codemirror/theme-one-dark'
-import {json} from '@codemirror/lang-json';
+import {sql} from '@codemirror/lang-sql';
 
-const initJson = {
-  name: `maybaby`,
-  year: 25,
-  weight: 45,
-  height: 165
-}
-// 初始化
-let codeVal = ref('');
-// 转成json字符串并格式化
-codeVal.value = JSON.stringify(initJson, null, '\t')
-
-// json语言
-const lang = json();
-// 扩展
-const extensions = [oneDark];
 
 const state = reactive({
+  codeMirrorConfig: {
+    lang: null,
+    extensions: [],
+  },
+
+  activeName: 'general',
+
   formData: {
     name: '',
     owner: '',
     schema: '',
-    tableSpace: '',
+    tableSpace: 'pg_default',
     desc: '',
   },
-  formDisabled: true,
+  rules: {
+    name: [{required: true, message: '请输入名称', trigger: 'blur'},],
+    owner: [{required: true, message: '请输入所有者', trigger: 'blur'},],
+    schema: [{required: true, message: '请输入架构', trigger: 'blur'},]
+  },
 
   SQL: "CREATE TABLE IF NOT EXISTS public.frame_app_application\n" +
       "(\n" +
@@ -106,15 +106,178 @@ const state = reactive({
       "    OWNER to appdb;",
 })
 const {
+  codeMirrorConfig,
+  activeName,
   formData,
-  formDisabled,
+  rules,
   SQL,
 } = toRefs(state)
+
+
+/************************* 事件 *************************/
+const handleTabChange = (tab) => {
+  console.log('tab:', tab)
+
+  if (tab === 'sql') {
+    // 根据表单数据生成 SQL
+    state.SQL = generateSQL(state.formData)
+  }
+}
 
 
 const submit = () => {
   console.log('formData:', formData.value)
 }
+
+
+/************************* 工具 *************************/
+/**
+ * 根据表单数据生成 SQL
+ * @param formData
+ * @returns {string}
+ */
+const generateSQL = (formData) => {
+  function genSQL(data) {
+    let sql = 'CREATE';
+
+    sql += ' TABLE';
+
+    if (data.add_not_exists_clause) {
+      sql += ' IF NOT EXISTS';
+    }
+
+    sql += ` ${data.schema}.${data.name}`;
+
+    if (
+        data.like_relation ||
+        data.coll_inherits ||
+        data.columns.length > 0
+    ) {
+      sql += '\n(\n';
+    }
+
+    // 拼接列
+    if (data.columns && data.columns.length > 0) {
+      data.columns.forEach((c, index) => {
+        if (c.name && c.cltype) {
+          sql += `  ${c.name} ${c.cltype}`;
+
+          if (c.collspcname) {
+            sql += ` COLLATE ${c.collspcname}`;
+          }
+
+          if (c.attnotnull) {
+            sql += ' NOT NULL';
+          }
+
+          if (
+              c.defval !== undefined &&
+              c.defval !== null &&
+              c.defval !== ''
+          ) {
+            sql += ` DEFAULT ${c.defval}`;
+          }
+
+          if (index !== data.columns.length - 1) {
+            sql += ',\n';
+          }
+        }
+      });
+    }
+
+    // 拼接约束
+    if (data.constraint && data.constraint.length > 0) {
+      sql += ',\n'
+
+      if (data.constraint[0].column.name && data.constraint[0].column.colName) {
+        sql += `  CONSTRAINT ${data.constraint[0].column.name} PRIMARY KEY (${data.constraint[0].column.colName})`;
+      }
+
+      if (data.constraint[1].column.length > 0) {
+        sql += ',\n'
+
+        data.constraint[1].column.forEach((c) => {
+          sql += `  CONSTRAINT ${c.name} FOREIGN KEY (${c.localCol}) MATCH SIMPLE\n`;
+          sql += `    REFERENCES ${c.refTable} (${c.refCol})\n`;
+          sql += `    ON UPDATE NO ACTION\n`;
+          sql += `    ON DELETE NO ACTION\n`;
+        })
+      }
+    }
+
+
+    sql += '\n)\n';
+    console.log('sql:', sql)
+
+    return sql;
+  }
+
+  // Example usage
+  const data = {
+    relpersistence: true,
+    add_not_exists_clause: false,
+    schema: 'public',
+    name: 'my_table',
+    typname: 'my_type',
+    like_relation: null,
+    coll_inherits: null,
+    columns: [
+      {
+        name: 'column1',
+        cltype: 'integer',
+        inheritedfromtable: null,
+        inheritedfromtype: null,
+        collspcname: null,
+        attnotnull: true,
+        defval: null,
+      },
+      {
+        name: 'column2',
+        cltype: 'text',
+        inheritedfromtable: null,
+        inheritedfromtype: null,
+        collspcname: null,
+        attnotnull: false,
+        defval: "'default value'",
+      },
+    ],
+    // 约束
+    constraint: [
+      // 主键
+      {
+        type: 'primary_key',
+        column: {name: 'pk_column', colName: 'column1, column2'},
+      },
+      // 外键
+      {
+        type: 'foreign_key',
+        column: [
+          {name: 'f1', localCol: 'column1', refTable: 'table1', refCol: 'column1'},
+          {name: 'f2', localCol: 'column2', refTable: 'table2', refCol: 'column2'},
+        ]
+      }
+    ]
+  };
+
+  console.log(genSQL(data));
+  return genSQL(data);
+}
+
+
+/************************* 初始化 *************************/
+const initCodeMirror = () => {
+  // CodeMirror 配置
+  state.codeMirrorConfig = {
+    lang: sql(),
+    extensions: [oneDark],
+  }
+
+  state.SQL = ''
+}
+
+onMounted(() => {
+  initCodeMirror()
+})
 </script>
 
 <style scoped>
