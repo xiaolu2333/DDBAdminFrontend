@@ -390,6 +390,14 @@ const routes = [
                         },
                         children: []
                     },
+                    {
+                        name: "custCompontent",
+                        path: "/learning/vue3/custCompontent",
+                        component: () => import("@/views/learn/vue3/custCompontent/index.vue"),
+                        meta: {
+                            title: "自定义组件",
+                        }
+                    }
                 ]
             },
             {

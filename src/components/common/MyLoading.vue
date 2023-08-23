@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show">
+  <div v-if="loading" class="loader-container">
     <div class="loader-rainbow">
       <div class="loader-inner">
         <div class="loader-line-wrap">
@@ -22,25 +22,47 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "loading001",
-  props: {
-    show: Boolean,
-  },
-  data() {
-    return {};
-  },
-};
+<script setup>
+import {onMounted, reactive, ref, toRefs, watch} from "vue";
+
+const props = defineProps({
+  loading: {
+    type: Boolean,
+    required: true,
+    default: false
+  }
+})
+
+// 监听props.loading的变化
+watch(
+    () => props.loading,
+    () => {
+      loading.value = props.loading
+      console.log('new loading.value', loading.value)
+    }
+)
+
+const state = reactive({
+  loading: false
+})
+const {loading} = toRefs(state)
+
+onMounted(() => {
+
+})
 </script>
 
 <style scoped>
+.loader-container {
+  background-color: #4983ff;
+  z-index: 30000;
+}
+
 .loader-rainbow {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 9999;
 }
 
 .loader-inner {
@@ -144,88 +166,3 @@ export default {
   }
 }
 </style>
-
-<!--<template>-->
-<!--  <div v-if="msg.show">-->
-<!--    <span class="rotate">-->
-<!--      &lt;!&ndash;    中国加油！奥运健儿加油！&ndash;&gt;-->
-<!--      <img src="src/assets/images/loading.jpg" alt="加载中">-->
-<!--    </span>-->
-<!--  </div>-->
-<!--</template>-->
-
-<!--<script setup>-->
-<!--import {reactive, toRefs} from "vue";-->
-
-<!--const props = defineProps({-->
-<!--  msg: {-->
-<!--    type: Object,-->
-<!--    default: {-->
-<!--      show: true,-->
-<!--      title: '加载中...'-->
-<!--    }-->
-<!--  }-->
-<!--})-->
-
-<!--const state = reactive({-->
-<!--  msg: {-->
-<!--    show: props.msg.show,-->
-<!--    title: props.msg.title-->
-<!--  }-->
-<!--})-->
-<!--const {-->
-<!--  msg-->
-<!--} = toRefs(state)-->
-<!--</script>-->
-
-<!--<style scoped>-->
-<!--.rotate {-->
-<!--  display: inline-block;-->
-<!--  color: red;-->
-<!--  animation: rotate 10s linear infinite;-->
-<!--  -webkit-animation: rotate 3s linear infinite;-->
-
-<!--}-->
-
-<!--@keyframes rotate {-->
-<!--  0% {-->
-<!--    transform: rotate(0);-->
-<!--  }-->
-
-<!--  25% {-->
-<!--    transform: rotate(90deg);-->
-<!--  }-->
-<!--  50% {-->
-<!--    transform: rotate(180deg);-->
-<!--  }-->
-<!--  75% {-->
-<!--    transform: rotate(270deg);-->
-<!--  }-->
-<!--  100% {-->
-<!--    transform: rotate(360deg);-->
-<!--  }-->
-<!--}-->
-
-<!--@-webkit-keyframes rotate {-->
-<!--  0% {-->
-<!--    transform: rotate(0);-->
-<!--  }-->
-<!--  25% {-->
-<!--    transform: rotate(90deg);-->
-<!--  }-->
-<!--  50% {-->
-<!--    transform: rotate(180deg);-->
-<!--  }-->
-<!--  75% {-->
-<!--    transform: rotate(270deg);-->
-<!--  }-->
-<!--  100% {-->
-<!--    transform: rotate(360deg);-->
-<!--  }-->
-<!--}-->
-
-<!--img {-->
-<!--  width: 100px;-->
-<!--  height: 100px;-->
-<!--}-->
-<!--</style>-->
