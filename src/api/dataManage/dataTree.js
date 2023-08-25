@@ -3,10 +3,11 @@ import service from "@/utils/request.js";
 /**
  * 获取树结构数据
  */
-export function GetDataTree() {
+export function GetDataTree(oid) {
     return service.request({
-        url: "/data_management/data_tree_manage/index/",
+        url: "/data_management/data_tree_manage/get_tree_node/",
         method: "get",
+        params: {oid: oid},
     });
 }
 

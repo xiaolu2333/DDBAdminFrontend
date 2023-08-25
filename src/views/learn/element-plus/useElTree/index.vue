@@ -1,31 +1,52 @@
 <template>
-  <div>
-    <el-card style="height: 520px;">
-      <p>【数据库操作员】授权——阶段一</p>
-      <el-scrollbar style="height: 400px;">
-        <el-tree
-            ref='userTreeRef'
-            node-key='id'
-            :data='userOptions'
-            :props="{ children: 'nodes', label: 'text', disabled: '', class: customNodeClass }"
-            :expand-on-click-node='false'
-            default-expand-all
-            :heilight-current="true"
-        >
-          <template #default="{ node, data }">
-            <p v-if="node.data.type === 'schema'">
-              {{ node.label }}
-            </p>
-            <p v-if="node.data.type === 'table'" style="width: 250px; height:26px;overflow-wrap: break-word">
-              {{ node.label }}
-            </p>
-            <p v-else>{{ node.label }}</p>
-            <el-button v-if="node.data.type === 'user'"
-                       size="small" type="primary" style="margin-left: 20px"
-                       @click="tableAuth(data)"
-            >授权
-            </el-button>
-            <p class="custom-tree-node" v-if="node.data.type === 'table'">
+  <el-card>
+    <template #header>
+      <span>树节点拼接</span>
+    </template>
+    <el-tree
+        ref="treeLoad"
+        :data="data2"
+        accordion
+        node-key="oid"
+        :current-node-key="clickedNode.oid"
+        @node-click="handleNodeClick"
+        @node-expand="handleNodeExpand"
+        @node-collapse="handleNodeCollapse"
+    >
+      <template #default="{ node, data }">
+        <span>{{ data.name }}</span>
+      </template>
+    </el-tree>
+  </el-card>
+
+  <el-card style="height: 520px;">
+    <template #header>
+      <span>自定义树节点</span>
+    </template>
+    <el-scrollbar style="height: 400px;">
+      <el-tree
+          ref='userTreeRef'
+          node-key='id'
+          :data='userOptions'
+          :props="{ children: 'nodes', label: 'text', disabled: '', class: customNodeClass }"
+          :expand-on-click-node='false'
+          default-expand-all
+          :heilight-current="true"
+      >
+        <template #default="{ node, data }">
+          <p v-if="node.data.type === 'schema'">
+            {{ node.label }}
+          </p>
+          <p v-if="node.data.type === 'table'" style="width: 250px; height:26px;overflow-wrap: break-word">
+            {{ node.label }}
+          </p>
+          <p v-else>{{ node.label }}</p>
+          <el-button v-if="node.data.type === 'user'"
+                     size="small" type="primary" style="margin-left: 20px"
+                     @click="tableAuth(data)"
+          >授权
+          </el-button>
+          <p class="custom-tree-node" v-if="node.data.type === 'table'">
                 <span style="margin-left: 20px">
                   <template v-for="perm in ['select', 'insert', 'delete', 'update']">
                     <el-checkbox v-if="tableHasPerm(data, perm)" :key="perm" :checked="true" disabled>
@@ -33,16 +54,18 @@
                     </el-checkbox>
                   </template>
                 </span>
-            </p>
-          </template>
-        </el-tree>
-      </el-scrollbar>
-      <el-button type='primary' @click='submit' :icon="Checked" style="float: right">确定</el-button>
-    </el-card>
-  </div>
+          </p>
+        </template>
+      </el-tree>
+    </el-scrollbar>
+    <el-button type='primary' @click='submit' :icon="Checked" style="float: right">确定</el-button>
+  </el-card>
   <br/>
 
   <el-card>
+    <template #header>
+      <span>树节点过滤与禁用</span>
+    </template>
     <el-input v-model="filterText" placeholder="Filter keyword"/>
     <el-tree
         ref="treeRef"
@@ -54,7 +77,6 @@
         :filter-node-method="filterNode"
     />
   </el-card>
-
 
   <el-dialog
       title="【数据库操作员】授权——阶段二"
@@ -298,6 +320,85 @@ const customNodeClass = (data: any, node: any) => {
 }
 
 
+/********************************* 树节点加载拼接 *********************************/
+import type Node from 'element-plus/es/components/tree/src/model/node'
+import {GetDataTree} from '../../../../api/dataManage/dataTree.js'
+
+// 树DOM
+const treeLoad = ref(null)
+// 树数据
+const data2 = ref([] as any[])
+// 被点击的节点
+const clickedNode = ref({} as Node)
+
+const queryTreeNode = (oid: number) => {
+  console.log('oid', oid)
+  if (oid === -1) {
+    GetDataTree(0).then(res => {
+      let tree = []
+      res.data.data.forEach((item: any) => {
+        // 装载服务器组节点
+        if (item.node_type === 'server_group') {
+          tree.push(item)
+        }
+      })
+      data2.value = tree
+    })
+  } else {
+    GetDataTree(oid).then(res => {
+      // 向被点击的节点添加子节点
+      clickedNode.value.children = res.data.data
+
+      try {
+        // 更新树节点
+        treeLoad.value.store.updateKeyChildren(clickedNode.value)
+        // 配合 :current-node-key 展开当前节点
+        treeLoad.value.store.setCurrentNodeKey(clickedNode.value)
+      } catch (TypeError) {
+        console.log('可忽略的类型错误：', TypeError)
+      }
+    })
+  }
+}
+
+
+const handleNodeClick = (data: any) => {
+  console.log('点击节点：', data)
+
+  // // 向被点击的节点添加子节点
+  // data.children = [{
+  //   "oid": 100,
+  //   "parentOid": 1,
+  //   "name": "Level three 1-1-1",
+  //   "node_type": "server",
+  //   "children": []
+  // }]
+  // clickedNode.value = data
+  // try {
+  //   // 更新树节点
+  //   treeLoad.value.store.updateKeyChildren(clickedNode.value)
+  //   // 配合 :current-node-key 展开当前节点
+  //   treeLoad.value.store.setCurrentNodeKey(clickedNode.value)
+  // } catch (TypeError) {
+  //   console.log('可忽略的类型错误：', TypeError)
+  // }
+
+  clickedNode.value = data
+  // 如果当前节点没有子节点，请求服务器获取子节点
+  if (data.children.length === 0) {
+    queryTreeNode(data.oid)
+  }
+}
+
+const handleNodeExpand = (data: any) => {
+  console.log('展开节点：', data)
+}
+
+const handleNodeCollapse = (data: any) => {
+  console.log('折叠节点：', data)
+}
+
+
 /********************************* init *********************************/
 function init() {
   userOptions.value = [
@@ -475,6 +576,7 @@ function init() {
 
 onMounted(() => {
   init()
+  queryTreeNode(-1)
 });
 </script>
 
