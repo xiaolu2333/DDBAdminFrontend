@@ -61,14 +61,14 @@ import {onMounted, ref, reactive, toRefs} from "vue";
 import {GetDataTree} from '../../../api/dataManage/dataTree.js'
 import ContextMenu from './ContextMenu.json'
 import {CreateServerGroup} from '@/components/dataManage/index'
-import {ElTree} from "element-plus";
+import {ElMessage, ElTree} from "element-plus";
 
 // 树DOM
 const treeLoad = ref(null)
 
 interface TreeNode {
   oid: number
-  node_type: string,
+  nodeType: string,
   name: string,
   parentOid: number,
   children: TreeNode[]
@@ -144,7 +144,12 @@ const handleNodeClick = (data: any) => {
  */
 const handleNodeExpand = (data: any) => {
   state.treeNode = data
-  queryTreeNode(data.oid)
+
+  if (data.nodeType.split('-')[1] === 'p') {
+    return
+  } else {
+    queryTreeNode(data.oid)
+  }
 }
 
 /**
@@ -167,7 +172,7 @@ const handleNodeContextMenu = (e: any, data: any) => {
   for (let i = 0; i < state.contextMenus.length; i++) {
     // 将节点类型与右键菜单对象的第一个key进行比较，相同则赋值
     // @ts-ignore
-    if (state.contextMenuNode.node_type === Object.keys(state.contextMenus[i])[0]) {
+    if (state.contextMenuNode.nodeType === Object.keys(state.contextMenus[i])[0]) {
       // 获取右键菜单对象的第一个value
       // @ts-ignore
       state.nodeContextMenus = Object.values(state.contextMenus[i])[0]
@@ -207,7 +212,7 @@ function serverGroupEvent(eventName) {
     let propData = {
       id: state.contextMenuNode.id,
       name: state.contextMenuNode.name,
-      node_type: state.contextMenuNode.node_type
+      nodeType: state.contextMenuNode.nodeType
     }
     state.showCustomComponent = true
     customComponent.value = {
@@ -246,10 +251,18 @@ const queryTreeNode = (oid: number) => {
   console.log('oid', oid)
   if (oid === -1) {
     GetDataTree(0).then(res => {
+      if (res.data.data.length === 0) {
+        ElMessage({
+          message: '暂无数据',
+          type: 'warning'
+        })
+        return
+      }
+
       let tree = []
       res.data.data.forEach((item: any) => {
         // 装载服务器组节点
-        if (item.node_type === 'server_group') {
+        if (item.nodeType === 'server_group') {
           tree.push(item)
         }
       })
@@ -257,8 +270,53 @@ const queryTreeNode = (oid: number) => {
     })
   } else {
     GetDataTree(oid).then(res => {
+      if (res.data.data.length === 0) {
+        ElMessage({
+          message: '暂无数据',
+          type: 'warning'
+        })
+        return
+      }
+
+      treeNode.value.children = []
+      let serverP = []
+      let dbP = {
+        oid: -1,
+        nodeType: 'db-p',
+        name: '数据库',
+        parentOid: -1,
+        children: []
+      }
+      let schemaP = {
+        oid: -1,
+        nodeType: 'schema-p',
+        name: '架构',
+        parentOid: -1,
+        children: []
+      }
+
+      res.data.data.forEach((item: any) => {
+        // 装载服务器组节点
+        if (item.nodeType === 'server') {
+          console.log('服务器节点', item)
+          serverP.push(item)
+        } else if (item.nodeType === 'db') {
+          console.log('数据库节点', item)
+          dbP.children.push(item)
+        } else if (item.nodeType === 'schema') {
+          console.log('架构节点', item)
+          schemaP.children.push(item)
+        }
+      })
+
       // 向被点击的节点添加子节点
-      treeNode.value.children = res.data.data
+      if (treeNode.value.nodeType === 'server_group' && serverP.length >= 0) {
+        treeNode.value.children = serverP
+      } else if (treeNode.value.nodeType === 'server' && dbP.children.length >= 0) {
+        treeNode.value.children.push(dbP)
+      } else if (treeNode.value.nodeType === 'db' && schemaP.children.length >= 0) {
+        treeNode.value.children.push(schemaP)
+      }
 
       try {
         // 更新树节点
