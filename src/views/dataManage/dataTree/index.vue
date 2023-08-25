@@ -11,9 +11,15 @@
               style="margin-bottom: 20px"
           />
           <el-tree
+              ref="treeLoad"
               :data="treeData"
               :props="defaultProps"
+              accordion
+              node-key="oid"
+              :current-node-key="treeNode.oid"
               @node-click="handleNodeClick"
+              @node-expand="handleNodeExpand"
+              @node-collapse="handleNodeCollapse"
               @node-contextmenu="handleNodeContextMenu"
           />
           <!-- 右键菜单 -->
@@ -50,25 +56,33 @@
 </template>
 
 <script lang="ts" setup>
-import {onMounted, toRefs, reactive} from "vue";
+import {onMounted, ref, reactive, toRefs} from "vue";
 
-import {GetDataTree, CreateNode} from '../../../api/dataManage/dataTree.js'
+import {GetDataTree} from '../../../api/dataManage/dataTree.js'
 import ContextMenu from './ContextMenu.json'
-import {
-  CreateServerGroup,
-  CreateServer,
-  CreateDatabase,
-  CreateTable,
-  CreateField,
-  CreateIndex
-} from '@/components/dataManage/index'
+import {CreateServerGroup} from '@/components/dataManage/index'
+import {ElTree} from "element-plus";
 
+// 树DOM
+const treeLoad = ref(null)
+
+interface TreeNode {
+  oid: number
+  node_type: string,
+  name: string,
+  parentOid: number,
+  children: TreeNode[]
+}
 
 const state = reactive({
   // 树类型：true-完整，false-简易
   isComplete: true,
   // 树数据
-  treeData: [] as any[],
+  treeData: [] as TreeNode[],
+  // 树节点
+  treeNode: {} as TreeNode,
+  // 树节点分支
+  treeNodeBunch: {} as TreeNode,
   // 树默认配置
   defaultProps: {
     children: 'children',
@@ -100,6 +114,8 @@ const state = reactive({
 const {
   isComplete,
   treeData,
+  treeNode,
+  treeNodeBunch,
   defaultProps,
   contextMenus,
   contextmenuNode,
@@ -116,6 +132,26 @@ const {
 
 /************************ tree ************************/
 const handleNodeClick = (data: any) => {
+  state.treeNode = data
+  // 如果当前节点没有子节点，请求服务器获取子节点
+  if (data.children.length === 0) {
+    queryTreeNode(data.oid)
+  }
+}
+
+/**
+ * 树节点展开事件
+ */
+const handleNodeExpand = (data: any) => {
+  state.treeNode = data
+  queryTreeNode(data.oid)
+}
+
+/**
+ * 树节点折叠事件
+ */
+const handleNodeCollapse = (data: any) => {
+  state.treeNode = data
   console.log(data)
 }
 
@@ -123,6 +159,7 @@ const handleNodeClick = (data: any) => {
  * 树节点右键菜单
  */
 const handleNodeContextMenu = (e: any, data: any) => {
+  state.treeNode = data
   state.contextMenuNode = data
   state.contextMenuPositionX = e.clientX
   state.contextMenuPositionY = e.clientY
@@ -153,7 +190,7 @@ const contextMenClick = (data: any) => {
   if (state.selectedContextMenu.length === 1) {
   } else if (state.selectedContextMenu.length === 2) {
     // 二级菜单
-    let SecondClassMenu = ['创建服务器组', '创建服务器', '创建数据库', '创建表', '创建字段', '创建索引']
+    let SecondClassMenu = ['创建服务器组', '创建服务器', '创建数据库', '创建schema', '创建表', '创建列', '创建索引']
     // @ts-ignore
     if (SecondClassMenu.includes(state.selectedContextMenu[1])) {
       if (state.selectedContextMenu[1] === '创建服务器组') {
@@ -197,11 +234,47 @@ function clearCustomComponent(data: boolean) {
   }
 }
 
+
+/************************ utils ************************/
+
+
 /************************ init ************************/
+/**
+ * 获取树节点
+ */
+const queryTreeNode = (oid: number) => {
+  console.log('oid', oid)
+  if (oid === -1) {
+    GetDataTree(0).then(res => {
+      let tree = []
+      res.data.data.forEach((item: any) => {
+        // 装载服务器组节点
+        if (item.node_type === 'server_group') {
+          tree.push(item)
+        }
+      })
+      treeData.value = tree
+    })
+  } else {
+    GetDataTree(oid).then(res => {
+      // 向被点击的节点添加子节点
+      treeNode.value.children = res.data.data
+
+      try {
+        // 更新树节点
+        treeLoad.value.store.updateKeyChildren(treeNode.value)
+        // 配合 :current-node-key 展开当前节点
+        treeLoad.value.store.setCurrentNodeKey(treeNode.value)
+      } catch (TypeError) {
+        console.log('可忽略的类型错误：', TypeError)
+      }
+    })
+  }
+}
+
+
 onMounted(() => {
-  GetDataTree().then(res => {
-    state.treeData = res.data.data
-  })
+  queryTreeNode(-1)
 })
 
 </script>

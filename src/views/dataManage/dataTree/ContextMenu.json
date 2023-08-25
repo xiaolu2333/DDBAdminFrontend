@@ -97,8 +97,8 @@
           {
             "id": "db_1_1",
             "type": "db",
-            "label": "创建数据表",
-            "value": "创建数据表",
+            "label": "创建schema",
+            "value": "创建schema",
             "children": []
           }
         ]
@@ -120,6 +120,46 @@
       {
         "id": "db_4",
         "type": "db",
+        "label": "属性",
+        "value": "属性",
+        "children": []
+      }
+    ]
+  },
+  {
+    "schema": [
+      {
+        "id": "schema_1",
+        "type": "schema",
+        "label": "创建",
+        "value": "创建",
+        "children": [
+          {
+            "id": "schema_1_1",
+            "type": "schema",
+            "label": "创建表",
+            "value": "创建表",
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "schema_3",
+        "type": "schema",
+        "label": "刷新",
+        "value": "刷新",
+        "children": []
+      },
+      {
+        "id": "schema_2",
+        "type": "schema",
+        "label": "删除",
+        "value": "删除",
+        "children": []
+      },
+      {
+        "id": "schema_4",
+        "type": "schema",
         "label": "属性",
         "value": "属性",
         "children": []
