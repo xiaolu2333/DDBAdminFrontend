@@ -13,8 +13,8 @@
     <template #footer>
       <el-row style="position: absolute; bottom: 0; width: 100%; margin-left: -20px; padding: 20px 10px;">
         <el-col :span="12" style="text-align: left!important;">
-          <el-button @click="cancelForm1" :icon="WarningFilled" :size="20"/>
-          <el-button @click="cancelForm1" :icon="QuestionFilled" :size="20"/>
+          <el-button @click="cancelForm1" :icon="WarningFilled"/>
+          <el-button @click="cancelForm1" :icon="QuestionFilled"/>
         </el-col>
         <el-col :span="12">
           <el-button @click="closeDialog" :icon="CircleClose">关闭</el-button>

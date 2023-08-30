@@ -60,7 +60,13 @@ import {onMounted, ref, reactive, toRefs} from "vue";
 
 import {GetDataTree} from '../../../api/dataManage/dataTree.js'
 import ContextMenu from './ContextMenu.json'
-import {CreateServerGroup} from '@/components/dataManage/index'
+import {
+  CreateServerGroup,
+  CreateServer,
+  CreateDatabase,
+  CreateSchema,
+  CreateTable
+} from '@/components/dataManage/index'
 import {ElMessage, ElTree} from "element-plus";
 
 // 树DOM
@@ -200,6 +206,16 @@ const contextMenClick = (data: any) => {
     if (SecondClassMenu.includes(state.selectedContextMenu[1])) {
       if (state.selectedContextMenu[1] === '创建服务器组') {
         serverGroupEvent(state.selectedContextMenu[1])
+      } else if (state.selectedContextMenu[1] === '创建服务器') {
+        serverEvent(state.selectedContextMenu[1])
+      } else if (state.selectedContextMenu[1] === '创建数据库') {
+        dbEvent(state.selectedContextMenu[1])
+      } else if (state.selectedContextMenu[1] === '创建schema') {
+        schemaEvent(state.selectedContextMenu[1])
+      } else if (state.selectedContextMenu[1] === '创建表') {
+        tableEvent(state.selectedContextMenu[1])
+      } else if (state.selectedContextMenu[1] === '创建列') {
+        columnEvent(state.selectedContextMenu[1])
       }
     }
   }
@@ -225,6 +241,102 @@ function serverGroupEvent(eventName) {
 
   state.selectedContextMenu = [] as any[]
 }
+
+function serverEvent(eventName) {
+  if (eventName === '创建服务器') {
+    let propData = {
+      id: state.contextMenuNode.id,
+      name: state.contextMenuNode.name,
+      nodeType: state.contextMenuNode.nodeType
+    }
+    state.showCustomComponent = true
+    customComponent.value = {
+      componentName: CreateServer,
+      data: propData,
+      title: '创建服务器',
+      visible: true,
+    }
+  }
+
+  state.selectedContextMenu = [] as any[]
+}
+
+function dbEvent(eventName) {
+  if (eventName === '创建数据库') {
+    let propData = {
+      id: state.contextMenuNode.id,
+      name: state.contextMenuNode.name,
+      nodeType: state.contextMenuNode.nodeType
+    }
+    state.showCustomComponent = true
+    customComponent.value = {
+      componentName: CreateDatabase,
+      data: propData,
+      title: '创建数据库',
+      visible: true,
+    }
+  }
+
+  state.selectedContextMenu = [] as any[]
+}
+
+function schemaEvent(eventName) {
+  if (eventName === '创建schema') {
+    let propData = {
+      id: state.contextMenuNode.id,
+      name: state.contextMenuNode.name,
+      nodeType: state.contextMenuNode.nodeType
+    }
+    state.showCustomComponent = true
+    customComponent.value = {
+      componentName: CreateSchema,
+      data: propData,
+      title: '创建schema',
+      visible: true,
+    }
+  }
+
+  state.selectedContextMenu = [] as any[]
+}
+
+function tableEvent(eventName) {
+  if (eventName === '创建表') {
+    let propData = {
+      id: state.contextMenuNode.id,
+      name: state.contextMenuNode.name,
+      nodeType: state.contextMenuNode.nodeType
+    }
+    state.showCustomComponent = true
+    customComponent.value = {
+      componentName: CreateTable,
+      data: propData,
+      title: '创建表',
+      visible: true,
+    }
+  }
+
+  state.selectedContextMenu = [] as any[]
+}
+
+function columnEvent(eventName) {
+  if (eventName === '创建列') {
+    let propData = {
+      id: state.contextMenuNode.id,
+      name: state.contextMenuNode.name,
+      nodeType: state.contextMenuNode.nodeType
+    }
+    // state.showCustomComponent = true
+    customComponent.value = {
+      componentName: CreateTable,
+      data: propData,
+      title: '创建表',
+      visible: true,
+    }
+  }
+
+  state.selectedContextMenu = [] as any[]
+}
+
 
 // 清空自定义组件信息
 function clearCustomComponent(data: boolean) {
@@ -294,6 +406,13 @@ const queryTreeNode = (oid: number) => {
         parentOid: -1,
         children: []
       }
+      let tableP = {
+        oid: -1,
+        nodeType: 'table-p',
+        name: '表',
+        parentOid: -1,
+        children: []
+      }
 
       res.data.data.forEach((item: any) => {
         // 装载服务器组节点
@@ -306,6 +425,9 @@ const queryTreeNode = (oid: number) => {
         } else if (item.nodeType === 'schema') {
           console.log('架构节点', item)
           schemaP.children.push(item)
+        } else if (item.nodeType === 'table') {
+          console.log('表节点', item)
+          tableP.children.push(item)
         }
       })
 
@@ -316,6 +438,8 @@ const queryTreeNode = (oid: number) => {
         treeNode.value.children.push(dbP)
       } else if (treeNode.value.nodeType === 'db' && schemaP.children.length >= 0) {
         treeNode.value.children.push(schemaP)
+      } else if (treeNode.value.nodeType === 'schema' && tableP.children.length >= 0) {
+        treeNode.value.children.push(tableP)
       }
 
       try {
