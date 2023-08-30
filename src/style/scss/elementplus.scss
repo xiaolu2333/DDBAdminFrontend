@@ -1,7 +1,7 @@
 // 修改 element-plus 组件库的样式
 
 // 消除侧边栏与右侧的空隙
-#layout-aside{
+#layout-aside {
   border-right: none;
 }
 
@@ -11,4 +11,30 @@
 
 .el-main {
   padding: 0;
+}
+
+:global(.el-dialog__header) {
+  padding: 10px;
+}
+
+:global(.el-dialog__headerbtn) {
+  top: 10px;
+  right: 25px;
+  padding: 2px;
+  width: 5px;
+  height: 5px;
+}
+
+:global(.el-dialog__body) {
+  padding: 0 10px 10px 10px;
+  background-color: #f1f0f0;
+}
+
+:global(.el-tabs__nav .is-top) {
+  background-color: #ffffff;
+  font-size: 10px;
+}
+
+:global(.el-dialog__footer) {
+  margin-top: 5px;
 }

@@ -32,7 +32,7 @@ export default defineConfig({
         preprocessorOptions: {
             scss: {
                 // 配置 scss 变量文件
-                additionalData: `@import "@/style/scss/variables.scss";`,
+                additionalData: `@import "@/style/scss/main.scss";`,
                 // 配置 scss 文件搜索路径
                 includePaths: ["@/style/scss/main.scss"],
             }

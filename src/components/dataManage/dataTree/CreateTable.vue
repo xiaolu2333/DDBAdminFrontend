@@ -1,70 +1,75 @@
 <template>
-  <el-dialog
-      v-model="dialogVisible"
-      :close-on-click-modal="false"
-      draggable
-      destroy-on-close
-      @close="closeDialog"
-      style="height: 600px; width: 600px;position: relative;"
-      class="dialogTab"
-  >
-    <el-form
-        :model="formData"
-        label-width="80px"
-        :rules="rules"
-        ref="form"
+  <div>
+    <el-dialog
+        v-model="dialogVisible"
+        title="创建表"
+        :close-on-click-modal="false"
+        draggable
+        destroy-on-close
+        @close="closeDialog"
+        style="height: 550px; width: 600px;position: relative;"
+        class="dialogTab"
     >
-      <el-tabs
-          type="border-card"
-          v-model="activeName"
-          @tab-change="handleTabChange"
+      <el-form
+          :model="formData"
+          label-width="80px"
+          :rules="rules"
+          ref="form"
       >
-        <el-tab-pane label="常规" name="general">
-          <el-form-item prop="name" label="名称">
-            <el-input v-model="formData.name"/>
-          </el-form-item>
-          <el-form-item prop="owner" label="所有者">
-            <el-input v-model="formData.owner"/>
-          </el-form-item>
-          <el-form-item prop="schema" label="架构">
-            <el-input v-model="formData.schema"/>
-          </el-form-item>
-          <el-form-item prop="tableSpace" label="表空间">
-            <el-input v-model="formData.tableSpace"/>
-          </el-form-item>
-          <el-form-item prop="desc" label="注释">
-            <el-input v-model="formData.desc"/>
-          </el-form-item>
-        </el-tab-pane>
-        <el-tab-pane label="Config" name="config">Config</el-tab-pane>
-        <el-tab-pane label="Role" name="role">Role</el-tab-pane>
-        <el-tab-pane label="SQL" name="sql">
-          <el-scrollbar :height="380">
-            <code-mirror
-                v-model="SQL"
-                basic
-                :disabled="true"
-                :lang="codeMirrorConfig.lang"
-                :extensions="codeMirrorConfig.extensions"
-            >
-            </code-mirror>
+        <el-tabs
+            type="card"
+            v-model="activeName"
+            @tab-change="handleTabChange"
+        >
+          <el-scrollbar :height="390">
+            <el-tab-pane label="常规" name="general">
+              <el-form-item prop="name" label="名称">
+                <el-input v-model="formData.name"/>
+              </el-form-item>
+              <el-form-item prop="owner" label="所有者">
+                <el-input v-model="formData.owner"/>
+              </el-form-item>
+              <el-form-item prop="schema" label="架构">
+                <el-input v-model="formData.schema"/>
+              </el-form-item>
+              <el-form-item prop="tableSpace" label="表空间">
+                <el-input v-model="formData.tableSpace"/>
+              </el-form-item>
+              <el-form-item prop="desc" label="注释">
+                <el-input v-model="formData.desc"/>
+              </el-form-item>
+            </el-tab-pane>
+            <el-tab-pane label="Config" name="config">Config</el-tab-pane>
+            <el-tab-pane label="Role" name="role">Role</el-tab-pane>
+            <el-tab-pane label="SQL" name="sql">
+              <el-scrollbar :height="350">
+                <code-mirror
+                    v-model="SQL"
+                    basic
+                    :disabled="true"
+                    :lang="codeMirrorConfig.lang"
+                    :extensions="codeMirrorConfig.extensions"
+                >
+                </code-mirror>
+              </el-scrollbar>
+            </el-tab-pane>
           </el-scrollbar>
-        </el-tab-pane>
-      </el-tabs>
-    </el-form>
-    <template #footer>
-      <el-row style="position: absolute; bottom: 0; width: 100%; margin-left: -20px; padding: 20px 10px;">
-        <el-col :span="12" style="text-align: left!important;">
-          <el-button @click="cancelForm1" :icon="WarningFilled"/>
-          <el-button @click="cancelForm1" :icon="QuestionFilled"/>
-        </el-col>
-        <el-col :span="12">
-          <el-button @click="closeDialog" :icon="CircleClose">关闭</el-button>
-          <el-button type="primary" @click="submit" :icon="Checked">提交</el-button>
-        </el-col>
-      </el-row>
-    </template>
-  </el-dialog>
+        </el-tabs>
+      </el-form>
+      <template #footer>
+        <el-row style="position: absolute; bottom: 0; width: 100%; margin-left: -20px; padding: 10px 10px;">
+          <el-col :span="12" style="text-align: left!important;">
+            <el-button @click="cancelForm1" :icon="WarningFilled"/>
+            <el-button @click="cancelForm1" :icon="QuestionFilled"/>
+          </el-col>
+          <el-col :span="12">
+            <el-button @click="closeDialog" :icon="CircleClose">关闭</el-button>
+            <el-button type="primary" @click="submit" :icon="Checked">提交</el-button>
+          </el-col>
+        </el-row>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -314,5 +319,4 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
 </style>
