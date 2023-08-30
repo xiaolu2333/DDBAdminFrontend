@@ -201,7 +201,7 @@ const contextMenClick = (data: any) => {
   if (state.selectedContextMenu.length === 1) {
   } else if (state.selectedContextMenu.length === 2) {
     // 二级菜单
-    let SecondClassMenu = ['创建服务器组', '创建服务器', '创建数据库', '创建schema', '创建表', '创建列', '创建索引']
+    let SecondClassMenu = ['创建服务器组', '创建服务器', '创建数据库', '创建架构', '创建表', '创建列', '创建索引']
     // @ts-ignore
     if (SecondClassMenu.includes(state.selectedContextMenu[1])) {
       if (state.selectedContextMenu[1] === '创建服务器组') {
@@ -210,7 +210,7 @@ const contextMenClick = (data: any) => {
         serverEvent(state.selectedContextMenu[1])
       } else if (state.selectedContextMenu[1] === '创建数据库') {
         dbEvent(state.selectedContextMenu[1])
-      } else if (state.selectedContextMenu[1] === '创建schema') {
+      } else if (state.selectedContextMenu[1] === '创建架构') {
         schemaEvent(state.selectedContextMenu[1])
       } else if (state.selectedContextMenu[1] === '创建表') {
         tableEvent(state.selectedContextMenu[1])

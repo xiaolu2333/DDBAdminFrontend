@@ -87,6 +87,32 @@
     ]
   },
   {
+    "db-p": [
+      {
+        "id": "db-p_1",
+        "type": "db-p",
+        "label": "创建",
+        "value": "创建",
+        "children": [
+          {
+            "id": "db-p_1_1",
+            "type": "db-p",
+            "label": "创建数据库",
+            "value": "创建数据库",
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "db-p_2",
+        "type": "db-p",
+        "label": "刷新",
+        "value": "刷新",
+        "children": []
+      }
+    ]
+  },
+  {
     "db": [
       {
         "id": "db_1",
@@ -97,8 +123,8 @@
           {
             "id": "db_1_1",
             "type": "db",
-            "label": "创建schema",
-            "value": "创建schema",
+            "label": "创建架构",
+            "value": "创建架构",
             "children": []
           }
         ]
@@ -122,6 +148,32 @@
         "type": "db",
         "label": "属性",
         "value": "属性",
+        "children": []
+      }
+    ]
+  },
+  {
+    "schema-p": [
+      {
+        "id": "schema-p_1",
+        "type": "schema-p",
+        "label": "创建",
+        "value": "创建",
+        "children": [
+          {
+            "id": "schema-p_1_1",
+            "type": "schema-p",
+            "label": "创建架构",
+            "value": "创建架构",
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "schema-p_2",
+        "type": "schema-p",
+        "label": "刷新",
+        "value": "刷新",
         "children": []
       }
     ]
@@ -162,6 +214,32 @@
         "type": "schema",
         "label": "属性",
         "value": "属性",
+        "children": []
+      }
+    ]
+  },
+    {
+    "schema-p": [
+      {
+        "id": "table-p_1",
+        "type": "table-p",
+        "label": "创建",
+        "value": "创建",
+        "children": [
+          {
+            "id": "table-p_1_1",
+            "type": "table-p",
+            "label": "创建列",
+            "value": "创建列",
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "table-p_2",
+        "type": "table-p",
+        "label": "刷新",
+        "value": "刷新",
         "children": []
       }
     ]
