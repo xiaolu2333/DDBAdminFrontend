@@ -123,6 +123,13 @@
           {
             "id": "db_1_1",
             "type": "db",
+            "label": "创数据库",
+            "value": "创数据库",
+            "children": []
+          },
+          {
+            "id": "db_1_2",
+            "type": "db",
             "label": "创建架构",
             "value": "创建架构",
             "children": []
@@ -163,8 +170,8 @@
           {
             "id": "schema-p_1_1",
             "type": "schema-p",
-            "label": "创建架构",
-            "value": "创建架构",
+            "label": "创建表",
+            "value": "创建表",
             "children": []
           }
         ]
@@ -188,6 +195,13 @@
         "children": [
           {
             "id": "schema_1_1",
+            "type": "schema",
+            "label": "创建架构",
+            "value": "创建架构",
+            "children": []
+          },
+          {
+            "id": "schema_1_2",
             "type": "schema",
             "label": "创建表",
             "value": "创建表",
@@ -218,8 +232,8 @@
       }
     ]
   },
-    {
-    "schema-p": [
+  {
+    "table-p": [
       {
         "id": "table-p_1",
         "type": "table-p",
@@ -228,16 +242,16 @@
         "children": [
           {
             "id": "table-p_1_1",
-            "type": "table-p",
-            "label": "创建列",
-            "value": "创建列",
+            "type": "table",
+            "label": "创建表",
+            "value": "创建表",
             "children": []
           }
         ]
       },
       {
-        "id": "table-p_2",
-        "type": "table-p",
+        "id": "table-p_3",
+        "type": "tabl-pe",
         "label": "刷新",
         "value": "刷新",
         "children": []
