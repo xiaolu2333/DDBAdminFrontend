@@ -280,6 +280,14 @@ const routes = [
                             title:"表头可编辑表格"
                         },
                         children:[]
+                    },
+                    {
+                        name: 'dynamicTabs',
+                        path: '/learning/element-plus/dynamicTabs',
+                        component: () => import("@/views/learn/element-plus/dynamicTabs/index.vue"),
+                        meta: {
+                            title: "动态Tabs"
+                        }
                     }
                 ]
             },

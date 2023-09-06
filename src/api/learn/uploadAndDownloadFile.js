@@ -92,3 +92,20 @@ export async function UploadFileByBlock(dataForm) {
     throw error;
   }
 }
+
+// 文件夹上传
+export async function test(dataForm) {
+  try {
+    return await service.request({
+      method: "post",
+      url: "/system/pgadminFile/restoreDir",
+      data: {'dataForm':dataForm},
+      headers: {
+        "Content-Type": "multipart/form-data",  // 一般文件上传，使用 multipart/form-data 格式
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

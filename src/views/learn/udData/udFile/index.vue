@@ -56,7 +56,7 @@
         <el-col :span=12>
           <el-card>
             <template #header>
-              【使用element plus的el-upload组件山川文件】
+              【使用element plus的el-upload组件上传文件】
             </template>
             <el-form :model="formData2" ref='dataFormRef2' label-width="120px">
               <el-form-item label="姓名" prop='name' @input="change">
@@ -122,16 +122,114 @@
           </el-card>
         </el-col>
       </el-row>
+      <br/>
+
+      <el-row :gutter=30>
+        <el-col :span=12>
+          <el-card>
+            <template #header>
+              【上传文件夹】
+            </template>
+            <el-form :model="formData4" ref='dataFormRef4' label-width="120px">
+              <el-form-item label="姓名" prop='name' @input="change">
+                <el-input v-model="formData4.name"/>
+              </el-form-item>
+              <el-form-item label="密码" prop="password" type="password" show-password>
+                <el-input v-model="formData4.password"/>
+              </el-form-item>
+              <el-form-item label="文件夹" prop="fileFold">
+                <!--                <el-upload-->
+                <!--                    v-model:file-list="formData4.fileFold"-->
+                <!--                    class="upload-demo"-->
+                <!--                    multiple-->
+                <!--                    :limit="1"-->
+                <!--                    :auto-upload="false"-->
+                <!--                    :on-change="handleFileFoldChange"-->
+                <!--                >-->
+                <!--                  <el-button type="primary">选择文件夹</el-button>-->
+                <!--                  &lt;!&ndash;                  <template #tip>&ndash;&gt;-->
+                <!--                  &lt;!&ndash;                    <div class="el-upload__tip">&ndash;&gt;-->
+                <!--                  &lt;!&ndash;                      jpg/png files with a size less than 500KB.&ndash;&gt;-->
+                <!--                  &lt;!&ndash;                    </div>&ndash;&gt;-->
+                <!--                  &lt;!&ndash;                  </template>&ndash;&gt;-->
+                <!--                </el-upload>-->
+                <el-upload
+                    v-model:file-list="formData4.fileFold"
+                    :auto-upload="false"
+                    multiple
+                    :show-file-list="false"
+                    :on-change="handleFileFolderChange">
+                  <el-button size="large" style="width: 175px;">上传文件夹
+                  </el-button>
+                </el-upload>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="submit4">提交</el-button>
+              </el-form-item>
+            </el-form>
+          </el-card>
+        </el-col>
+        <el-col :span=12>
+          <el-card>
+            <template #header>
+              【下载压缩文件】
+            </template>
+            <el-button type="primary">下载</el-button>
+          </el-card>
+        </el-col>
+      </el-row>
+    </el-card>
+
+    <el-card>
+      <el-row :gutter=30>
+        <el-col :span=12>
+          <el-button @click="handleShowDialog">显示对话框</el-button>
+          <el-card>
+            <el-dialog
+                :model-value="showDialog"
+                ref="D"
+                @close="closeDia"
+            >
+              <el-form :model="formData4" ref='dataFormRef4' label-width="120px">
+                <el-form-item label="姓名" prop='name' @input="change">
+                  <el-input v-model="formData4.name"/>
+                </el-form-item>
+                <el-form-item label="密码" prop="password" type="password" show-password>
+                  <el-input v-model="formData4.password"/>
+                </el-form-item>
+                <el-form-item label="文件夹" prop="fileFold">
+                  <el-upload
+                      ref="uploadFileFolder"
+                      v-model:file-list="formData4.fileFold"
+                      :auto-upload="false"
+                      multiple
+                      :show-file-list="false"
+                      @click="handleFileFolderClick"
+                      :on-change="handleFileFolderChange">
+                    <el-button size="large" style="width: 175px;">上传文件夹
+                    </el-button>
+                  </el-upload>
+                </el-form-item>
+                <el-form-item>
+                  <el-button type="primary" @click="submit4">提交</el-button>
+                </el-form-item>
+              </el-form>
+            </el-dialog>
+          </el-card>
+        </el-col>
+        <el-col :span=12>
+        </el-col>
+      </el-row>
     </el-card>
   </div>
 </template>
 
 <script setup>
-import {reactive, ref, toRefs} from 'vue'
+import {nextTick, onMounted, reactive, ref, toRefs} from 'vue'
 import {ElMessage} from 'element-plus'
 import {
   DownloadFileByStream,
-  DownloadFileByURL,
+  DownloadFileByURL, test,
   UploadFile,
   UploadFileByBlock,
   UploadFileByBreakpoint,
@@ -141,6 +239,7 @@ import {
 const file = ref("file")
 const upload = ref()
 const file2 = ref("file2")
+const uploadFileFolder = ref()
 const state = reactive({
   fileObj: null,
   // 原生文件上传
@@ -170,6 +269,14 @@ const state = reactive({
   percentage: 0,
   // 是否暂停
   isPause: false,
+  // 上传文件夹
+  formData4: {
+    name: "",
+    password: "",
+    fileFold: [],
+  },
+  showDialog: false,
+  fileList: [],
 })
 const {
   fileObj,
@@ -179,6 +286,9 @@ const {
   dataFileList,
   percentage,
   isPause,
+  formData4,
+  showDialog,
+  fileList
 } = toRefs(state)
 
 /*************************** 一般文件上传与下载 ***************************/
@@ -453,6 +563,77 @@ function change3(data) {
   console.log("formData1:", formData1)
 }
 
+
+/*********************************** 上传文件夹 ***********************************/
+const dataFormRef4 = ref()
+
+function handleFileFolderClick(event) {
+  // 清空上一次选择的文件列表
+  state.fileList = []
+  state.lastFileListLength = 0
+  state.formData4.fileName = ''
+  uploadFileFolder.value!.clearFiles()
+}
+
+const f = ref([])
+
+function handleFileFolderChange(file, fileList) {
+  // console.log('file:', file)
+  console.log('更换前fileList:', fileList)
+
+  let length = fileList.length
+  // 更换文件名称
+  fileList.forEach(item => {
+    // 找到item在fileList中的索引
+    let index = fileList.indexOf(item)
+    if (index === length - 1) {
+      if (item.raw.webkitRelativePath.indexOf(',') === -1) {
+        item.name = item.raw.webkitRelativePath.replace(/\//g, ',')
+      } else {
+        ElMessage.error('文件夹中文件' + item.raw.webkitRelativePath + '名称中不能包含英文逗号","')
+      }
+    }
+  })
+  console.log('更换后fileList:', fileList)
+
+  state.fileList = fileList
+}
+
+
+const submit4 = () => {
+  let formData = new FormData()
+  state.fileList.forEach(item => {
+    formData.append("file", item.raw)
+    console.log('item.raw,webkitRelativePath: ', item.raw.webkitRelativePath)
+  })
+
+  f.value = state.fileList
+  console.log(f.value, '1', state.fileList)
+  test(f.value)
+      .then((response) => {
+        console.log(response.data);
+        ElMessage.success("上传成功")
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+}
+
+async function handleShowDialog() {
+  state.showDialog = true
+}
+
+const closeDia = () => {
+  state.showDialog = false
+  // 等待 DOM 更新
+  nextTick()
+  const inputDom = document.getElementsByClassName("el-upload__input")
+  // const inputDom = document.querySelectorAll(".el-upload__input")
+  console.log('inputDom2:', inputDom)
+  inputDom.webkitdirectory = true
+}
+
+
 /*************************** 文件分块上传 ***************************/
 async function uploadFileByBlock() {
   console.log('file2:', file2.value)
@@ -489,5 +670,18 @@ async function uploadFileByBlock() {
   // 文件上传完成后的操作
   // ...
 }
+
+
+/*************************** 初始化 ***************************/
+onMounted(() => {
+  // 将”上传文件夹“按钮设置为可选择文件夹
+  const inputDom = document.getElementsByClassName("el-upload__input")
+  console.log('inputDom:', inputDom)
+  for (let i = 0; i < inputDom.length; i++) {
+    if (i === 1 || i === 2) {
+      inputDom[i].webkitdirectory = true
+    }
+  }
+})
 
 </script>
