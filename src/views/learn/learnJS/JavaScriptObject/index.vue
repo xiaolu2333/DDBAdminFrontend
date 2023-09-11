@@ -53,14 +53,19 @@ import {onMounted, reactive, ref, toRefs} from "vue";
 
 let objOne = {
   name: '张三',
-  age: 18,
+  age: 7,
   sex: '男',
+  grade: 1,
+  // 是否是班长
+  isMonitor: true
 }
 
 let objThree = {
   name: '张三',
-  age: 20,
-  sex: '女'
+  age: 6,
+  sex: '女',
+  grade: 1,
+  nikeName: '珊珊',
 }
 
 const state = reactive({
@@ -119,37 +124,210 @@ function checkObject() {
   console.log(objOneKeys)
   console.log(objThreeKeys)
 
-  // 判断 objOneKeys 和 objThreeKeys 是否相等
-  if (objOneKeys.length !== objThreeKeys.length) {
-    console.log('两个对象的属性数量不相等')
-    return false
-  } else {
-    for (let i = 0; i < objOneKeys.length; i++) {
-      if (objOneKeys[i] !== objThreeKeys[i]) {
-        console.log('两个对象的属性名不相等')
-        return false
-      }
-    }
-  }
-
-  // 判断 objOne 和 objThree 的属性值是否相等
-  for (let key in objOne) {
-    if (objOne[key] !== objThree[key]) {
-      console.log(`两个对象的属性 ${key} 的值不相等`)
+  // 判断两个对象是否相等
+  if (JSON.stringify(objOne) === JSON.stringify(objThree)) {
+    console.log('两个对象相等')
+    // 将objOneKeys 放入 objKeysSame
+    objOneKeys.forEach(item => {
       let obj = {
-        prop: key,
-        objOne: objOne[key],
-        objThree: objThree[key]
-      }
-      objKeysDiff.value.push(obj)
-    } else {
-      console.log(`两个对象的属性 ${key} 的值相等`)
-      let obj = {
-        prop: key,
-        objOne: objOne[key],
-        objThree: objThree[key]
+        prop: item,
+        objOne: objOne[item],
+        objThree: objThree[item]
       }
       objKeysSame.value.push(obj)
+    })
+  } else {
+    console.log('两个对象不相等')
+    // 判断两个对象的属性个数是否相等
+    if (objOneKeys.length === objThreeKeys.length) {
+      console.log('两个对象的属性个数相等')
+      // 判断所有属性名是否相等
+      if (objOneKeys.every(item => objThreeKeys.includes(item))) {
+        console.log('两个对象的属性名相等')
+        // 获取在 objOneKeys 和 objThreeKeys 中都存在的属性且属性值相等的属性名
+        let objSameKeys = objOneKeys.filter(item => objThreeKeys.includes(item))
+        if (objSameKeys.length > 0) {
+          objSameKeys.forEach(item => {
+            if (objOne[item] === objThree[item]) {
+              let obj = {
+                prop: item,
+                objOne: objOne[item],
+                objThree: objThree[item]
+              }
+              objKeysSame.value.push(obj)
+            }
+          })
+        }
+
+        // 获取在 objOneKeys 和 objThreeKeys 中都存在的属性但属性值不相等的属性名
+        let objDiffKeys = objOneKeys.filter(item => objThreeKeys.includes(item))
+        if (objDiffKeys.length > 0) {
+          objDiffKeys.forEach(item => {
+            if (objOne[item] !== objThree[item]) {
+              let obj = {
+                prop: item,
+                objOne: objOne[item],
+                objThree: objThree[item]
+              }
+              objKeysDiff.value.push(obj)
+            }
+          })
+        }
+
+        // 获取在 objOneKeys 中存在，但在 objThreeKeys 中不存在的属性名
+        let objOneOnlyKeys = objOneKeys.filter(item => !objThreeKeys.includes(item))
+        console.log('objOneOnlyKeys:', objOneOnlyKeys)
+        console.log('objOne 比 objThree 多的属性名：', objOneOnlyKeys)
+        if (objOneOnlyKeys.length > 0) {
+          objOneOnlyKeys.forEach(item => {
+            let obj = {
+              prop: item,
+              objOne: objOne[item],
+              objThree: ''
+            }
+            objKeysDiff.value.push(obj)
+          })
+        }
+
+        // 获取在 objThreeKeys 中存在，但在 objOneKeys 中不存在的属性名
+        let objThreeOnlyKeys = objThreeKeys.filter(item => !objOneKeys.includes(item))
+        console.log('objThreeOnlyKeys:', objThreeOnlyKeys)
+        console.log('objThree 比 objOne 多的属性名：', objThreeOnlyKeys)
+        if (objThreeOnlyKeys.length > 0) {
+          objThreeOnlyKeys.forEach(item => {
+            let obj = {
+              prop: item,
+              objOne: '',
+              objThree: objThree[item]
+            }
+            objKeysDiff.value.push(obj)
+          })
+        }
+      } else {
+        console.log('两个对象的属性名不相等')
+        // 获取在 objOneKeys 和 objThreeKeys 中都存在的属性且属性值都相等的属性名
+        let objSameKeys = objOneKeys.filter(item => objThreeKeys.includes(item))
+        if (objSameKeys.length > 0) {
+          objSameKeys.forEach(item => {
+            if (objOne[item] === objThree[item]) {
+              let obj = {
+                prop: item,
+                objOne: objOne[item],
+                objThree: objThree[item]
+              }
+              objKeysSame.value.push(obj)
+            }
+          })
+        }
+
+        // 获取在 objOneKeys 和 objThreeKeys 中都存在的属性但属性值不相等的属性名
+        let objDiffKeys = objOneKeys.filter(item => objThreeKeys.includes(item))
+        if (objDiffKeys.length > 0) {
+          objDiffKeys.forEach(item => {
+            if (objOne[item] !== objThree[item]) {
+              let obj = {
+                prop: item,
+                objOne: objOne[item],
+                objThree: objThree[item]
+              }
+              objKeysDiff.value.push(obj)
+            }
+          })
+        }
+
+        // 获取在 objOneKeys 中存在，但在 objThreeKeys 中不存在的属性名
+        let objOneOnlyKeys = objOneKeys.filter(item => !objThreeKeys.includes(item))
+        console.log('objOneOnlyKeys:', objOneOnlyKeys)
+        console.log('objOne 比 objThree 多的属性名：', objOneOnlyKeys)
+        if (objOneOnlyKeys.length > 0) {
+          objOneOnlyKeys.forEach(item => {
+            let obj = {
+              prop: item,
+              objOne: objOne[item],
+              objThree: ''
+            }
+            objKeysDiff.value.push(obj)
+          })
+        }
+
+        // 获取在 objThreeKeys 中存在，但在 objOneKeys 中不存在的属性名
+        let objThreeOnlyKeys = objThreeKeys.filter(item => !objOneKeys.includes(item))
+        console.log('objThreeOnlyKeys:', objThreeOnlyKeys)
+        console.log('objThree 比 objOne 多的属性名：', objThreeOnlyKeys)
+        if (objThreeOnlyKeys.length > 0) {
+          objThreeOnlyKeys.forEach(item => {
+            let obj = {
+              prop: item,
+              objOne: '',
+              objThree: objThree[item]
+            }
+            objKeysDiff.value.push(obj)
+          })
+        }
+      }
+    }
+    // 属性个数不相等时，取出所有差异（A比B多的属性，A比B少的属性）
+    else {
+      console.log('两个对象的属性个数不相等')
+      // 获取在 objOneKeys 和 objThreeKeys 中都存在的属性且属性值相等的属性名
+      let objSameKeys = objOneKeys.filter(item => objThreeKeys.includes(item))
+      if (objSameKeys.length > 0) {
+        objSameKeys.forEach(item => {
+          if (objOne[item] === objThree[item]) {
+            let obj = {
+              prop: item,
+              objOne: objOne[item],
+              objThree: objThree[item]
+            }
+            objKeysSame.value.push(obj)
+          }
+        })
+      }
+
+      // 获取在 objOneKeys 和 objThreeKeys 中都存在的属性但属性值不相等的属性名
+      let objDiffKeys = objOneKeys.filter(item => objThreeKeys.includes(item))
+      if (objDiffKeys.length > 0) {
+        objDiffKeys.forEach(item => {
+          if (objOne[item] !== objThree[item]) {
+            let obj = {
+              prop: item,
+              objOne: objOne[item],
+              objThree: objThree[item]
+            }
+            objKeysDiff.value.push(obj)
+          }
+        })
+      }
+
+      // 获取在 objOneKeys 中存在，但在 objThreeKeys 中不存在的属性名
+      let objOneOnlyKeys = objOneKeys.filter(item => !objThreeKeys.includes(item))
+      console.log('objOneOnlyKeys:', objOneOnlyKeys)
+      console.log('objOne 比 objThree 多的属性名：', objOneOnlyKeys)
+      if (objOneOnlyKeys.length > 0) {
+        objOneOnlyKeys.forEach(item => {
+          let obj = {
+            prop: item,
+            objOne: objOne[item],
+            objThree: ''
+          }
+          objKeysDiff.value.push(obj)
+        })
+      }
+
+      // 获取在 objThreeKeys 中存在，但在 objOneKeys 中不存在的属性名
+      let objThreeOnlyKeys = objThreeKeys.filter(item => !objOneKeys.includes(item))
+      console.log('objThreeOnlyKeys:', objThreeOnlyKeys)
+      console.log('objThree 比 objOne 多的属性名：', objThreeOnlyKeys)
+      if (objThreeOnlyKeys.length > 0) {
+        objThreeOnlyKeys.forEach(item => {
+          let obj = {
+            prop: item,
+            objOne: '',
+            objThree: objThree[item]
+          }
+          objKeysDiff.value.push(obj)
+        })
+      }
     }
   }
 
