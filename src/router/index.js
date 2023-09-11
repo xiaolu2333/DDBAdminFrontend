@@ -405,6 +405,14 @@ const routes = [
                         meta: {
                             title: "自定义组件",
                         }
+                    },
+                    {
+                        name: "useVmodel",
+                        path: "/learning/vue3/useVmodel",
+                        component: () => import("@/views/learn/vue3/useVmodel/index.vue"),
+                        meta: {
+                            title: "父子组件传值中的v-model"
+                        }
                     }
                 ]
             },
