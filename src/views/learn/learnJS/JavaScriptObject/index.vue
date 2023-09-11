@@ -336,6 +336,26 @@ function checkObject() {
 }
 
 
+// 获取
+function diffProps(oldObj, newObj) {
+
+  const keys1 = Object.keys(oldObj);
+  const keys2 = Object.keys(newObj);
+
+  const keys = new Set([...keys1, ...keys2]);
+
+  return [...keys].filter(key => {
+    return oldObj[key] !== newObj[key];
+  }).map(key => {
+    return {
+      key,
+      owner: keys1.includes(key) ? 'oldObj' : 'newObj'
+    };
+  });
+}
+
+console.log(diffProps(objOne, objThree));
+
 onMounted(() => {
 })
 </script>
