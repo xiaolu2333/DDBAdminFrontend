@@ -26,3 +26,13 @@ export async function CreateNode(formData) {
         console.log(error);
     }
 }
+
+/**
+ * 获取数据类型
+ */
+export function GetDataType() {
+    return service.request({
+        url: "data_management/data_tree_manage/get_data_type/",
+        method: "get",
+    });
+}
