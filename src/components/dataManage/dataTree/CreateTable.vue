@@ -96,36 +96,57 @@
               <div>
                 <vxe-toolbar>
                   <template #buttons>
-                    <vxe-button @click="addColumn">新增</vxe-button>
-                    <!--                    <vxe-button @click="removeSelectRowEvent">删除选中</vxe-button>-->
+                    <vxe-button @click="addColumn">
+                      <el-icon>
+                        <Plus/>
+                      </el-icon>
+                    </vxe-button>
                   </template>
                 </vxe-toolbar>
 
                 <vxe-table
                     border
                     show-overflow
-                    keep-source
                     ref="columnTable"
                     max-height="400"
                     :data="columnData"
-                    :edit-config="{trigger: 'click', mode: 'cell', showStatus: true}"
+                    :edit-config="{
+                      trigger: 'click',
+                      showStatus: true,
+                      showUpdateStatus: true,
+                      showInsertStatus: true
+                    }"
                 >
-                  <vxe-column
-                      field="name" title="名称"
-                      :edit-render="{autofocus: '.vxe-input--inner', defaultValue: '默认的名字'}"
-                  >
-                    <template #edit="{ row }">
-                      <vxe-input v-model="row.name" type="text"></vxe-input>
+                  <vxe-column width="40">
+                    <div @click="handleColumnEdit" class="edit-column">
+                      <el-icon size="20px">
+                        <Edit/>
+                      </el-icon>
+                    </div>
+                  </vxe-column>
+                  <vxe-column width="40">
+                    <template #default="{ row }">
+                      <div @click="handleColumnDelete(row)" class="delete-column">
+                        <el-icon size="20px">
+                          <DeleteFilled/>
+                        </el-icon>
+                      </div>
                     </template>
                   </vxe-column>
                   <vxe-column
-                      field="dataType" title="数据类型"
-                      :edit-render="{}">
+                      field="name" title="名称"
+                      :edit-render="{autofocus: '.vxe-input--inner'}"
+                  >
+                    <template #edit="{ row }">
+                      <vxe-input v-model="row.columnName" type="text"></vxe-input>
+                    </template>
+                  </vxe-column>
+                  <vxe-column field="dataType" title="数据类型">
                     <!--                    <template #default="{ row }">-->
                     <!--                      <span>{{ formatSex(row.sex) }}</span>-->
                     <!--                    </template>-->
                     <template #edit="{ row }">
-                      <vxe-select v-model="row.type" transfer>
+                      <vxe-select v-model="columnFormData.type" transfer>
                         <vxe-option
                             v-for="item in columnTypeOptions"
                             :key="item.typeName"
@@ -137,37 +158,37 @@
                   </vxe-column>
                   <vxe-column
                       field="lenPer" title="长度/精度"
-                      :edit-render="{defaultValue: 18}">
+                  >
                     <template #edit="{ row }">
                       <vxe-input v-model="row.lenPre" type="text"></vxe-input>
                     </template>
                   </vxe-column>
                   <vxe-column
                       field="scale" title="精度"
-                      :edit-render="{defaultValue: 0}">
+                  >
                     <template #edit="{ row }">
                       <vxe-input v-model="row.scale" type="text"></vxe-input>
                     </template>
                   </vxe-column>
                   <vxe-column
                       field="isNullable" title="不为NULL"
-                      :edit-render="{defaultValue: false}">
+                  >
                     <template #edit="{ row }">
-                      <vxe-switch v-model="row.isNullable" type="primary"></vxe-switch>
+                      <el-switch v-model="row.isNullable"/>
                     </template>
                   </vxe-column>
                   <vxe-column
                       field="isPrimaryKey" title="主键？"
-                      :edit-render="{defaultValue: false}">
+                  >
                     <template #edit="{ row }">
-                      <vxe-switch v-model="row.isPrimaryKey" type="primary"></vxe-switch>
+                      <el-switch v-model="row.isPrimaryKey"/>
                     </template>
                   </vxe-column>
                   <vxe-column
                       field="defaultValue" title="默认值"
-                      :edit-render="{defaultValue: ''}">
+                  >
                     <template #edit="{ row }">
-                      <vxe-input v-model="row.defaultValue" type="text"></vxe-input>
+                      <el-input v-model="row.defaultValue"></el-input>
                     </template>
                   </vxe-column>
                 </vxe-table>
@@ -202,7 +223,7 @@
           </el-scrollbar>
         </el-tabs>
       </el-form>
-      <el-alert v-show="alert.show" :title="alert.title" :type="alert.type" show-icon/>
+      <el-alert v-show="alert.show" :title="alert.title" type="error" show-icon/>
       <template #footer>
         <el-row style="position: absolute; bottom: 0; width: 100%; margin-left: -20px; padding: 10px 10px;">
           <el-col :span="12" style="text-align: left!important;">
@@ -221,8 +242,8 @@
 
 <script lang="ts" setup>
 import {onMounted, ref, toRefs, watch, reactive} from 'vue'
-import {ElForm} from 'element-plus'
-import {WarningFilled, QuestionFilled, CircleClose, Checked} from '@element-plus/icons-vue'
+import {ElForm, ElMessage, ElMessageBox} from 'element-plus'
+import {WarningFilled, QuestionFilled, CircleClose, Checked, Edit, DeleteFilled} from '@element-plus/icons-vue'
 import CodeMirror from 'vue-codemirror6'
 import {oneDark} from '@codemirror/theme-one-dark'
 import {sql} from '@codemirror/lang-sql';
@@ -230,6 +251,7 @@ import {sql} from '@codemirror/lang-sql';
 import {
   GetDataType
 } from '@/api/dataManage/dataTree'
+import {VXETable} from "vxe-table";
 
 const props = defineProps<{
   componentData: any
@@ -315,6 +337,17 @@ const state = reactive({
   ],
   columnTypeOptions: [] as any,
   columnData: [] as any,
+  columnFormData: [
+    {
+      columnName: '',
+      type: '',
+      lenPre: '',
+      scale: '',
+      isNullable: false,
+      isPrimaryKey: false,
+      default: '',
+    },
+  ],
   rules: {
     name: [{required: true, message: '请输入名称', trigger: 'blur'}],
     owner: [{required: true, message: '请输入所有者', trigger: 'blur'}],
@@ -342,6 +375,7 @@ const {
   inheritTableOptions,
   columnTypeOptions,
   columnData,
+  columnFormData,
   rules,
 
   alert,
@@ -450,7 +484,7 @@ const addColumn = async (row) => {
   const $table = columnTable.value
   if ($table) {
     const record = {
-      name: '',
+      columnName: '',
       type: '',
       lenPre: '',
       scale: '',
@@ -458,9 +492,53 @@ const addColumn = async (row) => {
       isPrimaryKey: false,
       default: '',
     }
-    await $table.insertAt(record, row)
-    // const {row: newRow} = await $table.insertAt(record, row)
-    // await $table.setEditCell(newRow, '')
+    // 第二个参数: -1:插入到最后一行 Null: 插入到首行
+    await $table.insertAt(record, -1)
+  }
+}
+
+/**
+ * 编辑列
+ */
+const handleColumnEdit = (row) => {
+  console.log('编辑列:', row)
+}
+
+/**
+ * 删除列
+ */
+const handleColumnDelete = async (row) => {
+  // const $table = columnTable.value
+  // if ($table) {
+  //   const type = await VXETable.modal.confirm('您确定要删除该数据?')
+  //   if (type === 'confirm') {
+  //     $table.remove(row)
+  //   }
+  // }
+  const $table = columnTable.value
+  if ($table) {
+    ElMessageBox.confirm(
+        '确认删除?',
+        '警告',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+    )
+        .then(() => {
+          $table.remove(row)
+          ElMessage({
+            type: 'success',
+            message: '删除成功!',
+          })
+        })
+        .catch(() => {
+          ElMessage({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
   }
 }
 
@@ -665,4 +743,8 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.edit-column:hover, .delete-column:hover {
+  cursor: pointer;
+  color: #409EFF;
+}
 </style>

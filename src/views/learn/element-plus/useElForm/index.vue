@@ -50,6 +50,23 @@
       </el-form>
     </el-card>
   </div>
+
+  <el-select
+      v-model="value"
+      clearable
+      multiple
+      placeholder="Select">
+    <el-option
+        v-for="item in options"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value"
+    />
+  </el-select>
+  <div>
+    {{ value }}
+  </div>
+
 </template>
 
 <script setup>
@@ -59,6 +76,37 @@ import {onMounted, reactive, ref, toRefs} from "vue";
 import CodeMirror from 'vue-codemirror6'
 import {oneDark} from '@codemirror/theme-one-dark'
 import {sql} from '@codemirror/lang-sql';
+
+const value = ref([{
+  value: '1',
+  label: 'Option1',
+},
+  {
+    value: '2',
+    label: 'Option2',
+  }])
+const options = [
+  {
+    value: '1',
+    label: 'Option1',
+  },
+  {
+    value: '2',
+    label: 'Option2',
+  },
+  {
+    value: '3',
+    label: 'Option3',
+  },
+  {
+    value: '4',
+    label: 'Option4',
+  },
+  {
+    value: '5',
+    label: 'Option5',
+  },
+]
 
 
 const state = reactive({
