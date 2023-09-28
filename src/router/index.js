@@ -413,6 +413,14 @@ const routes = [
                         meta: {
                             title: "父子组件传值中的v-model"
                         }
+                    },
+                    {
+                        name: "dataBetweenCompontent",
+                        path: "/learning/vue3/dataBetweenCompontent",
+                        component: () => import("@/views/learn/vue3/dataBetweenCompontent/index.vue"),
+                        meta: {
+                            title: "组件间数据传递",
+                        }
                     }
                 ]
             },
