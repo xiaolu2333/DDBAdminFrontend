@@ -145,49 +145,53 @@
                     <!--                    <template #default="{ row }">-->
                     <!--                      <span>{{ formatSex(row.sex) }}</span>-->
                     <!--                    </template>-->
-                    <template #edit="{ row }">
-                      <vxe-select v-model="columnFormData.type" transfer>
-                        <vxe-option
+                    <template #default="{ row }">
+                      <el-select
+                          v-model="columnFormData.type"
+                          clearable
+                          filterable
+                      >
+                        <el-option
                             v-for="item in columnTypeOptions"
                             :key="item.typeName"
                             :value="item.typeName"
                             :label="item.typeName"
-                        ></vxe-option>
-                      </vxe-select>
+                        ></el-option>
+                      </el-select>
                     </template>
                   </vxe-column>
                   <vxe-column
                       field="lenPer" title="长度/精度"
                   >
-                    <template #edit="{ row }">
+                    <template #default="{ row }">
                       <vxe-input v-model="row.lenPre" type="text"></vxe-input>
                     </template>
                   </vxe-column>
                   <vxe-column
-                      field="scale" title="精度"
+                      field="scale" title="规模"
                   >
-                    <template #edit="{ row }">
-                      <vxe-input v-model="row.scale" type="text"></vxe-input>
+                    <template #default="{ row }">
+                      <vxe-input  v-model="row.scale" type="text"></vxe-input>
                     </template>
                   </vxe-column>
                   <vxe-column
                       field="isNullable" title="不为NULL"
                   >
-                    <template #edit="{ row }">
+                    <template #default="{ row }">
                       <el-switch v-model="row.isNullable"/>
                     </template>
                   </vxe-column>
                   <vxe-column
                       field="isPrimaryKey" title="主键？"
                   >
-                    <template #edit="{ row }">
+                    <template #default="{ row }">
                       <el-switch v-model="row.isPrimaryKey"/>
                     </template>
                   </vxe-column>
                   <vxe-column
                       field="defaultValue" title="默认值"
                   >
-                    <template #edit="{ row }">
+                    <template #default="{ row }">
                       <el-input v-model="row.defaultValue"></el-input>
                     </template>
                   </vxe-column>
@@ -395,6 +399,11 @@ const handleTabChange = (tab) => {
     GetDataType().then(res => {
       columnTypeOptions.value = res.data.data
       console.log('columnTypeOptions:', columnTypeOptions.value)
+      // 找出is_collatable=true的数据
+      const isDup = columnTypeOptions.value.filter((item) => {
+        return item.is_collatable === true
+      })
+      console.log('is_collatable:', isDup)
     })
   }
   if (tab === 'sql') {
