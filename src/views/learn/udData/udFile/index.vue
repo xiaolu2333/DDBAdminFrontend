@@ -572,7 +572,7 @@ function handleFileFolderClick(event) {
   state.fileList = []
   state.lastFileListLength = 0
   state.formData4.fileName = ''
-  uploadFileFolder.value!.clearFiles()
+  uploadFileFolder.value.clearFiles()
 }
 
 const f = ref([])
