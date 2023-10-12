@@ -176,6 +176,22 @@ const routes = [
                     title: "配置中心",
                 },
                 children: []
+            },
+            {
+                path: "/dataManage/subNodeManagement",
+                name: "SubNodeManagement",
+                component: () => import("@/views/dataManage/subNodeManagement/index.vue"),
+                meta: {
+                    title: "子库管理",
+                },
+            },
+            {
+                path: "/dataManage/proxyManagement",
+                name: "ProxyManagement",
+                component: () => import("@/views/dataManage/proxyManagement/index.vue"),
+                meta: {
+                    title: "代理管理",
+                },
             }
         ]
     },

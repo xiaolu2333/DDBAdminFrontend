@@ -48,7 +48,7 @@
           <!--        />-->
         </div>
       </el-tab-pane>
-      <el-tab-pane label="配置管理" name="configureCenter">
+      <el-tab-pane label="实例管理" name="instanceManagement">
         <div style="padding: 20px">
           <el-row>
             <el-col :span="6">
