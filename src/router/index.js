@@ -74,7 +74,7 @@ const routes = [
         ],
     },
 
-    // System Admin
+    // System Management
     {
         path: "/system",
         name: "System",
@@ -137,6 +137,14 @@ const routes = [
                     title: "资源管理"
                 },
                 children: []
+            },
+            {
+                name: 'DictManagement',
+                path: '/dictManagement',
+                component: () => import("@/views/system/dictManagement/index.vue"),
+                meta: {
+                    title: "字典管理"
+                }
             }
         ],
     },

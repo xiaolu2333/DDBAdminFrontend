@@ -1,7 +1,7 @@
 <template>
   <div v-if="msg.show">
     <span class="rotate">
-      <img src="src/assets/images/loading.jpg" alt="加载中">
+<!--      <img src="src/assets/images/loading.jpg" alt="加载中">-->
     </span>
   </div>
 </template>
