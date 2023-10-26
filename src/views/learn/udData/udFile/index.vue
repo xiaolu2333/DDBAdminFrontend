@@ -319,24 +319,35 @@ function DownloadFileStream() {
   DownloadFileByStream()
       .then((response) => {
         console.log(response);
-        // 获取文件名
-        let fileNameEncode = response.headers['content-disposition'].split("filename=")[1];
-        // 解码
-        let fileName = decodeURIComponent(fileNameEncode)
-        // 指定文件类型
-        const fileType = getContentType(fileName.split('.')[1])
-        let blob = new Blob([response.data], {
-          type: fileType
-        })
 
-        let link = document.createElement('a')
-        link.href = window.URL.createObjectURL(blob)
-        link.download = fileName
-        link.click()
-        // 释放内存
-        window.URL.revokeObjectURL(link.href)
+        if (response.data.type === 'application/json') {
+          // 获取 response.data 中的具体内容
+          const reader = new FileReader()
+          reader.readAsText(response.data)
+          reader.onload = () => {
+            const res = JSON.parse(reader.result)
+            ElMessage.error(res.msg)
+          }
+        } else if (response.data.type === 'application/octet-stream') {
+          // 获取文件名
+          let fileNameEncode = response.headers['content-disposition'].split("filename=")[1];
+          // 解码
+          let fileName = decodeURIComponent(fileNameEncode)
+          // 指定文件类型
+          const fileType = getContentType(fileName.split('.')[1])
+          let blob = new Blob([response.data], {
+            type: fileType
+          })
 
-        ElMessage.success("下载成功")
+          let link = document.createElement('a')
+          link.href = window.URL.createObjectURL(blob)
+          link.download = fileName
+          link.click()
+          // 释放内存
+          window.URL.revokeObjectURL(link.href)
+
+          ElMessage.success("下载成功")
+        }
       })
 }
 

@@ -297,13 +297,13 @@ const routes = [
                         children: []
                     },
                     {
-                        name:"headerEditableTable",
-                        path:"/learning/element-plus/headerEditableTable",
-                        component:()=>import("@/views/learn/element-plus/headerEditableTable/index.vue"),
-                        meta:{
-                            title:"表头可编辑表格"
+                        name: "headerEditableTable",
+                        path: "/learning/element-plus/headerEditableTable",
+                        component: () => import("@/views/learn/element-plus/headerEditableTable/index.vue"),
+                        meta: {
+                            title: "表头可编辑表格"
                         },
-                        children:[]
+                        children: []
                     },
                     {
                         name: 'dynamicTabs',
@@ -359,6 +359,15 @@ const routes = [
                         children: []
                     },
                     {
+                        name: "sortInVXETable",
+                        path: "/learning/vxe-table/sortInVXETable",
+                        component: () => import("@/views/learn/vxe-table/sortInVXETable/index.vue"),
+                        meta: {
+                            title: "VXETable排序",
+                        },
+                        children: []
+                    },
+                    {
                         name: "pagination",
                         path: "/learning/vxe-table/pagination",
                         component: () => import("@/views/learn/vxe-table/pagination/index.vue"),
@@ -394,6 +403,15 @@ const routes = [
                         },
                         children: []
                     },
+                    {
+                        name: "useGrid1",
+                        path: "/learning/vxe-table/useGrid1",
+                        component: () => import("@/views/learn/vxe-table/useGrid1/index.vue"),
+                        meta: {
+                            title: "使用Grid1",
+                        },
+                        children: []
+                    }
                 ]
             },
             {
@@ -638,6 +656,74 @@ const routes = [
                     }
                 ]
             }
+        ]
+    },
+
+    {
+        path: "/visual",
+        name: "visual",
+        meta: {
+            title: "visual",
+        },
+        component: () => import("@/layout/index.vue"),
+        children: [
+            {
+                path: "/visual/AircraftPage",
+                name: "AircraftPage",
+                component: () => import("@/views/visual/AircraftPage/index.vue"),
+                meta: {
+                    title: "飞机",
+                },
+                children: [
+                    {
+                        path: "/visual/AircraftPage/aircraftPage",
+                        name: "aircraftPage",
+                        component: () => import("@/views/visual/AircraftPage/index.vue"),
+                        meta: {
+                            title: "飞机",
+                        },
+                        children: []
+                    },
+                ]
+            },
+            {
+                path: "/visual/MissilePage",
+                name: "MissilePage",
+                component: () => import("@/views/visual/MissilePage/index.vue"),
+                meta: {
+                    title: "导弹",
+                },
+                children: [
+                    {
+                        path: "/visual/MissilePage/missilePage",
+                        name: "missilePage",
+                        component: () => import("@/views/visual/MissilePage/index.vue"),
+                        meta: {
+                            title: "导弹",
+                        },
+                        children: []
+                    },
+                ]
+            },
+            {
+                path: "/visual/StatisticsPage",
+                name: "StatisticsPage",
+                component: () => import("@/views/visual/StatisticsPage/index.vue"),
+                meta: {
+                    title: "导弹",
+                },
+                children: [
+                    {
+                        path: "/visual/StatisticsPage/statisticsPage",
+                        name: "missilePage",
+                        component: () => import("@/views/visual/StatisticsPage/index.vue"),
+                        meta: {
+                            title: "统计",
+                        },
+                        children: []
+                    },
+                ]
+            },
         ]
     },
 ];

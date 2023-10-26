@@ -21,11 +21,24 @@ const {
   dataToGrandpa
 } = toRefs(state)
 
+/**
+ * 孙子调用爷爷的函数实现孙子向爷爷传值
+ */
 const sendDataToGrandpa = (data) => {
   dataToGrandpa.value = data
   getDataFromGrandson(dataToGrandpa.value)
 }
 
+const sendDataToGrandpa2 = () => {
+  return '我叫你爷爷你敢答应吗？'
+}
+
+/**
+ * 孙子函数暴露给爷爷
+ */
+defineExpose({
+  sendDataToGrandpa2
+})
 </script>
 
 <style scoped>

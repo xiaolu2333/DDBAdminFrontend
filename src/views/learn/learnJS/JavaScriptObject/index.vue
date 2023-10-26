@@ -44,7 +44,48 @@
     </el-row>
   </el-card>
 
+  <el-card>
+    <template #header>
+      对象深拷贝与浅拷贝
+    </template>
+    <el-row :gutter="20">
+      <el-col :span="8">
+        <el-card>
+          <div>
+            直接赋值：
+            <p>myObj:</p>
+            <pre><code class="language-javascript">
+const myObj = {
+  name: 'Adam Yets',
+  gender: 'male',
+  age: 28,
+  address: null
+}
+          </code></pre>
+            <p>接下来赋值给testObj，并执行testObj.nage=null</p>
+            <el-button type="success" @click="directAssignment">开始</el-button>
+            <p>testObj:</p>
+            <pre><code class="language-javascript">
+{{ testObj }}
+          </code></pre>
+            <div v-show="showResultOfDirectAssignment">
+              <p>myObj:</p>
+              <pre><code class="language-javascript">
+{{ myObj }}
+          </code></pre>
+            </div>
+          </div>
+        </el-card>
 
+      </el-col>
+      <el-col :span="8">
+        <el-card></el-card>
+      </el-col>
+      <el-col :span="8">
+        <el-card></el-card>
+      </el-col>
+    </el-row>
+  </el-card>
 </template>
 
 <script setup>
@@ -54,7 +95,7 @@ import {onMounted, reactive, ref, toRefs} from "vue";
 let objOne = {
   name: '张三',
   age: 7,
-  sex: '男',
+  // sex: '男',
   grade: 1,
   // 是否是班长
   isMonitor: true
@@ -78,7 +119,7 @@ const {
   objTwo
 } = toRefs(state)
 
-/****************************************************************************************/
+/*************************************** 对象更新 *********************************************/
 // 通过一个对象来更新另一个对象
 function updateObjOne() {
   console.log(objOne)
@@ -102,7 +143,7 @@ function updateObjOne() {
   console.log('objOne:', objOne)
 }
 
-/****************************************************************************************/
+/*************************************** 对象比较 *********************************************/
 // 保存属性值相同的属性名
 let objKeysSame = ref([])
 // 保存属性值不相同的属性名
@@ -335,7 +376,6 @@ function checkObject() {
   console.log('objKeysDiff:', objKeysDiff.value)
 }
 
-
 // 获取
 function diffProps(oldObj, newObj) {
 
@@ -349,12 +389,61 @@ function diffProps(oldObj, newObj) {
   }).map(key => {
     return {
       key,
-      owner: keys1.includes(key) ? 'oldObj' : 'newObj'
+      oldObj: oldObj[key],
+      newObj: newObj[key],
     };
   });
 }
 
 console.log(diffProps(objOne, objThree));
+
+
+/*************************************** 对象深拷贝与浅拷贝 *********************************************/
+// 一个JavaScript对象
+const myObj = reactive({
+  name: 'Adam Yets',
+  gender: 'male',
+  age: 28,
+  address: null
+})
+let testObj = reactive({})
+const showResultOfDirectAssignment = ref(false)
+
+// 直接赋值
+const directAssignment = () => {
+  // // 直接赋值
+  // testObj = myObj
+  // testObj.age = null
+  // console.log('testObj:', testObj)  // -> test.age = null
+  // console.log('myObj:', myObj)      // -> myObj.age = null
+  // showResultOfDirectAssignment.value = true
+
+  let article = {
+    title: 'test title',
+    tags: ['js', 'css', 'html'],
+    comments: [
+      {
+        from: 'Adam Yets',
+        content: 'test content',
+        date: new Date()
+      },
+      {
+        from: 'Tadej Pogacar',
+        content: 'test content',
+        date: '2021-08-01 12:00:00'
+      }
+    ]
+  }
+
+  let test = JSON.parse(JSON.stringify(article))
+  test.title = null
+  test.tags.push('vue')
+  test.comments[0].from = 'Jonas Vingegaard'
+  console.log('test:', test)
+  console.log('article:', article)
+}
+
+
 
 onMounted(() => {
 })
