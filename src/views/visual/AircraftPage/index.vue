@@ -152,22 +152,59 @@ function initChartOne() {
   let option;
 
   option = {
+    // 标题
+    title: {
+      text: "AAAA",
+      // 以下两项设置标题位置
+      left: 'center',
+      top: 'bottom'
+    },
+
+    // 提示框组件
+    tooltip: {
+      // 显示提示框组件
+      show: true,
+      // 触发类型: axis-坐标轴触发
+      trigger: 'axis'
+    },
+
+    // 图例组件
+    legend: {
+      data: ['数值']
+    },
+
+    // 横坐标配置
     xAxis: {
+      // 坐标轴类型: category-类目轴
       type: 'category',
-      data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+      name: '时间',
+      data: ['12:02:21', '12:02:22', '12:02:23', '12:02:24', '12:02:25', '12:02:26', '12:02:27', '12:02:28', '12:02:29', '12:02:30', '12:02:31', '12:02:32']
     },
+
+    // 纵坐标配置
     yAxis: {
-      type: 'value'
+      // 坐标轴类型: value-数值轴
+      type: 'value',
+      name: '数值'
     },
+
     series: [
       {
+        // Y轴数据
         data: state.ordinaryData,
+        // 线条类型: line-折线图
         type: 'line',
-        smooth: true
+        // 平滑曲线
+        smooth: true,
+        // 线条颜色
+        itemStyle: {
+          color: '#FF0000'
+        }
       }
     ]
   };
 
+  // 使用刚指定的配置项和数据显示图表。
   option && chartOne.setOption(option);
 }
 
@@ -178,18 +215,50 @@ function initChartTwo() {
   let option;
 
   option = {
+    // 标题
+    title: {
+      text: "AAAA",
+      // 以下两项设置标题位置
+      left: 'center',
+      top: 'bottom'
+    },
+
+    // 提示框组件
+    tooltip: {
+      // 显示提示框组件
+      show: true,
+      // 触发类型: axis-坐标轴触发
+      trigger: 'axis'
+    },
+
+    // 图例组件
+    legend: {
+      data: ['数值']
+    },
+
+    // 横坐标配置
     xAxis: {
+      // 坐标轴类型: category-类目轴
       type: 'category',
-      data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+      name: '时间',
+      data: ['12:02:21', '12:02:22', '12:02:23', '12:02:24', '12:02:25', '12:02:26', '12:02:27', '12:02:28', '12:02:29', '12:02:30', '12:02:31', '12:02:32']
     },
+
+    // 纵坐标配置
     yAxis: {
-      type: 'value'
+      // 坐标轴类型: value-数值轴
+      type: 'value',
+      name: '数值'
     },
+
     series: [
       {
+        // Y轴数据
         data: state.ordinaryData,
+        // 线条类型: line-折线图
         type: 'line',
-        smooth: true
+        // 平滑曲线
+        smooth: true,
       }
     ]
   };
@@ -204,18 +273,50 @@ function initChartThree() {
   let option;
 
   option = {
+    // 标题
+    title: {
+      text: "AAAA",
+      // 以下两项设置标题位置
+      left: 'center',
+      top: 'bottom'
+    },
+
+    // 提示框组件
+    tooltip: {
+      // 显示提示框组件
+      show: true,
+      // 触发类型: axis-坐标轴触发
+      trigger: 'axis'
+    },
+
+    // 图例组件
+    legend: {
+      data: ['数值']
+    },
+
+    // 横坐标配置
     xAxis: {
+      // 坐标轴类型: category-类目轴
       type: 'category',
-      data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+      name: '时间',
+      data: ['12:02:21', '12:02:22', '12:02:23', '12:02:24', '12:02:25', '12:02:26', '12:02:27', '12:02:28', '12:02:29', '12:02:30', '12:02:31', '12:02:32']
     },
+
+    // 纵坐标配置
     yAxis: {
-      type: 'value'
+      // 坐标轴类型: value-数值轴
+      type: 'value',
+      name: '数值'
     },
+
     series: [
       {
+        // Y轴数据
         data: state.ordinaryData,
+        // 线条类型: line-折线图
         type: 'line',
-        smooth: true
+        // 平滑曲线
+        smooth: true,
       }
     ]
   };
@@ -230,18 +331,50 @@ function initChartFore() {
   let option;
 
   option = {
+    // 标题
+    title: {
+      text: "AAAA",
+      // 以下两项设置标题位置
+      left: 'center',
+      top: 'bottom'
+    },
+
+    // 提示框组件
+    tooltip: {
+      // 显示提示框组件
+      show: true,
+      // 触发类型: axis-坐标轴触发
+      trigger: 'axis'
+    },
+
+    // 图例组件
+    legend: {
+      data: ['数值']
+    },
+
+    // 横坐标配置
     xAxis: {
+      // 坐标轴类型: category-类目轴
       type: 'category',
-      data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+      name: '时间',
+      data: ['12:02:21', '12:02:22', '12:02:23', '12:02:24', '12:02:25', '12:02:26', '12:02:27', '12:02:28', '12:02:29', '12:02:30', '12:02:31', '12:02:32']
     },
+
+    // 纵坐标配置
     yAxis: {
-      type: 'value'
+      // 坐标轴类型: value-数值轴
+      type: 'value',
+      name: '数值'
     },
+
     series: [
       {
+        // Y轴数据
         data: state.ordinaryData,
+        // 线条类型: line-折线图
         type: 'line',
-        smooth: true
+        // 平滑曲线
+        smooth: true,
       }
     ]
   };
@@ -255,7 +388,8 @@ const onSubmit = () => {
 }
 
 async function init() {
-  state.ordinaryData = [13, 25, 33, 45, 67, 89, 100, 120, 130, 140, 150, 160];
+  // 十二个随机数字
+  state.ordinaryData = [502, 274, 236, 455, 67, 89, 563, 75, 130, 140, 150, 160];
   initCharts();
   initChartTwo();
   initChartThree();
