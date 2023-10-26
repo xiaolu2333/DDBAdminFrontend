@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .container {
+            display: flex;
+            height: 90vh;
+            flex-wrap: wrap; /* 允许项目在需要时换行 */
+        }
+
+        .item {
+            flex: 1 0 200px; /* 项目的基础属性，1为伸展比例，0为不允许缩小，200px为基础宽度 */
+            margin: 10px;
+            background-color: #ccc;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="item">1</div>
+    <div class="item">2</div>
+    <div class="item">3</div>
+</div>
+</body>
+</html>

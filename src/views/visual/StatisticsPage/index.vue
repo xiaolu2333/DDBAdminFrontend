@@ -8,9 +8,8 @@
 
 
 <script lang="ts" setup>
-import {ref, reactive, toRefs, onMounted} from "vue";
+import {ref, reactive, toRefs, onMounted, onUnmounted} from "vue";
 import * as echarts from "echarts";
-
 
 const state = reactive({
   // 一般折线图数据
@@ -22,10 +21,10 @@ const {
 } = toRefs(state)
 
 /*************************************** 事件 ***************************************/
-const handleTeamChange = (val: number) => {
-  console.log('val:', val)
+// 重新渲染页面
+const handleResize = () => {
+  location.reload();
 }
-
 
 // 一般折线图
 function initChartOne() {
@@ -86,7 +85,6 @@ function initChartOne() {
   option && chartOne.setOption(option);
 }
 
-
 async function init() {
   // Y轴数据
   state.ordinaryData = [13, 25, 33, 45, 67, 89, 100, 120, 130, 140, 150, 160];
@@ -100,16 +98,19 @@ function initCharts() {
 
 onMounted(() => {
   init();
+  // 监听窗口大小变化
+  window.addEventListener('resize', handleResize);
+});
+onUnmounted(() => {
+  // 移除监听
+  window.removeEventListener('resize', handleResize);
 });
 </script>
 
 <style scoped>
-
 .chart-div {
-  /*垂直居中*/
-  display: flex;
-  justify-content: center;
-  height: 400px;
+  width: 90%;
+  height: 80vh;
   margin: 0 auto;
 }
 </style>

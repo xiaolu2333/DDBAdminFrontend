@@ -78,7 +78,6 @@
   </div>
 </template>
 
-
 <script lang="ts" setup>
 import {ref, reactive, toRefs, onMounted} from "vue";
 import * as echarts from "echarts";
@@ -89,7 +88,7 @@ interface FormDataType {
   // 轮次
   round: number,
   // 绘制项目
-  drawItem: string
+  drawItem: number
 }
 
 const state = reactive({
@@ -120,13 +119,11 @@ const state = reactive({
   drawItemOptions: [
     {id: 1, label: '高度', value: 1},
     {id: 2, label: '速度', value: 2},
-    {id: 2, label: '偏转角', value: 2},
+    {id: 2, label: '偏转角', value: 3},
   ],
 
   // 一般折线图数据
   ordinaryData: [],
-  // 动态折线图数据
-  dynamicData: [],
 
   rules: [] as any
 })
