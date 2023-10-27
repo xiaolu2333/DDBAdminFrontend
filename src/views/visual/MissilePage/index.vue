@@ -4,10 +4,9 @@
       <el-card class="item">
         <el-form
             :model="formData"
-            :rules="rules"
         >
           <el-form-item label="仿真" label-width="100">
-            <el-select v-model="formData.emulation" placeholder="">
+            <el-select v-model="formData.emulation">
               <el-option
                   v-for="item in emulationOptions"
                   :key="item.id"
@@ -18,7 +17,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="轮次" label-width="100">
-            <el-select v-model="formData.round" placeholder="">
+            <el-select v-model="formData.round">
               <el-option
                   v-for="item in roundOptions"
                   :key="item.id"
@@ -31,12 +30,11 @@
           <el-form-item label="队伍" label-width="100">
             <el-radio-group
                 v-model="formData.team"
-                @change="handleTeamChange"
             >
               <el-radio
                   v-for="item in teamOptions"
                   :key="item.id"
-                  :label="item.value"
+                  :label="item.label"
                   :value="item.value"
               >
                 {{ item.label }}
@@ -44,7 +42,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="导弹编号" label-width="100">
-            <el-select v-model="formData.missileCode" placeholder="">
+            <el-select v-model="formData.missileCode">
               <el-option
                   v-for="item in missileCodeOptions"
                   :key="item.id"
@@ -57,7 +55,6 @@
           <el-form-item label="绘制项" label-width="100">
             <el-select
                 v-model="formData.drawItem"
-                @change="handleDrawItemChange"
             >
               <el-option
                   v-for="item in drawItemOptions"
@@ -85,7 +82,10 @@
 
 <script lang="ts" setup>
 import {ref, reactive, toRefs, onMounted, onUnmounted} from "vue";
+import {ElMessage} from 'element-plus'
 import * as echarts from "echarts";
+
+import {getMissileAllOptions, getMissileData} from '../../../api/visual/index.js'
 
 interface FormDataType {
   // 仿真
@@ -101,8 +101,10 @@ interface FormDataType {
 }
 
 const state = reactive({
-  // 容器节点
-  chartDom: null as unknown as HTMLElement,
+  // X轴时间数据
+  xAxisTimeData: [] as string[],
+  // Y轴项目数据
+  yAxisItemData: [] as any[],
 
   formData: {
     emulation: 1,
@@ -113,54 +115,23 @@ const state = reactive({
   } as FormDataType,
 
   // 仿真选项
-  emulationOptions: [
-    {id: 1, label: '1', value: 1},
-    {id: 2, label: '2', value: 2},
-    {id: 3, label: '3', value: 3},
-    {id: 4, label: '4', value: 4},
-  ],
-
+  emulationOptions: [] as any[],
   // 轮次选项
-  roundOptions: [
-    {id: 1, label: '1', value: 1},
-    {id: 2, label: '2', value: 2},
-    {id: 3, label: '3', value: 3},
-    {id: 4, label: '4', value: 4},
-  ],
-
+  roundOptions: [] as any[],
   // 队伍
   teamOptions: [
     {id: 1, label: '红方', value: 1},
     {id: 2, label: '蓝方', value: 2},
   ],
-
-  // 导弹编号
-  missileCodeOptions: [
-    {id: 1, label: '1', value: 1},
-    {id: 2, label: '2', value: 2},
-    {id: 3, label: '3', value: 3},
-    {id: 4, label: '4', value: 4},
-  ],
-
+  // 导弹编号选项
+  missileCodeOptions: [] as any[],
   // 绘制项目
-  drawItemOptions: [
-    {id: 1, label: '高度', value: 1},
-    {id: 2, label: '速度', value: 2},
-    {id: 2, label: '偏转角', value: 3},
-  ],
-
-  // 十二个随机的高度数据
-  heightData: [231, 673, 123, 456, 789, 321, 654, 987, 741, 852, 963, 147],
-  // 十二个随机的速度数据
-  speedData: [521, 90, 345, 678, 901, 234, 567, 890, 123, 456, 789, 321],
-  // 十二个随机的偏转角数据
-  angleData: ['+23', '-43', '+12', '+45', '-78', '+21', '+54', '-87', '+71', '+82', '-93', '+47'],
-
-  rules: [] as any
+  drawItemOptions: [] as any[],
 })
 
 const {
-  chartDom,
+  xAxisTimeData,
+  yAxisItemData,
 
   formData,
   emulationOptions,
@@ -168,33 +139,27 @@ const {
   teamOptions,
   missileCodeOptions,
   drawItemOptions,
-
-  heightData,
-  speedData,
-  angleData,
-
-  rules
 } = toRefs(state)
 
 /*************************************** 事件 ***************************************/
-const handleTeamChange = (val: string) => {
-  console.log('val:', val)
+const onSubmit = () => {
+  console.log('formData:', formData.value)
+  init()
 }
 
-const handleDrawItemChange = (val: number) => {
-  console.log('val:', val)
-  // 选项变化时，重新绘制图表
-  initCharts();
-}
 
-// 重新渲染页面
-const handleResize = () => {
-  location.reload();
-}
-
-// 一般折线图
-async function initChartOne() {
-  state.chartDom = document.getElementById("chart-1");
+/*************************************** 初始化 ***************************************/
+// 折线图
+async function initChart(
+    chartDom: HTMLElement,
+    title: string,
+    chartXData: any[],
+    chartYData: any[],
+    xAxisName: string,
+    yAxisName: string,
+) {
+  // 销毁之前的图表
+  echarts.init(chartDom).dispose();
   // 等待窗口大小初始化完成
   await new Promise<void>(resolve => {
     setTimeout(() => {
@@ -202,11 +167,11 @@ async function initChartOne() {
     }, 500)
   })
 
-  const chart = echarts.init(state.chartDom)
+  const chart = echarts.init(chartDom)
   const option = {
     // 标题
     title: {
-      text: "AAAA",
+      text: title,
       // 以下两项设置标题位置
       left: 'center',
       top: 'bottom'
@@ -214,7 +179,7 @@ async function initChartOne() {
 
     // 图例组件
     legend: {
-      data: ['数值']
+      data: [yAxisName]
     },
     // 提示框组件
     tooltip: {
@@ -228,25 +193,23 @@ async function initChartOne() {
     xAxis: {
       // 坐标轴类型: category-类目轴
       type: 'category',
-      name: '时间',
-      data: ['12:02:21', '12:02:22', '12:02:23', '12:02:24', '12:02:25', '12:02:26', '12:02:27', '12:02:28', '12:02:29', '12:02:30', '12:02:31', '12:02:32']
+      name: xAxisName,
+      data: chartXData
     },
 
     // 纵坐标配置
     yAxis: {
       // 坐标轴类型: value-数值轴
       type: 'value',
-      name: state.formData.drawItem === 1 ? '高度' : state.formData.drawItem === 2 ? '速度' : '偏转角'
+      name: yAxisName
     },
 
     series: [
       {
         // Y轴数据
-        data: state.formData.drawItem === 1 ? heightData.value : state.formData.drawItem === 2 ? speedData.value : angleData.value,
+        data: chartYData,
         // 线条类型: line-折线图
-        type: 'line',
-        // 平滑曲线
-        smooth: true,
+        type: 'line'
       }
     ]
   }
@@ -257,28 +220,120 @@ async function initChartOne() {
   })
 }
 
-const onSubmit = () => {
+// 获取选项数据
+function handleOptionsQuery() {
+  getMissileAllOptions().then(res => {
+    console.log('res:', res)
+    state.emulationOptions = []
+    state.roundOptions = []
+    state.missileCodeOptions = []
+    state.drawItemOptions = []
+    res.data.data.emulation.forEach((item: any) => {
+      state.emulationOptions.push({
+        id: item.id,
+        label: item.name,
+        value: item.id
+      })
+    })
+    res.data.data.round.forEach((item: any) => {
+      state.roundOptions.push({
+        id: item.id,
+        label: item.name,
+        value: item.id
+      })
+    })
+    res.data.data.missileCode.forEach((item: any) => {
+      state.missileCodeOptions.push({
+        id: item.id,
+        label: item.name,
+        value: item.id
+      })
+    })
+    res.data.data.drawItem.forEach((item: any) => {
+      state.drawItemOptions.push({
+        id: item.id,
+        label: item.name,
+        value: item.id
+      })
+    })
+  }).catch(err => {
+    ElMessage.error(err.msg)
+  })
+}
+
+// 获取图表数据
+function handleDataQuery() {
   console.log('formData:', formData.value)
+
+  // 获取图的数据
+  getMissileData(state.formData).then(res => {
+    console.log('res:', res)
+    state.xAxisTimeData = res.data.data.xData
+    state.yAxisItemData = res.data.data.yData
+  }).catch(err => {
+    ElMessage.error(err.msg)
+  })
 }
 
-async function init() {
-  // 获取数据
 
-  initCharts();
-}
+function init() {
+  // 获取选项数据
+  // handleOptionsQuery()
+  // 仿真选项
+  state.emulationOptions = [
+    {id: 1, label: '1', value: 1},
+    {id: 2, label: '2', value: 2},
+    {id: 3, label: '3', value: 3},
+    {id: 4, label: '4', value: 4},
+  ]
+  // 轮次选项
+  state.roundOptions = [
+    {id: 1, label: '1', value: 1},
+    {id: 2, label: '2', value: 2},
+    {id: 3, label: '3', value: 3},
+    {id: 4, label: '4', value: 4},
+  ]
+  // 导弹编号选项
+  state.missileCodeOptions = [
+    {id: 1, label: '1', value: 1},
+    {id: 2, label: '2', value: 2},
+    {id: 3, label: '3', value: 3},
+    {id: 4, label: '4', value: 4},
+  ]
+  // 绘制项目
+  state.drawItemOptions = [
+    {id: 1, label: '高度', value: 1},
+    {id: 2, label: '速度', value: 2},
+    {id: 2, label: '偏转角', value: 3},
+  ]
 
-// 初始化所有图表
-function initCharts() {
-  initChartOne();
+  // 获取图表数据
+  // handleDataQuery()
+  // 生成50个hh:mm:ss格式的时间
+  state.xAxisTimeData = []
+  for (let i = 0; i < 50; i++) {
+    state.xAxisTimeData.push(`${Math.floor(Math.random() * 24)}:${Math.floor(Math.random() * 60)}:${Math.floor(Math.random() * 60)}`)
+  }
+  // 随机生成50个整数
+  state.yAxisItemData = []
+  for (let i = 0; i < 50; i++) {
+    state.yAxisItemData.push(Math.floor(Math.random() * 1000))
+  }
+
+  initChart(
+      document.getElementById("chart-1"),
+      'AAAA',
+      state.xAxisTimeData,
+      state.yAxisItemData,
+      '时间',
+      state.formData.drawItem === 1 ? '高度' : state.formData.drawItem === 2 ? '速度' : '偏转角'
+  )
 }
 
 onMounted(() => {
   init();
 });
 onUnmounted(() => {
-  // 销毁容器
-  // state.chartDom?.dispose();
-  state.chartDom = null as unknown as HTMLElement;
   // 移除监听
   window.removeEventListener('resize', function () {
   });
