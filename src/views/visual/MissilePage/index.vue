@@ -101,6 +101,9 @@ interface FormDataType {
 }
 
 const state = reactive({
+  // 容器节点
+  chartDom: null as unknown as HTMLElement,
+
   formData: {
     emulation: 1,
     round: 1,
@@ -157,6 +160,8 @@ const state = reactive({
 })
 
 const {
+  chartDom,
+
   formData,
   emulationOptions,
   roundOptions,
@@ -188,13 +193,17 @@ const handleResize = () => {
 }
 
 // 一般折线图
-function initChartOne() {
-  let chartDom = document.getElementById("chart-1");
+async function initChartOne() {
+  state.chartDom = document.getElementById("chart-1");
+  // 等待窗口大小初始化完成
+  await new Promise<void>(resolve => {
+    setTimeout(() => {
+      resolve()
+    }, 500)
+  })
 
-  let chartOne = echarts.init(chartDom);
-  let option;
-
-  option = {
+  const chart = echarts.init(state.chartDom)
+  const option = {
     // 标题
     title: {
       text: "AAAA",
@@ -203,17 +212,16 @@ function initChartOne() {
       top: 'bottom'
     },
 
+    // 图例组件
+    legend: {
+      data: ['数值']
+    },
     // 提示框组件
     tooltip: {
       // 显示提示框组件
       show: true,
       // 触发类型: axis-坐标轴触发
       trigger: 'axis'
-    },
-
-    // 图例组件
-    legend: {
-      data: ['数值']
     },
 
     // 横坐标配置
@@ -241,9 +249,12 @@ function initChartOne() {
         smooth: true,
       }
     ]
-  };
+  }
 
-  option && chartOne.setOption(option);
+  chart.setOption(option)
+  window!.addEventListener('resize', () => {
+    chart.resize()
+  })
 }
 
 const onSubmit = () => {
@@ -263,12 +274,14 @@ function initCharts() {
 
 onMounted(() => {
   init();
-  // 监听窗口大小变化
-  window.addEventListener('resize', handleResize);
 });
 onUnmounted(() => {
+  // 销毁容器
+  // state.chartDom?.dispose();
+  state.chartDom = null as unknown as HTMLElement;
   // 移除监听
-  window.removeEventListener('resize', handleResize);
+  window.removeEventListener('resize', function () {
+  });
 });
 </script>
 
