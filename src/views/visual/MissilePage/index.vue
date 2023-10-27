@@ -11,7 +11,7 @@
                   v-for="item in emulationOptions"
                   :key="item.id"
                   :label="item.label"
-                  :value="item.value"
+                  :value="item.id"
               >
               </el-option>
             </el-select>
@@ -22,7 +22,7 @@
                   v-for="item in roundOptions"
                   :key="item.id"
                   :label="item.label"
-                  :value="item.value"
+                  :value="item.id"
               >
               </el-option>
             </el-select>
@@ -30,6 +30,7 @@
           <el-form-item label="队伍" label-width="100">
             <el-radio-group
                 v-model="formData.team"
+                @change="handleTeamChang"
             >
               <el-radio
                   v-for="item in teamOptions"
@@ -47,7 +48,7 @@
                   v-for="item in missileCodeOptions"
                   :key="item.id"
                   :label="item.label"
-                  :value="item.value"
+                  :value="item.id"
               >
               </el-option>
             </el-select>
@@ -60,7 +61,7 @@
                   v-for="item in drawItemOptions"
                   :key="item.id"
                   :label="item.label"
-                  :value="item.value"
+                  :value="item.id"
               >
               </el-option>
             </el-select>
@@ -81,11 +82,15 @@
 
 
 <script lang="ts" setup>
-import {ref, reactive, toRefs, onMounted, onUnmounted} from "vue";
+import {reactive, toRefs, onMounted} from "vue";
 import {ElMessage} from 'element-plus'
 import * as echarts from "echarts";
 
 import {getMissileAllOptions, getMissileData} from '../../../api/visual/index.js'
+
+const handleTeamChang = (val) => {
+  console.log('val:', val)
+}
 
 interface FormDataType {
   // 仿真
@@ -95,7 +100,7 @@ interface FormDataType {
   // 队伍
   team: number,
   // 导弹编号
-  missileCode: string,
+  missileCode: number,
   // 绘制项目
   drawItem: number
 }
@@ -158,8 +163,6 @@ async function initChart(
     xAxisName: string,
     yAxisName: string,
 ) {
-  // 销毁之前的图表
-  echarts.init(chartDom).dispose();
   // 等待窗口大小初始化完成
   await new Promise<void>(resolve => {
     setTimeout(() => {
@@ -293,6 +296,11 @@ function init() {
     {id: 3, label: '3', value: 3},
     {id: 4, label: '4', value: 4},
   ]
+  // 队伍
+  state.teamOptions = [
+    {id: 1, label: '红方', value: 1},
+    {id: 2, label: '蓝方', value: 2}
+  ]
   // 导弹编号选项
   state.missileCodeOptions = [
     {id: 1, label: '1', value: 1},
@@ -332,11 +340,6 @@ function init() {
 
 onMounted(() => {
   init();
-});
-onUnmounted(() => {
-  // 移除监听
-  window.removeEventListener('resize', function () {
-  });
 });
 </script>
 

@@ -43,7 +43,7 @@ const refresh = () => {
 /*************************************** 初始化 ***************************************/
 // 柱状图
 async function initChart(
-    chartDom: HTMLElement,
+    chartDom: HTMLElement | null,
     title: string,
     chartXData: any[],
     chartYRedData: any[],
@@ -190,11 +190,6 @@ function init() {
 
 onMounted(() => {
   init();
-});
-onUnmounted(() => {
-  // 移除监听
-  window.removeEventListener('resize', function () {
-  });
 });
 </script>
 

@@ -140,6 +140,11 @@ const {
 /*************************************** 事件 ***************************************/
 const onSubmit = () => {
   console.log('formData:', formData.value)
+
+  echarts.init(document.getElementById("chart-1")).dispose()
+  echarts.init(document.getElementById("chart-2")).dispose()
+  echarts.init(document.getElementById("chart-3")).dispose()
+  echarts.init(document.getElementById("chart-4")).dispose()
   init()
 }
 
@@ -201,8 +206,6 @@ async function initChart(
     xAxisName: string,
     yAxisName: string,
 ) {
-  // 销毁之前的图表
-  echarts.init(chartDom).dispose();
   // 等待窗口大小初始化完成
   await new Promise<void>(resolve => {
     setTimeout(() => {
