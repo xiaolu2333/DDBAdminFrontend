@@ -98,7 +98,7 @@ interface FormDataType {
   // 轮次
   round: number,
   // 队伍
-  team: number,
+  team: string,
   // 导弹编号
   missileCode: number,
   // 绘制项目
@@ -114,7 +114,7 @@ const state = reactive({
   formData: {
     emulation: 1,
     round: 1,
-    team: 1,
+    team: '红方',
     missileCode: 1,
     drawItem: 1,
   } as FormDataType,
