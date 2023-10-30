@@ -432,7 +432,6 @@ function init() {
   }, false);
 
   // Next, events intended for the drop target - the Diagram div
-
   const div = document.getElementById("myDiagramDiv");
 
   div.addEventListener("dragenter", event => {
@@ -578,11 +577,11 @@ function init() {
   let $ = go.GraphObject.make;
 
   /**
-   * 定义画布
+   * 1，定义画布
    */
   myDiagram =
       $(go.Diagram,
-          "myDiagramDiv",                                 // 画布元素
+          "myDiagramDiv",                                 // 挂载画布的元素
           {                                               // 画布属性
             validCycle: go.Diagram.CycleNotDirected,        // don't allow loops
             allowDelete: false,                             // 禁止删除
@@ -592,7 +591,7 @@ function init() {
           });
 
   /**
-   * 定义节点field模板
+   * 2，定义节点field模板
    */
   let fieldTemplate =
       $(go.Panel,
@@ -649,7 +648,7 @@ function init() {
       );
 
   /**
-   * 定义节点模板
+   * 3，定义节点模板
    */
   myDiagram.nodeTemplate =
       $(go.Node, "Auto",
@@ -814,7 +813,7 @@ function init() {
       );
 
   /**
-   * 定义连线模板
+   * 4，定义连线模板
    */
   myDiagram.linkTemplate =
       $(go.Link,
@@ -830,7 +829,7 @@ function init() {
       );
 
   /**
-   * 定义模型
+   *,4，定义模型
    */
   myDiagram.model =
       $(go.GraphLinksModel,
@@ -1003,15 +1002,6 @@ function deleteLink(nodeKey) {
 
 /*********************************** 背景右键菜单回调函数 ***********************************/
 /**
- * 修改布局
- * @param e
- * @param obj
- */
-function reLayout(e, obj) {
-  // console.log('reLayout')
-}
-
-/**
  * 新增节点
  * @param e
  * @param obj
@@ -1151,14 +1141,11 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.drg-btn {
-  z-index: 10000 !important;
-}
 
 #myDiagramDiv {
   background-color: #F8F8F8;
   border: 1px solid #aaa;
-  height: 600px;
+  height: 70vh;
   position: relative;
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   cursor: auto;
