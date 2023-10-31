@@ -225,6 +225,7 @@ const routes = [
         ]
     },
 
+    // 学习
     {
         path: "/learning",
         name: "Learning",
@@ -652,6 +653,32 @@ const routes = [
                         component: () => import("@/views/learn/business/btnControlByMultiFactor/index.vue"),
                         meta: {
                             title: "多因素控制",
+                        }
+                    }
+                ]
+            },
+            {
+                name: "GoJS",
+                path: "/learning/GoJS",
+                component: () => import("@/views/learn/GoJS/index.vue"),
+                meta: {
+                    title: "GoJS",
+                },
+                children: [
+                    {
+                        name: "useGoJS",
+                        path: "/learning/GoJS/useGoJS",
+                        component: () => import("@/views/learn/GoJS/basicConcepts/index.vue"),
+                        meta: {
+                            title: "基础概念",
+                        }
+                    },
+                    {
+                        name: "example1",
+                        path: "/learning/GoJS/example1",
+                        component: () => import("@/views/learn/GoJS/example1/index.vue"),
+                        meta: {
+                            title: "示例1-数据库ERD",
                         }
                     }
                 ]
