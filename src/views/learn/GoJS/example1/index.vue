@@ -10,6 +10,21 @@
             <el-card>
               <div class="add-foreign-key">
                 添加外键关系：
+                <br/>
+                <el-radio-group
+                    v-model="fkType"
+                    @change="handleFkTypeChange"
+                >
+                  <el-radio
+                      v-for="(item,index) in fkTypeOptions"
+                      :key="index"
+                      :label="item.label"
+                      :value="item.value"
+                  >
+                    {{ item.label }}
+                  </el-radio>
+                </el-radio-group>
+                <br/>
                 <el-cascader
                     v-model="cfkFromEntry"
                     :options="cFieldOptions"
@@ -23,9 +38,12 @@
                     placeholder="To"
                 />
                 <el-button type="primary" @click="addFKRelationship">确认</el-button>
+                <el-button type="primary" @click="getFKRelationship">获取数据关系</el-button>
               </div>
+              <br/>
               <div class="delete-foreign-key">
                 删除外键关系：
+                <br/>
                 <el-cascader
                     v-model="dfkFromEntry"
                     :options="dFieldOptions"
@@ -39,6 +57,7 @@
                     placeholder="To"
                 />
                 <el-button type="primary" @click="deleteFKRelationship">确认</el-button>
+                <el-button type="primary" @click="getFKRelationship">获取数据关系</el-button>
               </div>
             </el-card>
             <el-card>
@@ -154,9 +173,16 @@
 
 <script setup>
 import {onMounted, reactive, toRefs, ref} from 'vue'
-import {vDraggable} from '@neodrag/vue';
 
 import {GetERDData, GetTreeData} from '@/api/dataService/ERD.js'
+import {ElMessage, ElMessageBox} from "element-plus";
+
+
+// 外键类型选项
+const fkTypeOptions = [
+  {label: "1M", value: "1M"},
+  {label: "MM", value: "MM"},
+]
 
 const state = reactive({
   isComplete: true,
@@ -196,6 +222,7 @@ const state = reactive({
   // 删除外键关系时的下拉框选项
   dFieldOptions: [],
   // 添加外键关系
+  fkType: "1M",
   cfkFromEntry: "",
   cfkToEntry: "",
   // 删除外键关系
@@ -244,6 +271,7 @@ const {
 
   cFieldOptions,
   dFieldOptions,
+  fkType,
   cfkFromEntry,
   cfkToEntry,
   dfkFromEntry,
@@ -298,15 +326,39 @@ const handleNodeDragStart = (data, event) => {
 }
 
 /**************************** 按钮事件 ******************************/
+// 外键类型变更事件
+const handleFkTypeChange = (val) => {
+  console.log('fkType:', val)
+  state.fkType = val
+  state.cfkFromEntry = ""
+  state.cfkToEntry = ""
+}
+
 // 添加外键关系
 const addFKRelationship = () => {
   // console.log('from:', cfkFromEntry.value)
   // console.log('to:', cfkToEntry.value)
+
+  let fromText = ''
+  let toText = ''
+
+  if (fkType.value === '1M') {
+    fromText = '1'
+    toText = 'M'
+  } else if (fkType.value === 'MM') {
+    toText = 'M'
+    fromText = 'M'
+  }
+
   let temp = {
-    from: cfkFromEntry.value[0],
+    fromSchema: cfkFromEntry.value[0].split('.')[0],
+    from: cfkFromEntry.value[0].split('.')[1],
     fromPort: cfkFromEntry.value[1],
-    to: cfkToEntry.value[0],
+    fromText: fromText,
+    toSchema: cfkToEntry.value[0].split('.')[0],
+    to: cfkToEntry.value[0].split('.')[1],
     toPort: cfkToEntry.value[1],
+    toText: toText,
   }
   // linkDataList.value.push(temp)
 
@@ -331,12 +383,27 @@ const deleteFKRelationship = () => {
   })
   console.log('index:', index)
   if (index === -1) {
-    console.log('未找到该外键关系')
+    ElMessage.error('未找到该外键关系')
   } else {
     myDiagram.model.removeLinkData(linkDataList.value[index])
     linkDataList.value.splice(index, 1)
     console.log('删除后：', linkDataList.value)
   }
+}
+
+// 获取外键关系
+const getFKRelationship = () => {
+  console.log('linkDataList.value:', linkDataList.value)
+
+  let relationship = []
+  linkDataList.value.forEach(item => {
+    relationship.push({
+      from: item.from + "." + item.fromPort,
+      foreignKeyType: state.fkType,
+      to: item.to + "." + item.toPort,
+    })
+  })
+  console.log('relationship:', relationship)
 }
 
 
@@ -895,7 +962,6 @@ function init() {
    * 添加背景单击事件，清空选中对象信息
    */
   myDiagram.addDiagramListener("BackgroundSingleClicked", function (e, obj) {
-    console.log('点击了背景')
     // 清空选中对象信息
     state.clickedNode = undefined
     state.clickedLink = undefined
@@ -904,7 +970,6 @@ function init() {
    * 添加背景单击事件，清空选中对象信息
    */
   myDiagram.addDiagramListener("BackgroundDoubleClicked", function (e, obj) {
-    console.log('点击了背景')
     // 清空选中对象信息
     state.clickedNode = undefined
     state.clickedLink = undefined
@@ -933,7 +998,6 @@ function init() {
               $(go.TextBlock, {margin: 3, textAlign: "left", font: "bold 10pt sans-serif"}, "创建新节点"),
               {click: newNode})
       );
-
 }
 
 
@@ -1133,8 +1197,8 @@ onMounted(() => {
 
     state.cFieldOptions = res.data.data.nodeDataArray.map(item => {
       return {
-        value: item.key,
-        label: item.key,
+        value: item.schema + "." + item.key,
+        label: item.schema + "." + item.key,
         children: item.fields.map(field => {
           return {
             value: field.name,
