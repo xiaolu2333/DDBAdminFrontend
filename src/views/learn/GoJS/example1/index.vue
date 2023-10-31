@@ -114,7 +114,14 @@
       <el-button type="info" :disabled="!clickedNode">1M</el-button>
       <el-button type="info" :disabled="!clickedNode">MM</el-button>
       <el-button type="danger" :disabled="!clickedNode">删除</el-button>
-      <el-button type="primary">数据融合</el-button>
+      <el-button type="primary" @click="handleDataMerge1">左连接数据融合</el-button>
+      <el-button type="primary" @click="handleDataMerge2">右连接数据融合</el-button>
+      <el-button type="primary" @click="handleDataMerge3">内连接数据融合</el-button>
+      <el-button type="primary" @click="handleDataMerge4">外连接数据融合</el-button>
+      <el-button type="primary" @click="handleDataMerge5">多表横向数据融合</el-button>
+      <el-button type="primary" @click="handleDataMerge6">多表纵向数据融合</el-button>
+
+      <el-button type="primary">生成SQL</el-button>
     </div>
     <br>
 
@@ -431,6 +438,59 @@ function isMouseUpInRect(elClassName) {
   let x = state.mouseUpPosition.x;
   let y = state.mouseUpPosition.y;
   return x >= axis.left && x <= axis.left + axis.width && y >= axis.top && y <= axis.top + axis.height;
+}
+
+/**
+ * 数据融合1——左连接
+ */
+const handleDataMerge1 = () => {
+  // 获取左表和右表的数据
+  let leftTableObj = {
+    schema: 'A',
+    table: 'table1',
+    joinField: 'id'
+  }
+  let rightTableObj = {
+    schema: 'B',
+    table: 'table2',
+    joinField: 'id'
+  }
+
+}
+
+/**
+ * 数据融合2——右连接
+ */
+const handleDataMerge2 = () => {
+
+}
+
+/**
+ * 数据融合3——内连接
+ */
+const handleDataMerge3 = () => {
+
+}
+
+/**
+ * 数据融合4——外连接
+ */
+const handleDataMerge4 = () => {
+
+}
+
+/**
+ * 数据融合5——多表横向数据融合
+ */
+const handleDataMerge5 = () => {
+
+}
+
+/**
+ * 数据融合6——多表纵向数据融合
+ */
+const handleDataMerge6 = () => {
+
 }
 
 /***************************** 选择器事件 ******************************/

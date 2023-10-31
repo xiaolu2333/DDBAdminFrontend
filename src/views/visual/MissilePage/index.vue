@@ -312,7 +312,7 @@ function init() {
   state.drawItemOptions = [
     {id: 1, label: '高度', value: 1},
     {id: 2, label: '速度', value: 2},
-    {id: 2, label: '偏转角', value: 3},
+    {id: 3, label: '偏转角', value: 3},
   ]
 
   // 获取图表数据

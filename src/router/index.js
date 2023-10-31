@@ -737,7 +737,7 @@ const routes = [
                 name: "StatisticsPage",
                 component: () => import("@/views/visual/StatisticsPage/index.vue"),
                 meta: {
-                    title: "导弹",
+                    title: "统计数据",
                 },
                 children: [
                     {
