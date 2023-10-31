@@ -650,7 +650,18 @@ function init() {
    */
   myDiagram.nodeTemplate =
       $(go.Node, "Auto",
-          {copyable: false, deletable: false},
+          {
+            copyable: false,
+            deletable: false,
+            // 鼠标移入
+            mouseEnter: function (e, node) {
+              node.isSelected = true
+            },
+            // 鼠标移出
+            mouseLeave: function (e, node) {
+              if (!state.clickedNode) node.isSelected = false
+            },
+          },
           new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
           $(go.Shape,           // 节点形状属性
               {
@@ -773,6 +784,15 @@ function init() {
             fromShortLength: 2,            // 出连线端点距离节点距离
             selectionAdorned: true,       // 连线选中时显示装饰
             reshapable: true,             // 连线可改变形状
+
+            // 鼠标移入
+            mouseEnter: function (e, link) {
+              link.isSelected = true
+            },
+            // 鼠标移出
+            mouseLeave: function (e, link) {
+              if (!state.clickedLink) link.isSelected = false
+            },
           },
           $(go.Shape, {strokeWidth: 1.5}),  // 连线形状属性
           $(go.Shape, {toArrow: "Standard", stroke: null}),  // 连线箭头属性
