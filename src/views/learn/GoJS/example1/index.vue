@@ -770,7 +770,9 @@ function init() {
             corner: 5,                    // 连线拐角弧度
             curve: go.Link.JumpOver,      // 连线绕过节点
             toShortLength: 6,             // 入连线端点距离节点距离
-            fromShortLength: 2            // 出连线端点距离节点距离
+            fromShortLength: 2,            // 出连线端点距离节点距离
+            selectionAdorned: true,       // 连线选中时显示装饰
+            reshapable: true,             // 连线可改变形状
           },
           $(go.Shape, {strokeWidth: 1.5}),  // 连线形状属性
           $(go.Shape, {toArrow: "Standard", stroke: null}),  // 连线箭头属性
@@ -790,7 +792,7 @@ function init() {
                 textAlign: "right",
                 font: "bold 14px sans-serif",
                 stroke: "#1967B3",
-                segmentIndex: 0,
+                segmentIndex: -1,
                 segmentOffset: new go.Point(NaN, NaN),
                 segmentOrientation: go.Link.OrientUpright
               },
