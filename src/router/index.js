@@ -680,6 +680,14 @@ const routes = [
                         meta: {
                             title: "示例1-数据库ERD",
                         }
+                    },
+                    {
+                        name: "example2",
+                        path: "/learning/GoJS/example2",
+                        component: () => import("@/views/learn/GoJS/example2/index.vue"),
+                        meta: {
+                            title: "将element plus Tree叶节点拖入画布",
+                        }
                     }
                 ]
             }
