@@ -539,7 +539,9 @@ const handleNodeDragStart = (data, event) => {
 }
 
 /**************************** 按钮事件 ******************************/
-// 外键类型变更事件
+/**
+ * 外键类型变更事件
+ */
 const handleFkTypeChange = (val) => {
   console.log('fkType:', val)
   state.fkType = val
@@ -547,7 +549,9 @@ const handleFkTypeChange = (val) => {
   state.cfkToEntry = ""
 }
 
-// 添加外键关系
+/**
+ * 添加外键关系
+ */
 const addFKRelationship = () => {
   // console.log('from:', cfkFromEntry.value)
   // console.log('to:', cfkToEntry.value)
@@ -583,7 +587,9 @@ const addFKRelationship = () => {
   refreshDFieldOptions()
 }
 
-// 删除外键关系
+/**
+ * 删除外键关系
+ */
 const deleteFKRelationship = () => {
   console.log('删除前：', linkDataList.value)
   let temp = {
@@ -607,7 +613,9 @@ const deleteFKRelationship = () => {
   }
 }
 
-// 获取外键关系
+/**
+ * 获取外键关系
+ */
 const getFKRelationship = () => {
   console.log('linkDataList.value:', linkDataList.value)
 
@@ -620,6 +628,26 @@ const getFKRelationship = () => {
     })
   })
   console.log('relationship:', relationship)
+}
+
+/**
+ * 选择布局方式
+ * @param val
+ */
+const layoutOptionChange = (val) => {
+  state.selectedLayout = val
+  // console.log('selectedLayout:', state.selectedLayout)
+  if (val === 'ForceDirectedLayout') {
+    myDiagram.layout = new go.ForceDirectedLayout()
+  } else if (val === 'GridLayout') {
+    myDiagram.layout = new go.GridLayout()
+  } else if (val === 'TreeLayout') {
+    myDiagram.layout = new go.TreeLayout()
+  } else if (val === 'LayeredDigraphLayout') {
+    myDiagram.layout = new go.LayeredDigraphLayout()
+  } else if (val === 'CircularLayout') {
+    myDiagram.layout = new go.CircularLayout()
+  }
 }
 
 
@@ -695,6 +723,59 @@ const handleDataMergeResultTypeChange = (val) => {
 }
 
 /**
+ * 主表变更事件
+ */
+const handleMainTableChange = (val) => {
+  console.log('主表：', val)
+  state.mainTableJoinFieldOptions = []
+
+  state.nodeDataList.forEach(item => {
+    if (item.key === val) {
+      // 获取fields中name字段，作为下拉框选项
+      item.fields.forEach(field => {
+        state.mainTableJoinFieldOptions.push({
+          label: field.name,
+          value: field.name
+        })
+      })
+    }
+  })
+}
+
+/**
+ * 主表字段变更事件
+ */
+const handleMainTableFieldChange = (val) => {
+  console.log('主表字段：', val)
+}
+
+/**
+ * 从表变更事件
+ */
+const handleSubTableChange = (val) => {
+  console.log('从表：', val)
+  state.subTableJoinFieldOptions = []
+
+  state.nodeDataList.forEach(item => {
+    if (item.key === val) {
+      item.fields.forEach(field => {
+        state.subTableJoinFieldOptions.push({
+          label: field.name,
+          value: field.name
+        })
+      })
+    }
+  })
+}
+
+/**
+ * 从表字段变更事件
+ */
+const handleSubTableFieldChange = (val) => {
+  console.log('从表字段：', val)
+}
+
+/**
  * 保存数据融合结果
  */
 const saveDataMerge = async (formEl) => {
@@ -704,6 +785,8 @@ const saveDataMerge = async (formEl) => {
       console.log('state.dataMergeForm:', state.dataMergeForm)
 
       let SQL = ""
+      // 物化视图填充数据
+      let refreshMVSql = 'REFRESH MATERIALIZED VIEW ' + '"' + 'public' + '"."' + state.dataMergeForm.dataMergeResultName + '"\n'
 
       if (state.dataMergeDialogType === '纵向') {
         console.log('纵向')
@@ -736,7 +819,7 @@ const saveDataMerge = async (formEl) => {
           selectSql += joinType + ' ' + '"' + 'public' + '"."' + state.dataMergeForm.subTable + '"' + ' ON ' + '"' + state.dataMergeForm.mainTable + '"' + '.' + '"' + state.dataMergeForm.mainTableJoinField + '"' + ' = ' + '"' + state.dataMergeForm.subTable + '"' + '.' + '"' + state.dataMergeForm.subTableJoinField + '"' + '\n'
           createMVSql += selectSql
           console.log('createMVSql:', createMVSql)
-          SQL = createMVSql
+          SQL = createMVSql + refreshMVSql
         } else {
           console.log('数据表')
 
@@ -821,14 +904,15 @@ const saveDataMerge = async (formEl) => {
           }
 
           selectSql = selectSqlOne + unionType + '\n' + selectSqlTwo
-          SQL = createMVSql + selectSql
+          SQL = createMVSql + selectSql + refreshMVSql
           console.log('SQL:', SQL)
         } else {
           console.log('数据表')
         }
-
-        // 执行SQL语句
       }
+
+      // 执行SQL语句
+
     } else {
       console.log('error submit!', fields)
     }
@@ -861,73 +945,6 @@ const closeDataMergeDialog = () => {
   state.activeTabName = '基本'
   state.dataMergeDialogType = '横向'
   resetDataMergeForm()
-}
-
-// 主表变更事件
-const handleMainTableChange = (val) => {
-  console.log('主表：', val)
-  state.mainTableJoinFieldOptions = []
-
-  state.nodeDataList.forEach(item => {
-    if (item.key === val) {
-      // 获取fields中name字段，作为下拉框选项
-      item.fields.forEach(field => {
-        state.mainTableJoinFieldOptions.push({
-          label: field.name,
-          value: field.name
-        })
-      })
-    }
-  })
-}
-
-// 主表字段变更事件
-const handleMainTableFieldChange = (val) => {
-  console.log('主表字段：', val)
-}
-
-// 从表变更事件
-const handleSubTableChange = (val) => {
-  console.log('从表：', val)
-  state.subTableJoinFieldOptions = []
-
-  state.nodeDataList.forEach(item => {
-    if (item.key === val) {
-      item.fields.forEach(field => {
-        state.subTableJoinFieldOptions.push({
-          label: field.name,
-          value: field.name
-        })
-      })
-    }
-  })
-}
-
-// 从表字段变更事件
-const handleSubTableFieldChange = (val) => {
-  console.log('从表字段：', val)
-}
-
-
-/***************************** 选择器事件 ******************************/
-/**
- * 选择布局方式
- * @param val
- */
-const layoutOptionChange = (val) => {
-  state.selectedLayout = val
-  // console.log('selectedLayout:', state.selectedLayout)
-  if (val === 'ForceDirectedLayout') {
-    myDiagram.layout = new go.ForceDirectedLayout()
-  } else if (val === 'GridLayout') {
-    myDiagram.layout = new go.GridLayout()
-  } else if (val === 'TreeLayout') {
-    myDiagram.layout = new go.TreeLayout()
-  } else if (val === 'LayeredDigraphLayout') {
-    myDiagram.layout = new go.LayeredDigraphLayout()
-  } else if (val === 'CircularLayout') {
-    myDiagram.layout = new go.CircularLayout()
-  }
 }
 
 
