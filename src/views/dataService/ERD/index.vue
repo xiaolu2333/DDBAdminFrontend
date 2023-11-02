@@ -3,42 +3,63 @@
     <div class="demo-collapse">
       <el-collapse v-model="activeCollapseItemName" accordion>
         <el-card>
-          <el-collapse-item title="操作" name="1">
+          <el-collapse-item title="画布及内容操作" name="1">
             <el-card>
               <el-button @click="newNode" disabled>创建节点</el-button>
+              <el-button @click="getAllNodesInDiagram">获取画布中的所有节点</el-button>
+              <el-button @click="getAllLinksInDiagram">获取画布中的所有边</el-button>
             </el-card>
             <el-card>
               <div class="add-foreign-key">
                 添加外键关系：
+                <br/>
+                <el-radio-group
+                    v-model="fkType"
+                    @change="handleFkTypeChange"
+                >
+                  <el-radio
+                      v-for="(item,index) in fkTypeOptions"
+                      :key="index"
+                      :label="item.label"
+                      :value="item.value"
+                  >
+                    {{ item.label }}
+                  </el-radio>
+                </el-radio-group>
+                <br/>
                 <el-cascader
                     v-model="cfkFromEntry"
-                    :options="cfieldOptions"
+                    :options="cFieldOptions"
                     :props="{expandTrigger: 'hover' }"
                     placeholder="From"
                 />
                 <el-cascader
                     v-model="cfkToEntry"
-                    :options="cfieldOptions"
+                    :options="cFieldOptions"
                     :props="{expandTrigger: 'hover' }"
                     placeholder="To"
                 />
                 <el-button type="primary" @click="addFKRelationship">确认</el-button>
+                <el-button type="primary" @click="getFKRelationship">获取数据关系</el-button>
               </div>
+              <br/>
               <div class="delete-foreign-key">
                 删除外键关系：
+                <br/>
                 <el-cascader
                     v-model="dfkFromEntry"
-                    :options="dfieldOptions"
+                    :options="dFieldOptions"
                     :props="{expandTrigger: 'hover' }"
                     placeholder="From"
                 />
                 <el-cascader
                     v-model="dfkToEntry"
-                    :options="dfieldOptions"
+                    :options="dFieldOptions"
                     :props="{expandTrigger: 'hover' }"
                     placeholder="To"
                 />
                 <el-button type="primary" @click="deleteFKRelationship">确认</el-button>
+                <el-button type="primary" @click="getFKRelationship">获取数据关系</el-button>
               </div>
             </el-card>
             <el-card>
@@ -91,6 +112,18 @@
     <br/>
 
     <div>
+      <el-button type="success" :disabled="!clickedNode">修改</el-button>
+      <el-button type="info" :disabled="!clickedNode">1M</el-button>
+      <el-button type="info" :disabled="!clickedNode">MM</el-button>
+      <el-button type="danger" :disabled="!clickedNode">删除</el-button>
+      <el-button type="primary" @click="handleDataMerge('横向')">多表横向数据融合</el-button>
+      <el-button type="primary" @click="handleDataMerge('纵向')">多表纵向数据融合</el-button>
+
+      <el-button type="primary">生成SQL</el-button>
+    </div>
+    <br>
+
+    <div>
       <el-row>
         <el-col :span="6">
           <div id="paletteZone"
@@ -122,7 +155,7 @@
         <el-col :span="18">
           <div id="myDiagramDiv">
             <canvas tabindex="0" width="1234" height="407"
-                    style="position: absolute; top: 0px; left: 0px; z-index: 2; user-select: none; width: 905px; height: 299px; cursor: auto;">
+                    style="position: absolute; top: 0; left: 0; z-index: 2; user-select: none; width: 905px; height: 299px; cursor: auto;">
               This text is displayed if your browser does not support the Canvas HTML element.
             </canvas>
             <div style="position: absolute; overflow: auto; width: 905px; height: 299px; z-index: 1;">
@@ -133,22 +166,180 @@
       </el-row>
     </div>
 
+    <!--展示节点属性-->
     <el-dialog
+        ref="showNodePropertyDialog"
         v-model="dialog.visible"
         :title="dialog.title"
         :lock-scroll="false"
     >
       {{ dialog.data }}
     </el-dialog>
-  </div>
 
+    <el-dialog
+        v-model="dataMergeDialog1Visible"
+        :title="dataMergeDialogType === '纵向' ? '多表纵向数据融合' : '多表横向数据融合'"
+        :close-on-click-modal="false"
+        :lock-scroll="false"
+        :destroy-on-close="true"
+        width="550"
+        @close="closeDataMergeDialog"
+    >
+      <el-form
+          :model="dataMergeForm"
+          label-position="left"
+          :rules="rules"
+          label-width="110"
+          ref="dataMergeFormRef"
+      >
+        <el-tabs
+            type="card"
+            v-model="activeTabName"
+            @tab-click="handleTabClick"
+        >
+          <el-scrollbar :height="390">
+            <el-tab-pane label="基本" name="基本">
+              <el-form-item
+                  label="融合结果名称"
+                  prop="dataMergeResultName"
+              >
+                <el-input v-model="dataMergeForm.dataMergeResultName"/>
+              </el-form-item>
+              <el-form-item
+                  label="融合结果类型"
+                  prop="dataMergeResultType"
+              >
+                <el-radio-group
+                    v-model="dataMergeForm.dataMergeResultType"
+                    @change="handleDataMergeResultTypeChange"
+                >
+                  <el-radio :label="1">物化视图</el-radio>
+                  <el-radio :label="2">数据表</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-tab-pane>
+            <el-tab-pane label="关联" name="关联">
+              <el-form-item
+                  label="数据融合方式"
+                  prop="dataMergeType"
+              >
+                <el-radio-group
+                    v-if="dataMergeDialogType === '纵向'"
+                    v-model="dataMergeForm.dataMergeType"
+                    @change="handleDataMergeTypeChange"
+                >
+                  <el-radio :label="1">左连接</el-radio>
+                  <el-radio :label="2">右连接</el-radio>
+                  <el-radio :label="3">内连接</el-radio>
+                  <el-radio :label="4">全连接</el-radio>
+                </el-radio-group>
+                <el-radio-group
+                    v-else
+                    v-model="dataMergeForm.dataMergeType"
+                    @change="handleDataMergeTypeChange"
+                >
+                  <el-radio :label="1">去重合并</el-radio>
+                  <el-radio :label="2">不去重合并</el-radio>
+                  <el-radio :label="3">交集</el-radio>
+                  <el-radio :label="4">差集</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item
+                  label="主表"
+                  prop="mainTable"
+              >
+                <el-select
+                    v-model="dataMergeForm.mainTable"
+                    placeholder="请选择主表"
+                    style="width: 100%"
+                    @change="handleMainTableChange"
+                >
+                  <el-option
+                      v-for="(item,index) in entryOptions"
+                      :key="index"
+                      :label="item.label"
+                      :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                  label="主表关联字段"
+                  prop="mainTableJoinField"
+              >
+                <el-select
+                    v-model="dataMergeForm.mainTableJoinField"
+                    placeholder="请选择主表关联字段"
+                    multiple
+                    style="width: 100%"
+                >
+                  <el-option
+                      v-for="(item,index) in mainTableJoinFieldOptions"
+                      :key="index"
+                      :label="item.label"
+                      :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                  label="从表"
+                  prop="subTable"
+              >
+                <el-select
+                    v-model="dataMergeForm.subTable"
+                    placeholder="请选择从表"
+                    style="width: 100%"
+                    @change="handleSubTableChange"
+                >
+                  <el-option
+                      v-for="(item,index) in entryOptions"
+                      :key="index"
+                      :label="item.label"
+                      :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item
+                  label="从表关联字段"
+                  prop="subTableJoinField"
+              >
+                <el-select
+                    v-model="dataMergeForm.subTableJoinField"
+                    placeholder="请选择从表关联字段"
+                    multiple
+                    style="width: 100%"
+                >
+                  <el-option
+                      v-for="(item,index) in subTableJoinFieldOptions"
+                      :key="index"
+                      :label="item.label"
+                      :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-tab-pane>
+          </el-scrollbar>
+        </el-tabs>
+      </el-form>
+      <template #footer>
+        <el-button @click="closeDataMergeDialog">取 消</el-button>
+        <el-button type="primary" @click="saveDataMerge(dataMergeFormRef)">确 定</el-button>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script setup>
 import {onMounted, reactive, toRefs, ref} from 'vue'
-import {vDraggable} from '@neodrag/vue';
 
 import {GetERDData, GetTreeData} from '@/api/dataService/ERD.js'
+import {ElForm, ElMessage} from "element-plus";
+
+// 外键类型选项
+const fkTypeOptions = [
+  {label: "1M", value: "1M"},
+  {label: "MM", value: "MM"},
+]
+const dataMergeFormRef = ref()
 
 const state = reactive({
   isComplete: true,
@@ -160,11 +351,11 @@ const state = reactive({
 
   // 布局方式
   layoutOptions: [// 布局方式可选：GridLayout、TreeLayout、ForceDirectedLayout、LayeredDigraphLayout、CircularLayout
-    {label: "ForceDirectedLayout", value: "ForceDirectedLayout"},
-    {label: "GridLayout", value: "GridLayout"},
-    {label: "TreeLayout", value: "TreeLayout"},
-    {label: "LayeredDigraphLayout", value: "LayeredDigraphLayout"},
-    {label: "CircularLayout", value: "CircularLayout"},
+    {label: "力导向布局", value: "ForceDirectedLayout"},
+    {label: "网格布局", value: "GridLayout"},
+    {label: "树形布局", value: "TreeLayout"},
+    {label: "分层布局", value: "LayeredDigraphLayout"},
+    {label: "循环布局", value: "CircularLayout"},
   ],
   // 选中的布局方式
   selectedLayout: "ForceDirectedLayout",
@@ -184,10 +375,11 @@ const state = reactive({
   eyeStatus: 'eye-open',
 
   // 添加外键关系时的下拉框选项
-  cfieldOptions: [],
+  cFieldOptions: [],
   // 删除外键关系时的下拉框选项
-  dfieldOptions: [],
+  dFieldOptions: [],
   // 添加外键关系
+  fkType: "1M",
   cfkFromEntry: "",
   cfkToEntry: "",
   // 删除外键关系
@@ -215,8 +407,49 @@ const state = reactive({
     y: 0
   },
 
-  counter: 0,
-  activeCollapseItemName: "1"
+  activeCollapseItemName: "1",
+
+  // 数据融合dialog
+  dataMergeDialog1Visible: false,
+  // 数据融合tab
+  activeTabName: "基本",
+  // 数据融合dialog类型
+  dataMergeDialogType: "横向",
+  dataMergeForm: {
+    mainTable: "",
+    mainTableJoinField: "",
+    subTable: "",
+    subTableJoinField: "",
+    dataMergeType: 1,
+    dataMergeResultType: 1,
+    dataMergeResultName: ""
+  },
+  rules: {
+    mainTable: [
+      {required: true, message: '主表不能为空', trigger: 'blur'},
+    ],
+    mainTableJoinField: [
+      {required: true, message: '主表关联字段不能为空', trigger: 'blur'},
+    ],
+    subTable: [
+      {required: true, message: '从表不能为空', trigger: 'blur'},
+    ],
+    subTableJoinField: [
+      {required: true, message: '从表关联字段不能为空', trigger: 'blur'},
+    ],
+    dataMergeResultName: [
+      {required: true, message: '名称不能为空', trigger: 'blur'},
+      {min: 1, max: 255, message: '长度不能超过255个字符', trigger: "blur"},
+    ],
+  },
+  // 主表字段
+  mainTableJoinFieldOptions: [],
+  // 从表字段
+  subTableJoinFieldOptions: [],
+  // 数据融合结果类型
+  dataMergeResultType: '1',
+
+  a: false
 })
 
 const {
@@ -235,8 +468,9 @@ const {
   isOpenEye,
   eyeStatus,
 
-  cfieldOptions,
-  dfieldOptions,
+  cFieldOptions,
+  dFieldOptions,
+  fkType,
   cfkFromEntry,
   cfkToEntry,
   dfkFromEntry,
@@ -250,15 +484,22 @@ const {
 
   mouseUpPosition,
 
-  counter,
-  activeCollapseItemName
+  activeCollapseItemName,
+
+  dataMergeDialog1Visible,
+  activeTabName,
+  dataMergeDialogType,
+  dataMergeForm,
+  rules,
+  mainTableJoinFieldOptions,
+  subTableJoinFieldOptions,
+  dataMergeResultType,
+
+  a
 } = toRefs(state)
 
 let dragged = ref(null)
 let myDiagram = ref(null)
-const dragBtn = reactive({
-  data: "我被拖动到目标区域内",
-})
 
 /************************ tree ************************/
 const handleNodeClick = (data) => {
@@ -295,21 +536,48 @@ const handleNodeDragStart = (data, event) => {
 }
 
 /**************************** 按钮事件 ******************************/
+// 外键类型变更事件
+const handleFkTypeChange = (val) => {
+  console.log('fkType:', val)
+  state.fkType = val
+  state.cfkFromEntry = ""
+  state.cfkToEntry = ""
+}
+
 // 添加外键关系
 const addFKRelationship = () => {
   // console.log('from:', cfkFromEntry.value)
   // console.log('to:', cfkToEntry.value)
+
+  let fromText = ''
+  let toText = ''
+
+  if (fkType.value === '1M') {
+    fromText = '1'
+    toText = 'M'
+  } else if (fkType.value === 'MM') {
+    toText = 'M'
+    fromText = 'M'
+  }
+
   let temp = {
-    from: cfkFromEntry.value[0],
+    fromSchema: cfkFromEntry.value[0].split('.')[0],
+    from: cfkFromEntry.value[0].split('.')[1],
     fromPort: cfkFromEntry.value[1],
-    to: cfkToEntry.value[0],
+    fromText: fromText,
+    toSchema: cfkToEntry.value[0].split('.')[0],
+    to: cfkToEntry.value[0].split('.')[1],
     toPort: cfkToEntry.value[1],
+    toText: toText,
   }
   // linkDataList.value.push(temp)
 
   myDiagram.model.addLinkData(temp)
   // console.log('linkDataList.value:', linkDataList.value)
-  refreshDfieldOptions()
+
+  linkDataList.value.push(temp)
+
+  refreshDFieldOptions()
 }
 
 // 删除外键关系
@@ -328,13 +596,27 @@ const deleteFKRelationship = () => {
   })
   console.log('index:', index)
   if (index === -1) {
-    console.log('未找到该外键关系')
-    return
+    ElMessage.error('未找到该外键关系')
   } else {
     myDiagram.model.removeLinkData(linkDataList.value[index])
     linkDataList.value.splice(index, 1)
     console.log('删除后：', linkDataList.value)
   }
+}
+
+// 获取外键关系
+const getFKRelationship = () => {
+  console.log('linkDataList.value:', linkDataList.value)
+
+  let relationship = []
+  linkDataList.value.forEach(item => {
+    relationship.push({
+      from: item.from + "." + item.fromPort,
+      foreignKeyType: state.fkType,
+      to: item.to + "." + item.toPort,
+    })
+  })
+  console.log('relationship:', relationship)
 }
 
 
@@ -361,12 +643,205 @@ function isMouseUpInRect(elClassName) {
   let axis = getRect(elClassName);
   let x = state.mouseUpPosition.x;
   let y = state.mouseUpPosition.y;
-  if (x >= axis.left && x <= axis.left + axis.width && y >= axis.top && y <= axis.top + axis.height) {
-    return true;
-  } else {
-    return false;
+  return x >= axis.left && x <= axis.left + axis.width && y >= axis.top && y <= axis.top + axis.height;
+}
+
+/**
+ * tab切换事件
+ */
+const handleTabClick = (tab) => {
+  console.log('tab:', tab)
+}
+
+/**
+ * 多表数据融合
+ */
+const handleDataMerge = (type) => {
+  console.log('type:', type)
+  // 获取表数据
+
+  // 主表
+  let mainTableObj = {
+    schema: 'A',
+    table: 'table1',
+    joinField: 'id'
+  }
+  // 从表
+  let subTableObj = {
+    schema: 'B',
+    table: 'table2',
+    joinField: 'id'
+  }
+
+  state.dataMergeDialogType = type === '纵向' ? '纵向' : type
+  state.dataMergeDialog1Visible = true
+}
+
+/**
+ * 数据融合方式变更事件
+ */
+const handleDataMergeTypeChange = (val) => {
+  console.log('dataMergeType:', val)
+}
+
+/**
+ * 数据融合结果类型变更事件
+ */
+const handleDataMergeResultTypeChange = (val) => {
+  console.log('dataMergeResultType:', val)
+}
+
+/**
+ * 保存数据融合结果
+ */
+const saveDataMerge = async (formEl) => {
+  if (!formEl) return
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      console.log('state.dataMergeForm:', state.dataMergeForm)
+
+      let SQL = ""
+
+      if (state.dataMergeDialogType === '纵向') {
+        console.log('纵向')
+
+        if (state.dataMergeForm.dataMergeResultType === 1) {
+          console.log('物化视图')
+
+          // 创建物化视图
+          let createMVSql = 'CREATE MATERIALIZED VIEW ' + '"' + 'public' + '"."' + state.dataMergeForm.dataMergeResultName + '"\n' +
+              'AS\n'
+          // 物化视图定义
+          let selectSql = 'SELECT *\n' +
+              '  FROM ' + '"' + 'public' + '"."' + state.dataMergeForm.mainTable + '"' + '\n'
+          let joinType = ''
+
+          if (state.dataMergeForm.dataMergeType === 1) {
+            console.log('左连接')
+            joinType = '  LEFT JOIN'
+          } else if (state.dataMergeForm.dataMergeType === 2) {
+            console.log('右连接')
+            joinType = '  RIGHT JOIN'
+          } else if (state.dataMergeForm.dataMergeType === 3) {
+            console.log('内连接')
+            joinType = '  INNER JOIN'
+          } else if (state.dataMergeForm.dataMergeType === 4) {
+            console.log('全连接')
+            joinType = '  FULL JOIN'
+          }
+
+          selectSql += joinType + ' ' + '"' + 'public' + '"."' + state.dataMergeForm.subTable + '"' + ' ON ' + '"' + state.dataMergeForm.mainTable + '"' + '.' + '"' + state.dataMergeForm.mainTableJoinField + '"' + ' = ' + '"' + state.dataMergeForm.subTable + '"' + '.' + '"' + state.dataMergeForm.subTableJoinField + '"' + '\n'
+          createMVSql += selectSql
+          console.log('createMVSql:', createMVSql)
+          SQL = createMVSql
+        } else {
+          console.log('数据表')
+
+          // let data = {
+          //   schema: "public",
+          //   key: state.dataMergeForm.dataMergeResultName,
+          //   "loc": "380 0"
+          // }
+          //
+          // let fields = []
+          // state.dataMergeForm.mainTableJoinField.forEach(item => {
+          //   fields.push({
+          //     "name": item,
+          //     "info": "char var",
+          //     "color": "#F25022",
+          //     "figure": "Rectangle",
+          //     'icon': '字段'
+          //   })
+          // })
+          //
+          // state.dataMergeForm.subTableJoinField.forEach(item => {
+          //   fields.push({
+          //     "name": item,
+          //     "info": "char var",
+          //     "color": "#F25022",
+          //     "figure": "Rectangle",
+          //     'icon': '字段'
+          //   })
+          // })
+          //
+          // state.myDiagram.model.addNodeData(data);
+          // let part = state.myDiagram.findPartForData(data);  // must be same data reference, not a new {}
+          // // set location to saved mouseDownPoint in ContextMenuTool
+          // part.location = state.myDiagram.toolManager.contextMenuTool.mouseDownPoint;
+          //
+          // updateModelData()
+        }
+      } else {
+        console.log('横向')
+      }
+    } else {
+      console.log('error submit!', fields)
+    }
+  })
+
+  // 关闭dialog
+  closeDataMergeDialog()
+}
+
+/**
+ * 重置表单
+ */
+const resetDataMergeForm = () => {
+  state.dataMergeForm = {
+    mainTable: "",
+    mainTableJoinField: "",
+    subTable: "",
+    subTableJoinField: "",
+    dataMergeType: 1,
+    dataMergeResultType: 1,
+    dataMergeResultName: ""
   }
 }
+
+/**
+ * 关闭数据融合弹窗
+ */
+const closeDataMergeDialog = () => {
+  state.dataMergeDialog1Visible = false
+  state.dataMergeDialogType = '横向'
+  resetDataMergeForm()
+}
+
+// 主表变更事件
+const handleMainTableChange = (val) => {
+  console.log('主表：', val)
+  state.mainTableJoinFieldOptions = []
+
+  state.nodeDataList.forEach(item => {
+    if (item.key === val) {
+      // 获取fields中name字段，作为下拉框选项
+      item.fields.forEach(field => {
+        state.mainTableJoinFieldOptions.push({
+          label: field.name,
+          value: field.name
+        })
+      })
+    }
+  })
+}
+
+// 从表变更事件
+const handleSubTableChange = (val) => {
+  console.log('从表：', val)
+  state.subTableJoinFieldOptions = []
+
+  state.nodeDataList.forEach(item => {
+    if (item.key === val) {
+      item.fields.forEach(field => {
+        state.subTableJoinFieldOptions.push({
+          label: field.name,
+          value: field.name
+        })
+      })
+    }
+  })
+}
+
 
 /***************************** 选择器事件 ******************************/
 /**
@@ -391,12 +866,12 @@ const layoutOptionChange = (val) => {
 
 
 /***************************** utils ******************************/
-const refreshDfieldOptions = () => {
+const refreshDFieldOptions = () => {
   let temp = []
 
-  state.dfieldOptions = state.cfieldOptions
+  state.dFieldOptions = state.cFieldOptions
 
-  // console.log('state.dfieldOptions:', state.dfieldOptions)
+  // console.log('state.dFieldOptions:', state.dFieldOptions)
 }
 
 
@@ -652,7 +1127,18 @@ function init() {
    */
   myDiagram.nodeTemplate =
       $(go.Node, "Auto",
-          {copyable: false, deletable: false},
+          {
+            copyable: false,
+            deletable: false,
+            // 鼠标移入
+            mouseEnter: function (e, node) {
+              node.isSelected = true
+            },
+            // 鼠标移出
+            mouseLeave: function (e, node) {
+              if (!state.clickedNode) node.isSelected = false
+            },
+          },
           new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
           $(go.Shape,           // 节点形状属性
               {
@@ -664,56 +1150,6 @@ function init() {
           // 自定义面板
           $(go.Panel,
               "Vertical",                                 // 垂直布局
-              // $(go.Panel, "Auto",                         // schema
-              //     {stretch: go.GraphObject.Horizontal},     // 水平拉伸，使得宽度与父节点一致
-              //     $(go.Shape,
-              //         {fill: "#e9e9e9", stroke: "transparent"},  // 设置填充色和边框色为透明
-              //     ),
-              //     // 按钮
-              //     $("Button",
-              //         {
-              //           alignment: go.Spot.BottomLeft, alignmentFocus: go.Spot.BottomLeft,
-              //           click: function (e, obj) {
-              //             // console.log(obj.part.data)
-              //             if (state.isOpenEye) {
-              //               state.eyeStatus = 'eye-open'
-              //             } else {
-              //               state.eyeStatus = 'eye-close'
-              //             }
-              //             state.isOpenEye = !state.isOpenEye
-              //             console.log('eyeStatus:', state.eyeStatus)
-              //           }
-              //         },
-              //         $(go.Picture,
-              //             // 根据icon字段来显示不同的图标
-              //             new go.Binding("source", eyeStatus.value, function (eyeStatus) {
-              //               console.log(eyeStatus)
-              //               if (eyeStatus.value === 'eye-open') {
-              //                 return "睁眼.svg";
-              //               } else {
-              //                 return "闭眼.svg";
-              //               }
-              //             }),
-              //             {
-              //               // 左对齐
-              //               alignment: go.Spot.Left,
-              //               width: 20,
-              //               height: 20
-              //             }
-              //         ),
-              //     ),
-              //     // 按钮
-              //     $("Button",
-              //         {
-              //           alignment: go.Spot.BottomRight, alignmentFocus: go.Spot.BottomRight,
-              //           click: function (e, obj) {
-              //             state.counter++
-              //             console.log('state.counter:', state.counter)
-              //           }
-              //         },
-              //         $(go.Shape, "PlusLine", {width: 14, height: 14})
-              //     )
-              // ),
               $(go.Panel, "Auto",                         // schema
                   {stretch: go.GraphObject.Horizontal},     // 水平拉伸，使得宽度与父节点一致
                   // $(go.Shape,                               // 形状
@@ -822,10 +1258,43 @@ function init() {
             corner: 5,                    // 连线拐角弧度
             curve: go.Link.JumpOver,      // 连线绕过节点
             toShortLength: 6,             // 入连线端点距离节点距离
-            fromShortLength: 2            // 出连线端点距离节点距离
+            fromShortLength: 2,            // 出连线端点距离节点距离
+            selectionAdorned: true,       // 连线选中时显示装饰
+            reshapable: true,             // 连线可改变形状
+
+            // 鼠标移入
+            mouseEnter: function (e, link) {
+              link.isSelected = true
+            },
+            // 鼠标移出
+            mouseLeave: function (e, link) {
+              if (!state.clickedLink) link.isSelected = false
+            },
           },
           $(go.Shape, {strokeWidth: 1.5}),  // 连线形状属性
-          $(go.Shape, {toArrow: "Standard", stroke: null})  // 连线箭头属性
+          $(go.Shape, {toArrow: "Standard", stroke: null}),  // 连线箭头属性
+          $(go.TextBlock,
+              {
+                textAlign: "left",
+                font: "bold 14px sans-serif",
+                stroke: "#1967B3",
+                segmentIndex: 0,
+                segmentOffset: new go.Point(NaN, NaN),
+                segmentOrientation: go.Link.OrientUpright
+              },
+              new go.Binding("text", "fromText")
+          ),
+          $(go.TextBlock,
+              {
+                textAlign: "right",
+                font: "bold 14px sans-serif",
+                stroke: "#1967B3",
+                segmentIndex: -1,
+                segmentOffset: new go.Point(NaN, NaN),
+                segmentOrientation: go.Link.OrientUpright
+              },
+              new go.Binding("text", "toText")
+          ),
       );
 
   /**
@@ -870,12 +1339,12 @@ function init() {
         if (part instanceof go.Node) {
           // console.log("Clicked on Node：" + part.data.key);
           state.clickedNode = part.data
-          // console.log('state.clickedNode', state.clickedNode)
+          console.log('state.clickedNode', state.clickedNode)
         }
         if (part instanceof go.Link) {
           // console.log("Clicked on Link：" + part.data.from + " to " + part.data.to);
           state.clickedLink = part.data
-          // console.log('state.clickedLink', state.clickedLink)
+          console.log('state.clickedLink', state.clickedLink)
         }
       });
   /**
@@ -899,6 +1368,23 @@ function init() {
           // console.log('state.rightClickedLink', state.rightClickedLink)
         }
       });
+  /**
+   * 添加背景单击事件，清空选中对象信息
+   */
+  myDiagram.addDiagramListener("BackgroundSingleClicked", function (e, obj) {
+    // 清空选中对象信息
+    state.clickedNode = undefined
+    state.clickedLink = undefined
+  });
+  /**
+   * 添加背景单击事件，清空选中对象信息
+   */
+  myDiagram.addDiagramListener("BackgroundDoubleClicked", function (e, obj) {
+    // 清空选中对象信息
+    state.clickedNode = undefined
+    state.clickedLink = undefined
+  });
+
 
   /**
    * 背景右键菜单
@@ -922,7 +1408,6 @@ function init() {
               $(go.TextBlock, {margin: 3, textAlign: "left", font: "bold 10pt sans-serif"}, "创建新节点"),
               {click: newNode})
       );
-
 }
 
 
@@ -1055,7 +1540,7 @@ function updateModelData() {
   })
 
   // 更新字段选项
-  state.cfieldOptions = state.nodeDataList.map(item => {
+  state.cFieldOptions = state.nodeDataList.map(item => {
     return {
       value: item.key,
       label: item.key,
@@ -1068,10 +1553,9 @@ function updateModelData() {
     }
   })
 
-  refreshDfieldOptions()
+  refreshDFieldOptions()
 
   // 更新边选项
-
 
   // model.startTransaction("modified data");
   // model.setDataProperty(model.modelData, "date", new Date().toDateString());
@@ -1096,21 +1580,35 @@ function redo(e, obj) {
   e.diagram.commandHandler.redo();
 }
 
+/**
+ * 获取画布中的所有节点
+ */
+const getAllNodesInDiagram = () => {
+  console.log('state.nodeDataList:', state.nodeDataList)
+}
+
+/**
+ * 获取画布中的所有边
+ */
+const getAllLinksInDiagram = () => {
+  console.log('linkDataList.value:', linkDataList.value)
+}
+
 
 onMounted(() => {
   state.selectedLayout = 'LayeredDigraphLayout'
 
   GetTreeData().then(res => {
-    console.log('获取树形数据:', res)
+    // console.log('获取树形数据:', res)
     state.treeData = res.data.data
   })
 
   GetERDData().then(res => {
     // console.log('res.data.data: ', res.data.data)
     state.nodeDataList = res.data.data.nodeDataArray
-    // console.log('GetERDData state.nodeDataList', state.nodeDataList)
+    console.log('节点数据 nodeDataList', state.nodeDataList)
     linkDataList.value = res.data.data.linkDataArray
-    // console.log('GetERDData linkDataList.value', linkDataList.value)
+    console.log('边数据 linkDataList', linkDataList.value)
     edgeDataList.value = linkDataList.value
 
     res.data.data.nodeDataArray.forEach(item => {
@@ -1120,10 +1618,10 @@ onMounted(() => {
       })
     })
 
-    state.cfieldOptions = res.data.data.nodeDataArray.map(item => {
+    state.cFieldOptions = res.data.data.nodeDataArray.map(item => {
       return {
-        value: item.key,
-        label: item.key,
+        value: item.schema + "." + item.key,
+        label: item.schema + "." + item.key,
         children: item.fields.map(field => {
           return {
             value: field.name,
@@ -1132,14 +1630,13 @@ onMounted(() => {
         })
       }
     })
-    // console.log('GetERDData state.cfieldOptions', state.cfieldOptions)
+    // console.log('GetERDData state.cFieldOptions', state.cFieldOptions)
 
-    refreshDfieldOptions()
+    refreshDFieldOptions()
     init()
   })
 });
 </script>
-
 <style scoped>
 
 #myDiagramDiv {
