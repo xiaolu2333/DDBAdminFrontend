@@ -140,16 +140,13 @@
                 :draggable="true"
                 :allow-drag="allowDrag"
                 :allow-drop="allowDrop"
-                @node-click="handleNodeClick"
+                @node-click="handleTreeNodeClick"
                 @node-drag-start="handleNodeDragStart"
             >
               <template #default="scope">
                 <span>{{ scope.node.label }}</span>
               </template>
             </el-tree>
-            <!--            <div class="draggable" draggable="true" _msttexthash="2520700" _msthash="89">数据一</div>-->
-            <!--            <div class="draggable" draggable="true" style="" _msttexthash="4243642" _msthash="90">数据二</div>-->
-            <!--            <div class="draggable" draggable="true" style="" _msttexthash="3056690" _msthash="91">数据三</div>-->
           </div>
         </el-col>
         <el-col :span="18">
@@ -504,43 +501,24 @@ const {
 let dragged = ref(null)
 let myDiagram = ref(null)
 
-/************************ tree ************************/
-const handleNodeClick = (data) => {
-  // console.log(data)
-}
 
+/**************************** 事件 ******************************/
 /**
- * 检查是否允许拖拽
+ * 获取画布中的所有节点
  */
-function allowDrag(node) {
-  // console.log('allowDrag:', node)
-  return node.data.node_type === 'table';
+const getAllNodesInDiagram = () => {
+  console.log('state.nodeDataList:', state.nodeDataList)
 }
 
 /**
- * 检查是否能被放置
- * @param draggingNode 被拖拽的节点
- * @param dropNode 目标节点
- * @param type 放置的类型
+ * 获取画布中的所有边
  */
-function allowDrop(draggingNode, dropNode, type) {
-  // console.log('allowDrop:', draggingNode, dropNode, type)
-  return draggingNode.data.node_type === 'table' && dropNode.data.node_type === 'db' && type === 'inner';
+const getAllLinksInDiagram = () => {
+  console.log('linkDataList.value:', linkDataList.value)
 }
 
 /**
- * 拖拽节点时获取节点数据
- * @param data
- * @param event
- */
-const handleNodeDragStart = (data, event) => {
-  state.draggedNode = data
-  console.log('draggedNode:', state.draggedNode)
-}
-
-/**************************** 按钮事件 ******************************/
-/**
- * 外键类型变更事件
+ * 外键选择变更事件
  */
 const handleFkTypeChange = (val) => {
   console.log('fkType:', val)
@@ -650,31 +628,37 @@ const layoutOptionChange = (val) => {
   }
 }
 
-
-/**
- * 获取指定元素的坐标范围
- * @param elClassName
- */
-function getRect(elClassName) {
-  let rect = document.getElementsByClassName(elClassName)[0].getBoundingClientRect();
-  const axis = {
-    left: rect.left + document.body.scrollLeft,
-    top: rect.top + document.body.scrollTop,
-    width: rect.width,
-    height: rect.height
-  };
-  console.log('元素坐标范围：', axis);
-  return axis;
+const handleTreeNodeClick = (data) => {
+  // console.log(data)
 }
 
 /**
- * 判断鼠标松开的位置是否在指定元素的坐标范围内
+ * 检查是否允许拖拽
  */
-function isMouseUpInRect(elClassName) {
-  let axis = getRect(elClassName);
-  let x = state.mouseUpPosition.x;
-  let y = state.mouseUpPosition.y;
-  return x >= axis.left && x <= axis.left + axis.width && y >= axis.top && y <= axis.top + axis.height;
+function allowDrag(node) {
+  // console.log('allowDrag:', node)
+  return node.data.node_type === 'table';
+}
+
+/**
+ * 检查是否能被放置
+ * @param draggingNode 被拖拽的节点
+ * @param dropNode 目标节点
+ * @param type 放置的类型
+ */
+function allowDrop(draggingNode, dropNode, type) {
+  // console.log('allowDrop:', draggingNode, dropNode, type)
+  return draggingNode.data.node_type === 'table' && dropNode.data.node_type === 'db' && type === 'inner';
+}
+
+/**
+ * 拖拽节点时获取节点数据
+ * @param data
+ * @param event
+ */
+const handleNodeDragStart = (data, event) => {
+  state.draggedNode = data
+  console.log('draggedNode:', state.draggedNode)
 }
 
 /**
@@ -955,6 +939,32 @@ const refreshDFieldOptions = () => {
   state.dFieldOptions = state.cFieldOptions
 
   // console.log('state.dFieldOptions:', state.dFieldOptions)
+}
+
+/**
+ * 判断鼠标松开的位置是否在指定元素的坐标范围内
+ */
+function isMouseUpInRect(elClassName) {
+  let axis = getRect(elClassName);
+  let x = state.mouseUpPosition.x;
+  let y = state.mouseUpPosition.y;
+  return x >= axis.left && x <= axis.left + axis.width && y >= axis.top && y <= axis.top + axis.height;
+}
+
+/**
+ * 获取指定元素的坐标范围
+ * @param elClassName
+ */
+function getRect(elClassName) {
+  let rect = document.getElementsByClassName(elClassName)[0].getBoundingClientRect();
+  const axis = {
+    left: rect.left + document.body.scrollLeft,
+    top: rect.top + document.body.scrollTop,
+    width: rect.width,
+    height: rect.height
+  };
+  console.log('元素坐标范围：', axis);
+  return axis;
 }
 
 
@@ -1661,20 +1671,6 @@ function undo(e, obj) {
  */
 function redo(e, obj) {
   e.diagram.commandHandler.redo();
-}
-
-/**
- * 获取画布中的所有节点
- */
-const getAllNodesInDiagram = () => {
-  console.log('state.nodeDataList:', state.nodeDataList)
-}
-
-/**
- * 获取画布中的所有边
- */
-const getAllLinksInDiagram = () => {
-  console.log('linkDataList.value:', linkDataList.value)
 }
 
 
