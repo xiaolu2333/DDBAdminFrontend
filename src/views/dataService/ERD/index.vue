@@ -182,6 +182,7 @@
         :close-on-click-modal="false"
         :lock-scroll="false"
         :destroy-on-close="true"
+        draggable
         width="550"
         @close="closeDataMergeDialog"
     >
@@ -268,6 +269,7 @@
               >
                 <el-select
                     v-model="dataMergeForm.mainTableJoinField"
+                    @change="handleMainTableFieldChange"
                     placeholder="请选择主表关联字段"
                     multiple
                     style="width: 100%"
@@ -304,6 +306,7 @@
               >
                 <el-select
                     v-model="dataMergeForm.subTableJoinField"
+                    @change="handleSubTableFieldChange"
                     placeholder="请选择从表关联字段"
                     multiple
                     style="width: 100%"
@@ -773,6 +776,58 @@ const saveDataMerge = async (formEl) => {
         }
       } else {
         console.log('横向')
+
+        if (state.dataMergeForm.dataMergeResultType === 1) {
+          console.log('物化视图')
+
+          // 创建物化视图
+          let createMVSql = 'CREATE MATERIALIZED VIEW ' + '"' + 'public' + '"."' + state.dataMergeForm.dataMergeResultName + '"\n' +
+              'AS\n'
+          // 物化视图定义
+          let selectSql = ''
+          let selectSqlOne = ''
+          let selectSqlTwo = ''
+          let unionType = ''
+
+          // 将 state.dataMergeForm.mainTableJoinField 中的字段用 "" 包裹，并用 , 拼接
+          let mainTableUnionField = ''
+          state.dataMergeForm.mainTableJoinField.forEach(item => {
+            mainTableUnionField += '"' + item + '"' + ','
+          })
+          mainTableUnionField = mainTableUnionField.substring(0, mainTableUnionField.length - 1)
+          let subTableUnionField = ''
+          state.dataMergeForm.subTableJoinField.forEach(item => {
+            subTableUnionField += '"' + item + '"' + ','
+          })
+          subTableUnionField = subTableUnionField.substring(0, subTableUnionField.length - 1)
+
+          selectSqlOne = 'SELECT ' + mainTableUnionField + '\n' +
+              '  FROM ' + '"' + 'public' + '"."' + state.dataMergeForm.mainTable + '"' + '\n'
+          selectSqlTwo = 'SELECT ' + subTableUnionField + '\n' +
+              '  FROM ' + '"' + 'public' + '"."' + state.dataMergeForm.subTable + '"' + '\n'
+
+          if (state.dataMergeForm.dataMergeType === 1) {
+            console.log('去重合并')
+            unionType = 'UNION'
+          } else if (state.dataMergeForm.dataMergeType === 2) {
+            console.log('不去重合并')
+            unionType = 'UNION ALL'
+          } else if (state.dataMergeForm.dataMergeType === 3) {
+            console.log('交集')
+            unionType = 'INTERSECT'
+          } else if (state.dataMergeForm.dataMergeType === 4) {
+            console.log('差集')
+            unionType = 'EXCEPT'
+          }
+
+          selectSql = selectSqlOne + unionType + '\n' + selectSqlTwo
+          SQL = createMVSql + selectSql
+          console.log('SQL:', SQL)
+        } else {
+          console.log('数据表')
+        }
+
+        // 执行SQL语句
       }
     } else {
       console.log('error submit!', fields)
@@ -803,6 +858,7 @@ const resetDataMergeForm = () => {
  */
 const closeDataMergeDialog = () => {
   state.dataMergeDialog1Visible = false
+  state.activeTabName = '基本'
   state.dataMergeDialogType = '横向'
   resetDataMergeForm()
 }
@@ -825,6 +881,11 @@ const handleMainTableChange = (val) => {
   })
 }
 
+// 主表字段变更事件
+const handleMainTableFieldChange = (val) => {
+  console.log('主表字段：', val)
+}
+
 // 从表变更事件
 const handleSubTableChange = (val) => {
   console.log('从表：', val)
@@ -840,6 +901,11 @@ const handleSubTableChange = (val) => {
       })
     }
   })
+}
+
+// 从表字段变更事件
+const handleSubTableFieldChange = (val) => {
+  console.log('从表字段：', val)
 }
 
 
