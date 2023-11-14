@@ -1,128 +1,5 @@
 <template>
   <div>
-    <div class="demo-collapse">
-      <el-collapse v-model="activeCollapseItemName" accordion>
-        <el-card>
-          <el-collapse-item title="画布及内容操作" name="1">
-            <el-card>
-              <el-button @click="newNode" disabled>创建节点</el-button>
-              <el-button @click="getAllNodesInDiagram">获取画布中的所有节点</el-button>
-              <el-button @click="getAllLinksInDiagram">获取画布中的所有边</el-button>
-            </el-card>
-            <el-card>
-              <div class="add-foreign-key">
-                添加外键关系：
-                <br/>
-                <el-radio-group
-                    v-model="fkType"
-                    @change="handleFkTypeChange"
-                >
-                  <el-radio
-                      v-for="(item,index) in fkTypeOptions"
-                      :key="index"
-                      :label="item.label"
-                      :value="item.value"
-                  >
-                    {{ item.label }}
-                  </el-radio>
-                </el-radio-group>
-                <br/>
-                <el-cascader
-                    v-model="cfkFromEntry"
-                    :options="cFieldOptions"
-                    :props="{expandTrigger: 'hover' }"
-                    placeholder="From"
-                />
-                <el-cascader
-                    v-model="cfkToEntry"
-                    :options="cFieldOptions"
-                    :props="{expandTrigger: 'hover' }"
-                    placeholder="To"
-                />
-                <el-button type="primary" @click="addFKRelationship">确认</el-button>
-                <el-button type="primary" @click="getFKRelationship">获取数据关系</el-button>
-              </div>
-              <br/>
-              <div class="delete-foreign-key">
-                删除外键关系：
-                <br/>
-                <el-cascader
-                    v-model="dfkFromEntry"
-                    :options="dFieldOptions"
-                    :props="{expandTrigger: 'hover' }"
-                    placeholder="From"
-                />
-                <el-cascader
-                    v-model="dfkToEntry"
-                    :options="dFieldOptions"
-                    :props="{expandTrigger: 'hover' }"
-                    placeholder="To"
-                />
-                <el-button type="primary" @click="deleteFKRelationship">确认</el-button>
-                <el-button type="primary" @click="getFKRelationship">获取数据关系</el-button>
-              </div>
-            </el-card>
-            <el-card>
-              <div>
-                <div v-if="clickedLink || rightClickedLink">
-          <span v-if="clickedLink && !rightClickedLink">
-            选中连线【{{ clickedLink.from }}.{{ clickedLink.fromPort }} -> {{ clickedLink.to }}.{{ clickedLink.toPort }}】
-          </span>
-                  <span v-if="(!clickedLink && rightClickedLink) || (clickedLink && rightClickedLink)">
-            选中连线【{{ rightClickedLink.from }}.{{ rightClickedLink.fromPort }} -> {{
-                      rightClickedLink.to
-                    }}.{{ rightClickedLink.toPort }}】
-          </span>
-                </div>
-                <div v-if="clickedNode || rightClickedNode">
-          <span v-if="clickedNode && !rightClickedNode">
-            选中节点【{{ clickedNode.key }}】
-          </span>
-                  <span v-if="(!clickedNode && rightClickedNode) || (clickedNode && rightClickedNode)">
-            选中节点【{{ rightClickedNode.key }}】
-          </span>
-                </div>
-                <!--      <el-button-group>-->
-                <!--        <el-button type="primary" @click="addNode">添加节点</el-button>-->
-                <!--        <el-button type="primary" @click="addLink">添加边</el-button>-->
-                <!--        <el-button type="primary" @click="deleteNode">删除节点</el-button>-->
-                <!--        <el-button type="primary" @click="deleteLink">删除边</el-button>-->
-                <!--        <el-button type="primary" @click="save">保存</el-button>-->
-                <!--        <el-button type="primary" @click="load">数据融合</el-button>-->
-                <!--      </el-button-group>-->
-              </div>
-            </el-card>
-            <el-card>
-              <div>
-                选择布局方式：
-                <el-select v-model="selectedLayout" class="m-2" placeholder="Select" @change="layoutOptionChange">
-                  <el-option
-                      v-for="item in layoutOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                  />
-                </el-select>
-              </div>
-            </el-card>
-          </el-collapse-item>
-        </el-card>
-      </el-collapse>
-    </div>
-    <br/>
-
-    <div>
-      <el-button type="success" :disabled="!clickedNode">修改</el-button>
-      <el-button type="info" :disabled="!clickedNode">1M</el-button>
-      <el-button type="info" :disabled="!clickedNode">MM</el-button>
-      <el-button type="danger" :disabled="!clickedNode">删除</el-button>
-      <el-button type="primary" @click="handleDataMerge('横向')">多表横向数据融合</el-button>
-      <el-button type="primary" @click="handleDataMerge('纵向')">多表纵向数据融合</el-button>
-
-      <el-button type="primary">生成SQL</el-button>
-    </div>
-    <br>
-
     <div>
       <el-row>
         <el-col :span="6">
@@ -150,6 +27,129 @@
           </div>
         </el-col>
         <el-col :span="18">
+          <div class="demo-collapse">
+            <el-collapse v-model="activeCollapseItemName" accordion>
+              <el-card>
+                <el-collapse-item title="画布及内容操作" name="1">
+                  <el-card>
+                    <el-button @click="newNode" disabled>创建节点</el-button>
+                    <el-button @click="getAllNodesInDiagram">获取画布中的所有节点</el-button>
+                    <el-button @click="getAllLinksInDiagram">获取画布中的所有边</el-button>
+                  </el-card>
+                  <el-card>
+                    <div class="add-foreign-key">
+                      添加外键关系：
+                      <br/>
+                      <el-radio-group
+                          v-model="fkType"
+                          @change="handleFkTypeChange"
+                      >
+                        <el-radio
+                            v-for="(item,index) in fkTypeOptions"
+                            :key="index"
+                            :label="item.label"
+                            :value="item.value"
+                        >
+                          {{ item.label }}
+                        </el-radio>
+                      </el-radio-group>
+                      <br/>
+                      <el-cascader
+                          v-model="cfkFromEntry"
+                          :options="cFieldOptions"
+                          :props="{expandTrigger: 'hover' }"
+                          placeholder="From"
+                      />
+                      <el-cascader
+                          v-model="cfkToEntry"
+                          :options="cFieldOptions"
+                          :props="{expandTrigger: 'hover' }"
+                          placeholder="To"
+                      />
+                      <el-button type="primary" @click="addFKRelationship">确认</el-button>
+                      <el-button type="primary" @click="getFKRelationship">获取数据关系</el-button>
+                    </div>
+                    <br/>
+                    <div class="delete-foreign-key">
+                      删除外键关系：
+                      <br/>
+                      <el-cascader
+                          v-model="dfkFromEntry"
+                          :options="dFieldOptions"
+                          :props="{expandTrigger: 'hover' }"
+                          placeholder="From"
+                      />
+                      <el-cascader
+                          v-model="dfkToEntry"
+                          :options="dFieldOptions"
+                          :props="{expandTrigger: 'hover' }"
+                          placeholder="To"
+                      />
+                      <el-button type="primary" @click="deleteFKRelationship">确认</el-button>
+                      <el-button type="primary" @click="getFKRelationship">获取数据关系</el-button>
+                    </div>
+                  </el-card>
+                  <el-card>
+                    <div>
+                      <div v-if="clickedLink || rightClickedLink">
+          <span v-if="clickedLink && !rightClickedLink">
+            选中连线【{{ clickedLink.from }}.{{ clickedLink.fromPort }} -> {{ clickedLink.to }}.{{ clickedLink.toPort }}】
+          </span>
+                        <span v-if="(!clickedLink && rightClickedLink) || (clickedLink && rightClickedLink)">
+            选中连线【{{ rightClickedLink.from }}.{{ rightClickedLink.fromPort }} -> {{
+                            rightClickedLink.to
+                          }}.{{ rightClickedLink.toPort }}】
+          </span>
+                      </div>
+                      <div v-if="clickedNode || rightClickedNode">
+          <span v-if="clickedNode && !rightClickedNode">
+            选中节点【{{ clickedNode.key }}】
+          </span>
+                        <span v-if="(!clickedNode && rightClickedNode) || (clickedNode && rightClickedNode)">
+            选中节点【{{ rightClickedNode.key }}】
+          </span>
+                      </div>
+                      <!--      <el-button-group>-->
+                      <!--        <el-button type="primary" @click="addNode">添加节点</el-button>-->
+                      <!--        <el-button type="primary" @click="addLink">添加边</el-button>-->
+                      <!--        <el-button type="primary" @click="deleteNode">删除节点</el-button>-->
+                      <!--        <el-button type="primary" @click="deleteLink">删除边</el-button>-->
+                      <!--        <el-button type="primary" @click="save">保存</el-button>-->
+                      <!--        <el-button type="primary" @click="load">数据融合</el-button>-->
+                      <!--      </el-button-group>-->
+                    </div>
+                  </el-card>
+                  <el-card>
+                    <div>
+                      选择布局方式：
+                      <el-select v-model="selectedLayout" class="m-2" placeholder="Select" @change="layoutOptionChange">
+                        <el-option
+                            v-for="item in layoutOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                        />
+                      </el-select>
+                    </div>
+                  </el-card>
+                </el-collapse-item>
+              </el-card>
+            </el-collapse>
+          </div>
+          <br/>
+
+          <div>
+            <el-button type="success" :disabled="!clickedNode">修改</el-button>
+            <el-button type="info" :disabled="!clickedNode">1M</el-button>
+            <el-button type="info" :disabled="!clickedNode">MM</el-button>
+            <el-button type="danger" :disabled="!clickedNode">删除</el-button>
+            <el-button type="primary" @click="handleDataMerge('横向')">多表横向数据融合</el-button>
+            <el-button type="primary" @click="handleDataMerge('纵向')">多表纵向数据融合</el-button>
+
+            <el-button type="primary">生成SQL</el-button>
+          </div>
+          <br>
+
           <div id="myDiagramDiv">
             <canvas tabindex="0" width="1234" height="407"
                     style="position: absolute; top: 0; left: 0; z-index: 2; user-select: none; width: 905px; height: 299px; cursor: auto;">
