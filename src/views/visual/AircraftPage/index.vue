@@ -76,11 +76,9 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, reactive, toRefs, onMounted} from "vue";
+import {onMounted, reactive, toRefs} from "vue";
 import {ElForm, ElMessage} from 'element-plus'
 import * as echarts from "echarts";
-
-// import { getColumnListByNodeId, getDataMenuListByPId } from '@/api/dataSearch'
 import {getAircraftAllOptions, getAircraftDataOne} from '../../../api/visual/index.js'
 
 interface FormDataType {
@@ -89,7 +87,7 @@ interface FormDataType {
   // 轮次
   round: number,
   // 绘制项目
-  drawItem: number
+  drawItem: any
 }
 
 const state = reactive({
@@ -141,11 +139,11 @@ const {
 const onSubmit = () => {
   console.log('formData:', formData.value)
 
-  echarts.init(document.getElementById("chart-1")).dispose()
-  echarts.init(document.getElementById("chart-2")).dispose()
-  echarts.init(document.getElementById("chart-3")).dispose()
-  echarts.init(document.getElementById("chart-4")).dispose()
-  init()
+  echarts.init(document.getElementById("chart-1")).dispose();
+  echarts.init(document.getElementById("chart-2")).dispose();
+  echarts.init(document.getElementById("chart-3")).dispose();
+  echarts.init(document.getElementById("chart-4")).dispose();
+  init();
 }
 
 
@@ -198,22 +196,20 @@ function handleDataQuery() {
 }
 
 // 折线图
-async function initChart(
-    chartDom: HTMLElement,
+function setChartOptions(
+    chartDom: any,
     title: string,
     chartXData: any[],
     chartYData: any[],
     xAxisName: string,
     yAxisName: string,
 ) {
-  // 等待窗口大小初始化完成
-  await new Promise<void>(resolve => {
-    setTimeout(() => {
-      resolve()
-    }, 500)
-  })
-
-  const chart = echarts.init(chartDom)
+  // // 等待窗口大小初始化完成
+  // await new Promise<void>(resolve => {
+  //   setTimeout(() => {
+  //     resolve()
+  //   }, 500)
+  // })
   const option = {
     // 标题
     title: {
@@ -224,9 +220,9 @@ async function initChart(
     },
 
     // 图例组件
-    legend: {
-      data: [yAxisName]
-    },
+    // legend: {
+    //   data: [yAxisName]
+    // },
     // 提示框组件
     tooltip: {
       // 显示提示框组件
@@ -260,14 +256,14 @@ async function initChart(
     ]
   }
 
-  chart.setOption(option)
+  chartDom.setOption(option)
   window!.addEventListener('resize', () => {
-    chart.resize()
+    chartDom.resize()
   })
 }
 
 function init() {
-  // 获取选项数据
+  // // 获取选项数据
   // handleOptionsQuery()
   // 仿真选项
   state.emulationOptions = [
@@ -291,55 +287,47 @@ function init() {
   ]
 
   // 获取图表数据
-  // handleDataQuery()
-  // 生成50个hh:mm:ss格式的时间
-  state.chartOneXData = []
-  for (let i = 0; i < 50; i++) {
-    state.chartOneXData.push(`${Math.floor(Math.random() * 24)}:${Math.floor(Math.random() * 60)}:${Math.floor(Math.random() * 60)}`)
-  }
-  // 随机生成50个整数
-  state.chartOneYData = []
-  for (let i = 0; i < 50; i++) {
-    state.chartOneYData.push(Math.floor(Math.random() * 1000))
-  }
+  handleDataQuery()
+  // // 生成50个hh:mm:ss格式的时间
+  // state.chartOneXData = []
+  // for (let i = 0; i < 50; i++) {
+  //   state.chartOneXData.push(`${Math.floor(Math.random() * 24)}:${Math.floor(Math.random() * 60)}:${Math.floor(Math.random() * 60)}`)
+  // }
+  // // 随机生成50个整数
+  // state.chartOneYData = []
+  // for (let i = 0; i < 50; i++) {
+  //   state.chartOneYData.push(Math.floor(Math.random() * 1000))
+  // }
 
-  initCharts()
-}
 
-// 初始化所有图表
-function initCharts() {
-  initChart(
-      document.getElementById("chart-1"),
-      'AAAA',
-      state.chartOneXData,
-      state.chartOneYData,
-      '时间',
-      state.formData.drawItem === 1 ? '高度' : state.formData.drawItem === 2 ? '速度' : '偏转角'
-  )
-  initChart(
-      document.getElementById("chart-2"),
-      'AAAA',
-      state.chartOneXData,
-      state.chartOneYData,
-      '时间',
-      state.formData.drawItem === 1 ? '高度' : state.formData.drawItem === 2 ? '速度' : '偏转角'
-  )
-  initChart(
-      document.getElementById("chart-3"),
-      'AAAA',
-      state.chartOneXData,
-      state.chartOneYData,
-      '时间',
-      state.formData.drawItem === 1 ? '高度' : state.formData.drawItem === 2 ? '速度' : '偏转角'
-  )
-  initChart(
-      document.getElementById("chart-4"),
-      'AAAA',
-      state.chartOneXData,
-      state.chartOneYData,
-      '时间',
-      state.formData.drawItem === 1 ? '高度' : state.formData.drawItem === 2 ? '速度' : '偏转角'
-  )
+  let chart1 = echarts.init(document.getElementById("chart-1"))
+  let chart2 = echarts.init(document.getElementById("chart-2"))
+  let chart3 = echarts.init(document.getElementById("chart-3"))
+  let chart4 = echarts.init(document.getElementById("chart-4"))
+
+  let charts = [chart1, chart2, chart3, chart4]
+  charts.forEach(item => {
+    setChartOptions(
+        item,
+        'AAAA',
+        state.chartOneXData,
+        state.chartOneYData,
+        '时间',
+        '高度'
+    )
+    charts[0].setOption({
+      title: {
+        text: 'AAAA',
+        // 以下两项设置标题位置
+        left: 'center',
+        top: 'bottom'
+      },
+      // 图例组件
+      legend: {
+        data: ['高度']
+      },
+    })
+  })
 }
 
 onMounted(() => {
