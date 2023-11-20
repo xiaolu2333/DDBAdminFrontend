@@ -686,7 +686,7 @@ const routes = [
                         path: "/learning/GoJS/example2",
                         component: () => import("@/views/learn/GoJS/example2/index.vue"),
                         meta: {
-                            title: "示例2:拖入element plus Tree叶节点",
+                            title: "示例2-拖入element plus Tree叶节点",
                         }
                     },
                     {
@@ -694,7 +694,7 @@ const routes = [
                         path: "/learning/GoJS/example3",
                         component: () => import("@/views/learn/GoJS/example3/index.vue"),
                         meta: {
-                            title: "示例3:在节点中添加功能按钮",
+                            title: "示例3-在节点中添加功能按钮",
                         }
                     }
                 ]

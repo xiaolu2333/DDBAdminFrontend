@@ -1786,3 +1786,59 @@ onMounted(() => {
   background-color: #f1fff5;
 }
 </style>
+
+<!--from      边起点的表id-->
+<!--fromPort  边起点的字段名称-->
+<!--fromText  "M"-->
+<!--fromTable 边起点的表名称-->
+<!--toSchema  边终点的架构名称-->
+<!--to        边终点的表id-->
+<!--toPort    边终点的字段名称-->
+<!--toText    "1"-->
+<!--dbCo...id-->
+
+
+
+<!--{-->
+<!--    // schema 名-->
+<!--    schema: "public",-->
+<!--    // table 名-->
+<!--    table: "Record1",-->
+<!--    // table的ood-->
+<!--    key: "123",-->
+<!--    // table 字段-->
+<!--    fields: [-->
+<!--      {-->
+<!--        // 字段名-->
+<!--        name: "field1",-->
+<!--        // 字段数据类型-->
+<!--        dataType: "integer",-->
+<!--        // 字段约束类型(逐渐优先)-->
+<!--        constType: 'primary_key', // 主键字段-->
+<!--      },-->
+<!--      {-->
+<!--        name: "field2", dataType: "inet",-->
+<!--        constType: 'catalog_object_column' // 普通字段-->
+<!--      },-->
+<!--      {-->
+<!--        name: "field3", dataType: "character varying",-->
+<!--        constType: 'foreign_key'    // 外键字段-->
+<!--      },-->
+<!--    ],-->
+<!--    [-->
+<!--      {-->
+<!--        from: "Record1", // 边起点的表id-->
+<!--        to: "Record2", // 边终点的表id *****-->
+<!--        fromPort: "field3", // 边起点的字段名称-->
+<!--        toPort: "fieldC", // 边终点的字段名称-->
+<!--        toSchema: "public", // 边终点的架构名称 *****-->
+<!--        toTable: "test", // 边终点表名称 *****-->
+
+<!--        fromText: "1",-->
+<!--        toText: "M"-->
+<!--      },-->
+<!--      ...-->
+<!--    ]-->
+
+<!--  }-->
+

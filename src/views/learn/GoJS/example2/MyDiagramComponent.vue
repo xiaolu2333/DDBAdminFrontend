@@ -1,7 +1,8 @@
 <template>
-  <div id="myDiagramDiv">
-    <canvas tabindex="0" width="1234" height="407"
-            style="position: absolute; top: 0; left: 0; z-index: 2; user-select: none; width: 905px; height: 299px; cursor: auto;">
+  <div id="myDiagramTest">
+    <canvas
+        tabindex="0" width="1234" height="407"
+        style="position: absolute; top: 0; left: 0; z-index: 2; user-select: none; width: 905px; height: 299px; cursor: auto;">
       This text is displayed if your browser does not support the Canvas HTML element.
     </canvas>
     <div style="position: absolute; overflow: auto; width: 905px; height: 299px; z-index: 1;">
@@ -11,56 +12,258 @@
 </template>
 
 <script setup>
-import {onMounted, reactive, toRefs, ref} from 'vue'
+import {onMounted, reactive, toRefs, ref, inject, watch} from 'vue'
 
-import {GetERDData, GetTreeData} from '@/api/dataService/ERD.js'
+const draggedNodeData = ref()
+
+
+// 外键类型选项
+const fkTypeOptions = [
+  {label: "1M", value: "1M"},
+  {label: "MM", value: "MM"},
+]
+const dataMergeFormRef = ref()
 
 const state = reactive({
-  // 布局方式
-  layoutOptions: [// 布局方式可选：GridLayout、TreeLayout、ForceDirectedLayout、LayeredDigraphLayout、CircularLayout
-    {label: "力导向布局", value: "ForceDirectedLayout"},
-    {label: "网格布局", value: "GridLayout"},
-    {label: "树形布局", value: "TreeLayout"},
-    {label: "分层布局", value: "LayeredDigraphLayout"},
-    {label: "循环布局", value: "CircularLayout"},
-  ],
+  // 选中的布局方式
+  selectedLayout: "ForceDirectedLayout",
   // 实体/节点数据
   nodeDataList: [],
   // 关系/边数据
   linkDataList: [],
-  entryOptions: [],
   // 边数据，显示用
   edgeDataList: [],
-  // 被拖动的节点
-  draggedNode: null,
-  // 节点背景颜色
-  nodeColor: "#ffffff",
-  // 眼睛
-  isOpenEye: true,
-  eyeStatus: 'eye-open',
 })
 
 const {
-  layoutOptions,
-  selectedLayout,
   nodeDataList,
   linkDataList,
-  entryOptions,
   edgeDataList,
-  draggedNode,
-  nodeColor,
-  isOpenEye,
-  eyeStatus,
 } = toRefs(state)
 
 let dragged = ref(null)
 let myDiagram = ref(null)
 
+
+/***************************** utils ******************************/
+/**
+ * 供父组件调用，从父组件传入节点数据
+ */
+const getDraggedNodeFromParent = (nodeData) => {
+  console.log('nodeData:', nodeData)
+
+  draggedNodeData.value = nodeData
+  console.log('子组件中draggedNodeData：', draggedNodeData.value)
+}
+defineExpose({
+  getDraggedNodeFromParent
+});
+
+
 /***************************** diagram 初始化 ******************************/
+const initData = () => {
+  state.nodeDataList = [
+    {
+      // schema 名
+      schema: "public",
+      // table 名
+      key: "Record1",
+      // table 字段名
+      fields: [
+        {name: "field1", dataType: "integer", constType: 'primary_key'},
+        {name: "field2", dataType: "inet", constType: 'catalog_object_column'},
+        {name: "field3", dataType: "character varying", constType: 'foreign_key'},
+      ],
+    },
+    {
+      schema: "public",
+      key: "Record2",
+      fields: [
+        {name: "fieldA", dataType: "character varying", constType: 'primary_key'},
+        {name: "fieldB", dataType: "integer", constType: 'catalog_object_column'},
+        {name: "fieldC", dataType: "character varying", constType: 'catalog_object_column'},
+        {name: "fieldD", dataType: "date", constType: 'catalog_object_column'}
+      ],
+    }
+  ]
+
+  state.linkDataList = [
+    {
+      fromSchema: "public", from: "Record1", fromPort: "field3", fromText: "1",
+      toSchema: "public", to: "Record2", toPort: "fieldC", toText: "M"
+    },
+  ]
+}
+
 /**
  * diagram 初始化
  */
 function init() {
+  // This event should only fire on the drag targets.
+  // Instead of finding every drag target,
+  // we can add the event to the document and disregard
+  // all elements that are not of class "draggable"
+  document.addEventListener("dragstart", event => {
+    if (event.target.className !== "draggable") return;
+    // Some data must be set to allow drag
+    event.dataTransfer.setData("text", event.target.textContent);
+
+    // store a reference to the dragged element and the offset of the mouse from the center of the element
+    dragged = event.target;
+    dragged.offsetX = event.offsetX - dragged.clientWidth / 2;
+    dragged.offsetY = event.offsetY - dragged.clientHeight / 2;
+    // Objects during drag will have a red border
+    event.target.style.border = "2px solid red";
+  }, false);
+
+  // This event resets styles after a drag has completed (successfully or not)
+  document.addEventListener("dragend", event => {
+    // reset the border of the dragged element
+    dragged.style.border = "";
+    onHighlight(null);
+
+
+  }, false);
+
+  // Next, events intended for the drop target - the Diagram div
+  const div = document.getElementById("myDiagramTest");
+
+  div.addEventListener("dragenter", event => {
+    // Here you could also set effects on the Diagram,
+    // such as changing the background color to indicate an acceptable drop zone
+
+    // Requirement in some browsers, such as Internet Explorer
+    event.preventDefault();
+  }, false);
+
+  div.addEventListener("dragover", event => {
+    // We call preventDefault to allow a drop
+    // But on divs that already contain an element,
+    // we want to disallow dropping
+
+    if (div === myDiagram.div) {
+      const can = event.target;
+      const pixelratio = myDiagram.computePixelRatio();
+
+      // if the target is not the canvas, we may have trouble, so just quit:
+      if (!(can instanceof HTMLCanvasElement)) return;
+
+      const bbox = can.getBoundingClientRect();
+      let bbw = bbox.width;
+      if (bbw === 0) bbw = 0.001;
+      let bbh = bbox.height;
+      if (bbh === 0) bbh = 0.001;
+      const mx = event.clientX - bbox.left * ((can.width / pixelratio) / bbw);
+      const my = event.clientY - bbox.top * ((can.height / pixelratio) / bbh);
+      const point = myDiagram.transformViewToDoc(new go.Point(mx, my));
+      const part = myDiagram.findPartAt(point, true);
+      onHighlight(part);
+    }
+
+    if (event.target.className === "dropzone") {
+      // Disallow a drop by returning before a call to preventDefault:
+      return;
+    }
+
+    // Allow a drop on everything else
+    event.preventDefault();
+  }, false);
+
+  div.addEventListener("dragleave", event => {
+    // reset background of potential drop target
+    if (event.target.className === "dropzone") {
+      event.target.style.background = "";
+    }
+    onHighlight(null);
+  }, false);
+
+  div.addEventListener("drop", event => {
+    // prevent default action
+    // (open as link for some elements in some browsers)
+    event.preventDefault();
+
+    // 元素拖入画布
+    if (div === myDiagram.div) {
+      const can = event.target;
+      const pixelratio = myDiagram.computePixelRatio();
+
+      // if the target is not the canvas, we may have trouble, so just quit:
+      // 未拖入画布，则不处理
+      if (!(can instanceof HTMLCanvasElement)) return;
+
+      const bbox = can.getBoundingClientRect();
+      let bbw = bbox.width;
+      if (bbw === 0) bbw = 0.001;
+      let bbh = bbox.height;
+      if (bbh === 0) bbh = 0.001;
+      const mx = event.clientX - bbox.left * ((can.width / pixelratio) / bbw);
+      const my = event.clientY - bbox.top * ((can.height / pixelratio) / bbh);
+      const point = myDiagram.transformViewToDoc(new go.Point(mx, my));
+      // if there's nothing at that point
+      if (myDiagram.findPartAt(point) === null) {
+        // a return here doesn't allow the drop to happen
+        // return;
+      }
+      // otherwise create a new node at the drop point
+      myDiagram.startTransaction('new node');
+
+      // const nodeData = state.draggedNode.data.data
+      const nodeData = draggedNodeData.value
+      draggedNodeData.value = {}
+
+      myDiagram.model.addNodeData(nodeData);
+      onDrop(nodeData, point);
+      updateModelData()
+
+      myDiagram.commitTransaction('new node');
+
+      // // remove dragged element from its old location, if checkbox is checked
+      // if (document.getElementById('removeCheckBox').checked) dragged.parentNode.removeChild(dragged);
+    }
+
+    // If we were using drag data, we could get it here, ie:
+    // const data = event.dataTransfer.getData('text');
+  }, false);
+
+
+  // this is called on a stationary node or link during an external drag-and-drop into a Diagram
+  function onHighlight(part) {  // may be null
+    const oldskips = myDiagram.skipsUndoManager;
+    myDiagram.skipsUndoManager = true;
+    myDiagram.startTransaction("highlight");
+    if (part !== null) {
+      myDiagram.highlight(part);
+    } else {
+      myDiagram.clearHighlighteds();
+    }
+    myDiagram.commitTransaction("highlight");
+    myDiagram.skipsUndoManager = oldskips;
+  }
+
+  // this is called upon an external drop in this diagram,
+  // after a new node has been created and selected
+  function onDrop(newNode, point) {
+    const it = myDiagram.findPartsAt(point).iterator;
+    while (it.next()) {
+      const part = it.value;
+      if (part === newNode) continue;
+      // the drop happened on some Part -- call its mouseDrop handler
+      if (part && part.mouseDrop) {
+        const e = new go.InputEvent();
+        e.diagram = myDiagram;
+        e.documentPoint = point;
+        e.viewPoint = myDiagram.transformDocToView(point);
+        e.up = true;
+        myDiagram.lastInput = e;
+        // should be running in a transaction already
+        part.mouseDrop(e, part);
+        return;
+      }
+    }
+    // didn't find anything to drop onto
+  }
+
+
   let $ = go.GraphObject.make;
 
   /**
@@ -68,7 +271,7 @@ function init() {
    */
   myDiagram =
       $(go.Diagram,
-          "myDiagramDiv",                                 // 挂载画布的元素
+          "myDiagramTest",                                 // 挂载画布的元素
           {                                               // 画布属性
             validCycle: go.Diagram.CycleNotDirected,        // don't allow loops
             allowDelete: false,                             // 禁止删除
@@ -145,7 +348,7 @@ function init() {
           new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
           $(go.Shape,           // 节点形状属性
               {
-                fill: state.nodeColor,  // 填充色
+                fill: '#fff',  // 填充色
                 stroke: "black",  // 边框色
                 strokeWidth: 0.5,   // 边框宽度
               }
@@ -206,7 +409,7 @@ function init() {
                         stroke: "black",                      // 文本色为白色
                         font: "bold 12pt sans-serif"
                       },
-                      new go.Binding("text", "table")         // 绑定文本为nodeDataArray中的key
+                      new go.Binding("text", "key")         // 绑定文本为nodeDataArray中的key
                   )
               ),
               // 自定义面板，充当items，用于显示节点的fields
@@ -362,46 +565,88 @@ function init() {
   });
 }
 
+// 更新模型数据：节点与边
+function updateModelData() {
+  let model = myDiagram.model;
+  state.nodeDataList = model.nodeDataArray
+  console.log('更新节点state.nodeDataList', state.nodeDataList)
+
+  // 更新节点选项
+  state.entryOptions = []
+  state.nodeDataList.forEach(item => {
+    state.entryOptions.push({
+      value: item.key,
+      label: item.key,
+    })
+  })
+}
+
 
 onMounted(() => {
   state.selectedLayout = 'LayeredDigraphLayout'
 
-  GetERDData().then(res => {
-    // console.log('res.data.data: ', res.data.data)
-    state.nodeDataList = res.data.data.nodeDataArray
-    console.log('节点数据 nodeDataList', state.nodeDataList)
-    linkDataList.value = res.data.data.linkDataArray
-    console.log('边数据 linkDataList', linkDataList.value)
-    edgeDataList.value = linkDataList.value
+  let da =
+      [
+        {
+          // schema 名
+          schema: "public",
+          // table 名
+          key: "Record1",
+          // table 字段
+          fields: [
+            {
+              // 字段名
+              name: "field1",
+              // 字段数据类型
+              dataType: "integer",
+              // 字段约束类型
+              constType: 'primary_key', // 主键字段
+            },
+            {
+              name: "field2", dataType: "inet",
+              constType: 'catalog_object_column' // 普通字段
+            },
+            {
+              name: "field3", dataType: "character varying",
+              constType: 'foreign_key'    // 外键
+            },
+          ],
+        },
+        {
+          schema: "public",
+          key: "Record2",
+          fields: [
+            {name: "fieldA", dataType: "character varying", constType: 'primary_key'},
+            {name: "fieldB", dataType: "integer", constType: 'catalog_object_column'},
+            {name: "fieldC", dataType: "character varying", constType: 'catalog_object_column'},
+            {name: "fieldD", dataType: "date", constType: 'catalog_object_column'}
+          ],
+        }
+      ]
 
-    res.data.data.nodeDataArray.forEach(item => {
-      state.entryOptions.push({
-        value: item.key,
-        label: item.key,
-      })
-    })
+  state.nodeDataList = [
+    {
+      "schema": "public",
+      "key": "Record3",
+      "fields": [
+        {"name": "fieldA", "info": "char var", "color": "#FFB900", "figure": "Diamond", 'icon': '主键'},
+        {"name": "fieldB", "info": "char var", "color": "#F25022", "figure": "Rectangle", 'icon': '字段'},
+        {"name": "fieldD", "info": "real", "color": "#00BCF2", "figure": "Rectangle", 'icon': '字段'}
+      ],
+      "loc": "280 0",
+      "clickCount": 0,
+    }
+  ]
 
-    state.cFieldOptions = res.data.data.nodeDataArray.map(item => {
-      return {
-        value: item.schema + "." + item.key,
-        label: item.schema + "." + item.key,
-        children: item.fields.map(field => {
-          return {
-            value: field.name,
-            label: field.name
-          }
-        })
-      }
-    })
-    // console.log('GetERDData state.cFieldOptions', state.cFieldOptions)
+  linkDataList.value = []
+  edgeDataList.value = linkDataList.value
 
-    init()
-  })
+  init()
 });
 </script>
-<style scoped>
 
-#myDiagramDiv {
+<style scoped>
+#myDiagramTest {
   background-color: #F8F8F8;
   border: 1px solid #aaa;
   height: 70vh;
@@ -409,63 +654,5 @@ onMounted(() => {
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   cursor: auto;
   z-index: 1000;
-}
-
-/* CSS for the traditional context menu */
-.ctxmenu {
-  display: none;
-  position: absolute;
-  opacity: 0;
-  margin: 0;
-  padding: 8px 0;
-  z-index: 999;
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, .2), 0 8px 10px 1px rgba(0, 0, 0, .14), 0 3px 14px 2px rgba(0, 0, 0, .12);
-  list-style: none;
-  background-color: #ffffff;
-  border-radius: 4px;
-}
-
-.menu-item {
-  display: block;
-  position: relative;
-  min-width: 60px;
-  margin: 0;
-  padding: 6px 16px;
-  font: bold 12px sans-serif;
-  color: rgba(0, 0, 0, .87);
-  cursor: pointer;
-}
-
-.menu-item::before {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  pointer-events: none;
-  content: "";
-  width: 100%;
-  height: 100%;
-  background-color: #000000;
-}
-
-.menu-item:hover::before {
-  opacity: .04;
-}
-
-.menu .menu {
-  top: -8px;
-  left: 100%;
-}
-
-.show-menu, .menu-item:hover .ctxmenu {
-  display: block;
-  opacity: 1;
-}
-
-.target-area {
-  width: 500px;
-  height: 300px;
-  border: 1px solid #999;
-  background-color: #f1fff5;
 }
 </style>
