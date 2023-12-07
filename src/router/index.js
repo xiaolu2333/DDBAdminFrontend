@@ -611,6 +611,15 @@ const routes = [
                         },
                         children: []
                     },
+                    // {
+                    //     name: "JavaScriptDA",
+                    //     path: "/learning/learnJS/JavaScriptDA",
+                    //     component: () => import("@/views/learn/learnJS/JavaScriptDA/index.vue"),
+                    //     meta: {
+                    //         title: "JavaScript数据结构与算法",
+                    //     },
+                    //     children: []
+                    // }
                 ]
             },
             {
@@ -695,6 +704,14 @@ const routes = [
                         component: () => import("@/views/learn/GoJS/example3/index.vue"),
                         meta: {
                             title: "示例3-在节点中添加功能按钮",
+                        }
+                    },
+                    {
+                        name: "example4",
+                        path: "/learning/GoJS/example4",
+                        component: () => import("@/views/learn/GoJS/example4/index.vue"),
+                        meta: {
+                            title: "示例4-拖动port连线",
                         }
                     }
                 ]
