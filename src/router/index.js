@@ -313,6 +313,22 @@ const routes = [
                         meta: {
                             title: "动态Tabs"
                         }
+                    },
+                    {
+                        name: 'useSelect',
+                        path: '/learning/element-plus/useSelect',
+                        component: () => import("@/views/learn/element-plus/useSelect/index.vue"),
+                        meta: {
+                            title: "使用Select"
+                        }
+                    },
+                    {
+                        name: 'uploadFile',
+                        path: '/learning/element-plus/uploadFile',
+                        component: () => import("@/views/learn/element-plus/uploadFile/index.vue"),
+                        meta: {
+                            title: "上传文件"
+                        }
                     }
                 ]
             },
@@ -410,6 +426,15 @@ const routes = [
                         component: () => import("@/views/learn/vxe-table/useGrid1/index.vue"),
                         meta: {
                             title: "使用Grid1",
+                        },
+                        children: []
+                    },
+                    {
+                        name: "useGrid2",
+                        path: "/learning/vxe-table/useGrid2",
+                        component: () => import("@/views/learn/vxe-table/useGrid2/index.vue"),
+                        meta: {
+                            title: "使用Grid2",
                         },
                         children: []
                     }
