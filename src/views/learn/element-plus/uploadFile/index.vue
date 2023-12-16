@@ -20,6 +20,7 @@
       <el-upload
           ref="schemeFileUploadRef"
           name="schemeFile"
+          accept=".txt, .pdf, .doc, .docx, .md"
           :auto-upload="false"
           :limit="1"
           :file-list="form.schemeFile"

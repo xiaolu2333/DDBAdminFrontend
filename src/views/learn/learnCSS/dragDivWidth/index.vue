@@ -1,23 +1,25 @@
 <template>
-  <div class="box" ref="box">
-    <div class="left" style="background-color: #f1fff5">
-      <ul>
-        <li>1</li>
-        <li>2</li>
-        <li>3</li>
-      </ul>
+  <el-card class="app-card-container" shadow="never">
+    <div class="box" ref="box">
+      <div class="left" style="background-color: #f1fff5">
+        <ul>
+          <li>1</li>
+          <li>2</li>
+          <li>3</li>
+        </ul>
+      </div>
+      <div class="resize" title="收缩侧边栏">
+        ⋮
+      </div>
+      <div class="mid" style="background-color: #96b1eb">
+        <ul>
+          <li>1</li>
+          <li>2</li>
+          <li>3</li>
+        </ul>
+      </div>
     </div>
-    <div class="resize" title="收缩侧边栏">
-      ⋮
-    </div>
-    <div class="mid" style="background-color: #96b1eb">
-      <ul>
-        <li>1</li>
-        <li>2</li>
-        <li>3</li>
-      </ul>
-    </div>
-  </div>
+  </el-card>
 </template>
 
 <script setup>
@@ -75,12 +77,75 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.app-card-container {
+  height: 100%;
+  width: 100%;
+}
+
+::v-deep(.el-card__body) {
+  height: 100%;
+}
+
+.scrollbar-wrapper {
+  height: 100%;
+}
+
+.cus-card-header {
+  height: 32px;
+}
+
+.function-toolbar {
+  margin-bottom: 10px;
+}
+
+.query-box {
+  float: right;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.card-table-container {
+  height: calc(90vh - 150px);
+  width: calc(100%);
+  transition: width 1s ease-in-out .5s;
+}
+
+.pagination-toolbar {
+}
+
+.scrollbar-demo-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  margin: 10px;
+  text-align: left;
+  border-radius: 4px;
+  background-color: #fff5f5;
+  color: #ff9999;
+  font-weight: bold;
+//background: var(--el-color-primary-light-9); //color: var(--el-color-primary);
+}
+
+::v-deep(.vxe-body--row.row-red) {
+  background-color: #ffd6d6;
+}
+
+::v-deep(.vxe-body--column.col-red) {
+  background-color: #f37676;
+}
+
+::v-deep(.el-upload-list__item) {
+  margin: 0;
+  padding-left: 0;
+}
+
 /* 拖拽相关样式 */
 /*包围div样式*/
 .box {
   width: 100%;
   height: 100%;
-  margin: 1% 0px;
+  margin: 1% 0;
   overflow: hidden;
   box-shadow: -1px 9px 10px 3px rgba(0, 0, 0, 0.11);
 }

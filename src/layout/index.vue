@@ -1,22 +1,31 @@
 <template>
   <el-container id="layout-container">
     <el-aside id="layout-aside">
-      <LayoutSidebar />
+      <MyLayoutSidebar v-model:collapse="isCollapse"/>
     </el-aside>
     <el-container>
-      <el-header id="layout-header"><LayoutHeader /></el-header>
-      <el-main id="layout-main"><LayoutMain /></el-main>
+      <el-header id="layout-header">
+        <MyLayoutHeader v-model:collapse="isCollapse"/>
+      </el-header>
+      <el-main id="layout-main">
+        <MyLayoutMain/>
+      </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script setup>
-import LayoutSidebar from './components/Sidebar/index.vue'
-import LayoutMain from './components/Main/index.vue'
-import LayoutHeader from './components/Header/index.vue'
+import {ref} from "vue";
 
+import MyLayoutSidebar from '@/layout/components/Sidebar/index.vue'
+import MyLayoutMain from '@/layout/components/Main/index.vue'
+import MyLayoutHeader from '@/layout/components/Header/index.vue'
+
+// 侧边栏是否折叠
+let isCollapse = ref(false)
 </script>
 
 <style scoped>
+
 
 </style>

@@ -13,7 +13,6 @@
 
 div {
   background-color: $mainColor;
-  height: 85vh;
-  padding: 10px;
+  height: calc(100vh - 3em)
 }
 </style>
