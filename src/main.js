@@ -8,6 +8,8 @@ import {setupStore} from '@/store/index.js'
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+import 'dayjs/locale/zh-cn'
 import VXETable from 'vxe-table'
 import 'vxe-table/lib/style.css'
 import echarts from './views/learn/dataVisualization/useEcharts/myEcharts'
@@ -52,6 +54,10 @@ const setupAll = async () => {
     app.config.globalProperties.$echarts = gojs;
     // 挂载highlight.js
     app.use(hljsVuePlugin)
+    // element-plus国际化
+    app.use(ElementPlus, {
+        locale: zhCn,
+    })
 
     // 挂载Vue应用实例
     app.mount('#app');
