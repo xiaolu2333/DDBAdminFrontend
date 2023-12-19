@@ -74,11 +74,23 @@
         </el-card>
       </el-col>
     </el-row>
+    <div class="width-drag-container">
+      <div style="background-color: #48ff32">
+        <img
+            ref="resizeRef"
+            v-width-resize="handelWidthResize"
+            src="./src/assets/images/logo.svg"
+        >
+      </div>
+
+    </div>
   </el-card>
 
 </template>
 
 <script setup>
+import {ref} from "vue";
+
 // v-focus 改变背景颜色
 const vFocus = {
   mounted: (el) => {
@@ -211,4 +223,45 @@ function handleThrottle(data) {
   }
 }
 
+const resizeRef = ref(null)
+const width = ref(300)
+const ob = new ResizeObserver((entries) => {
+  for (let entry of entries) {
+    const {width, height} = entry.contentRect
+    console.log('entry:', entry.borderBoxSize[0])
+    const fn = map.get(entry.target)
+    if (fn) {
+      fn({
+        width: entry.contentRect.width,
+        height: entry.contentRect.height
+      })
+    }
+  }
+})
+const map = new WeakMap()
+// v-width-resize 拖拽改变宽度
+const vWidthResize = {
+  mounted(el, binding) {
+    // 监听el元素尺寸变化
+    map.set(el, binding.value)
+    ob.observe(el)
+  },
+  unmounted(el) {
+    // 移除监听
+    ob.unobserve(el)
+  }
+}
+
+function handelWidthResize(size) {
+  console.log("size:", size)
+  width.value = size.width
+}
 </script>
+
+<style scoped>
+.width-drag-container {
+  display: flex;
+  width: 100%;
+  height: 300px;
+}
+</style>
