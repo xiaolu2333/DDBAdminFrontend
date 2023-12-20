@@ -85,12 +85,15 @@ div.text {
 div.bar {
   width: 200px;
   height: 100%;
+  min-width: 50px;
+  max-width: 400px;
   margin-right: -2px;
   /* 因为bar盒子和text盒子是重合的所以必须设置一个负值才能看到我们的拖动按钮*/
   overflow: scroll;
   /* 可设置其他值来进行对别，只可意会，不可言传*/
   resize: horizontal;
   /*水平拖放*/
+  font-weight: bolder;
 }
 
 /*因为拖动按钮属于滚动条系列，所以可通过改变滚动来间接改变拖动按钮的样式*/

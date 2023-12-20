@@ -329,6 +329,14 @@ const routes = [
                         meta: {
                             title: "上传文件"
                         }
+                    },
+                    {
+                        name: 'dateAndTime',
+                        path: '/learning/element-plus/dateAndTime',
+                        component: () => import("@/views/learn/element-plus/dateAndTime/index.vue"),
+                        meta: {
+                            title: "日期和时间"
+                        }
                     }
                 ]
             },
