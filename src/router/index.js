@@ -343,7 +343,15 @@ const routes = [
                         path: '/learning/element-plus/useButton',
                         component: () => import("@/views/learn/element-plus/useButton/index.vue"),
                         meta: {
-                            title: "使用Button"
+                            title: "使用按钮"
+                        }
+                    },
+                    {
+                        name: 'useProgress',
+                        path: '/learning/element-plus/useProgress',
+                        component: () => import("@/views/learn/element-plus/useProgress/index.vue"),
+                        meta: {
+                            title: "使用进度条"
                         }
                     }
                 ]
