@@ -337,6 +337,14 @@ const routes = [
                         meta: {
                             title: "日期和时间"
                         }
+                    },
+                    {
+                        name: 'useButton',
+                        path: '/learning/element-plus/useButton',
+                        component: () => import("@/views/learn/element-plus/useButton/index.vue"),
+                        meta: {
+                            title: "使用Button"
+                        }
                     }
                 ]
             },
