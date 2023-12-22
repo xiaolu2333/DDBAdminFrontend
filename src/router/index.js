@@ -329,6 +329,30 @@ const routes = [
                         meta: {
                             title: "上传文件"
                         }
+                    },
+                    {
+                        name: 'dateAndTime',
+                        path: '/learning/element-plus/dateAndTime',
+                        component: () => import("@/views/learn/element-plus/dateAndTime/index.vue"),
+                        meta: {
+                            title: "日期和时间"
+                        }
+                    },
+                    {
+                        name: 'useButton',
+                        path: '/learning/element-plus/useButton',
+                        component: () => import("@/views/learn/element-plus/useButton/index.vue"),
+                        meta: {
+                            title: "使用按钮"
+                        }
+                    },
+                    {
+                        name: 'useProgress',
+                        path: '/learning/element-plus/useProgress',
+                        component: () => import("@/views/learn/element-plus/useProgress/index.vue"),
+                        meta: {
+                            title: "使用进度条"
+                        }
                     }
                 ]
             },
