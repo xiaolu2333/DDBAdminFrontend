@@ -110,7 +110,7 @@ export async function test(dataForm) {
     }
 }
 
-export async function interruptUploadRequest(dataForm, options) {
+export async function interruptUploadRequest(dataForm, options, fn) {
     return await service.request({
         method: "post",
         url: "/test_app/interrupt_upload_request",
@@ -118,6 +118,8 @@ export async function interruptUploadRequest(dataForm, options) {
         headers: {
             "Content-Type": "multipart/form-data",  // 一般文件上传，使用 multipart/form-data 格式
         },
-        signal: options.signal
+        signal: options.signal,
+        // onUploadProgress回调可以获取进度
+        onUploadProgress: fn
     })
 }

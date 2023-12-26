@@ -1,6 +1,11 @@
 <template>
   <el-card>
-    <el-form :model="form" :close-on-click-modal="false" label-width="120" label-position="left">
+    <el-form
+        :model="form"
+        :close-on-click-modal="false" label-width="120" label-position="left"
+        v-loading="loading"
+        element-loading-text="上传中..."
+    >
       <el-form-item
           label="名称"
           prop="name"
@@ -21,7 +26,6 @@
         <el-upload
             ref="schemeFileUploadRef"
             name="schemeFile"
-            accept=".txt, .pdf, .doc, .docx, .md"
             :auto-upload="false"
             :limit="1"
             :file-list="form.schemeFile"
@@ -56,6 +60,14 @@
     <el-button type="warning" @click="cancel">取消</el-button>
     <el-button :disabled="loading" type="primary" @click="submit">保存</el-button>
   </el-card>
+  <el-card>
+    <el-progress
+        v-show="showProgress"
+        :percentage="percentage" :status="status"
+        :format="format"
+        :text-inside="true" :stroke-width="24"
+    />
+  </el-card>
 </template>
 
 <script setup>
@@ -63,7 +75,12 @@ import {reactive, ref} from "vue";
 
 import {interruptUploadRequest} from "@/api/learn/uploadAndDownloadFile"
 import {ElMessage} from "element-plus";
+import axios from "axios";
 
+
+const showProgress = ref(false)
+const percentage = ref(0)
+const status = ref("")
 const schemeFileUploadRef = ref()
 const dataFilesUploadRef = ref()
 const form = reactive({
@@ -124,6 +141,8 @@ const cancel = () => {
   controller.abort()
   ElMessage.warning('取消上传！')
   loading.value = false
+  percentage.value = 0
+  showProgress.value = false
 
   // form.name = ''
   // form.description = ''
@@ -147,32 +166,35 @@ const submit = () => {
       console.log('form.dataFiles[i].name:', form.dataFiles[i].name)
       formData.append('dataFiles', form.dataFiles[i].raw)
     }
-    console.log('formData:', formData)
-
-    loading.value = true
-    interruptUploadRequest(
-        formData,
-        {
-          signal: controller.signal
-        }
-    ).then((res) => {
-      console.log('res:', res)
-      if (res.data.code === 200) {
-        ElMessage.success('上传成功！')
-      }
-    });
-
-    // interruptUploadRequest(formData, false).then((res) => {
-    //   console.log('res:', res)
-    //   if (res.data.code === 200) {
-    //     ElMessage.success('上传成功！')
-    //   }
-    //   loading.value = false
-    // }).catch((err) => {
-    //   ElMessage.error(err.message)
-    //   loading.value = false
-    // })
   }
+
+  loading.value = true
+  showProgress.value = true
+  interruptUploadRequest(
+      formData,
+      {
+        signal: controller.signal
+      },
+      function (progress) {
+        let proData = Number(Math.floor(progress.loaded / progress.total * 100).toFixed(0))
+        console.log('proData:', proData)
+        percentage.value = proData
+        if (percentage.value === 100) {
+          status.value = "success"
+        }
+      }
+  ).then((res) => {
+    console.log('res:', res)
+    if (res.data.code === 200) {
+      ElMessage.success('上传成功！')
+      loading.value = false
+      percentage.value = 0
+      showProgress.value = false
+    } else {
+      ElMessage.error('上传失败！')
+      loading.value = false
+    }
+  });
 }
 
 const getFileInputField = (field) => {
