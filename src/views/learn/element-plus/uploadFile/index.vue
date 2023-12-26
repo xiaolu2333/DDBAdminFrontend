@@ -27,7 +27,6 @@
             :file-list="form.schemeFile"
             :on-change="handleSchemaFileChange"
             :on-remove="handleSchemaFileRemove"
-            :on-exceed="handleSchemaFileExceed"
             style="width: 90%"
         >
           <el-button type="primary" @click="getFileInputField('schema')">选择方案文件</el-button>
@@ -53,8 +52,10 @@
       </el-form-item>
     </el-form>
   </el-card>
-  <el-button type="warning" @click="cancel">取消</el-button>
-  <el-button :disabled="loading" type="primary" @click="submit">保存</el-button>
+  <el-card>
+    <el-button type="warning" @click="cancel">取消</el-button>
+    <el-button :disabled="loading" type="primary" @click="submit">保存</el-button>
+  </el-card>
 </template>
 
 <script setup>
@@ -73,6 +74,7 @@ const form = reactive({
 })
 const currentFileField = ref("")
 const loading = ref(false)
+let controller = new AbortController();
 
 
 /****************************************** schemaFile 文件操作 ******************************************/
@@ -118,13 +120,15 @@ const handleDataFileRemove = (file) => {
 }
 
 const cancel = () => {
+  // 取消请求
+  controller.abort()
+  ElMessage.warning('取消上传！')
+  loading.value = false
 
-
-  console.log('form:', form)
-  form.name = ''
-  form.description = ''
-  form.schemeFile = []
-  form.dataFiles = []
+  // form.name = ''
+  // form.description = ''
+  // form.schemeFile = []
+  // form.dataFiles = []
 }
 
 const submit = () => {
@@ -146,16 +150,28 @@ const submit = () => {
     console.log('formData:', formData)
 
     loading.value = true
-    interruptUploadRequest(formData).then((res) => {
+    interruptUploadRequest(
+        formData,
+        {
+          signal: controller.signal
+        }
+    ).then((res) => {
       console.log('res:', res)
       if (res.data.code === 200) {
         ElMessage.success('上传成功！')
       }
-      loading.value = false
-    }).catch((err) => {
-      ElMessage.error(err.message)
-      loading.value = false
-    })
+    });
+
+    // interruptUploadRequest(formData, false).then((res) => {
+    //   console.log('res:', res)
+    //   if (res.data.code === 200) {
+    //     ElMessage.success('上传成功！')
+    //   }
+    //   loading.value = false
+    // }).catch((err) => {
+    //   ElMessage.error(err.message)
+    //   loading.value = false
+    // })
   }
 }
 
@@ -163,8 +179,24 @@ const getFileInputField = (field) => {
   console.log(field + '文件字段')
   currentFileField.value = field
 }
+
+/************************************ utils ************************************/
+const format = (percentage) => (percentage === 100 ? '完成' : `${percentage}%`)
+
+// // 通过定时器模拟进度条的变化
+// setInterval(() => {
+//   percentage.value += 10
+//   if (percentage.value >= 100) {
+//     percentage.value = 100
+//     status.value = 'success'
+//     // percentage.value = 0
+//   }
+// }, 1000)
 </script>
 
 <style scoped>
-
+.el-progress--line {
+  margin-bottom: 15px;
+  width: 350px;
+}
 </style>
