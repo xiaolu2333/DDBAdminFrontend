@@ -331,6 +331,14 @@ const routes = [
                         }
                     },
                     {
+                        name: 'downloadFile',
+                        path: '/learning/element-plus/downloadFile',
+                        component: () => import("@/views/learn/element-plus/downloadFile/index.vue"),
+                        meta: {
+                            title: "下载文件"
+                        }
+                    },
+                    {
                         name: 'dateAndTime',
                         path: '/learning/element-plus/dateAndTime',
                         component: () => import("@/views/learn/element-plus/dateAndTime/index.vue"),
