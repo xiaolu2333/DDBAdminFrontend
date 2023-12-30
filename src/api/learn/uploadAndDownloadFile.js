@@ -110,13 +110,44 @@ export async function test(dataForm) {
     }
 }
 
-export async function interruptUploadRequest(dataForm) {
+/**
+ * 文件上传——支持进度展示、请求取消
+ * @param dataForm
+ * @param options
+ * @param fn
+ * @returns
+ */
+export async function interruptUploadRequest(dataForm, options, fn) {
     return await service.request({
         method: "post",
         url: "/test_app/interrupt_upload_request",
         data: dataForm,
         headers: {
             "Content-Type": "multipart/form-data",  // 一般文件上传，使用 multipart/form-data 格式
-        }
+        },
+        signal: options.signal,
+        // onUploadProgress回调可以获取进度
+        onUploadProgress: fn
     })
+}
+
+/**
+ * 文件下载——支持进度展示、请求取消
+ * @returns
+ * @param id
+ */
+export async function interruptDownloadRequest(id, fn) {
+    try {
+        return await service.request({
+            method: "get",
+            url: "/test_app/interrupt_download_request",
+            params: {id: id},
+            responseType: "blob", // 一般文件下载，使用 blob 格式
+            // onDownloadProgress回调可以获取进度
+            onDownloadProgress: fn
+        });
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
 }
