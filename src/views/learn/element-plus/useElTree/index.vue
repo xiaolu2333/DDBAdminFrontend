@@ -78,6 +78,20 @@
     />
   </el-card>
 
+  <el-card>
+    <template #header>
+      <span>树节点展开与选中</span>
+    </template>
+    <el-tree
+        :data="data"
+        :props="defaultProps"
+        node-key="id"
+        :current-node-key="6"
+        hlight-current="true"
+        default-expanded-keys="[3, 6]"
+    />
+  </el-card>
+
   <el-dialog
       title="【数据库操作员】授权——阶段二"
       :close-on-click-modal="false"
