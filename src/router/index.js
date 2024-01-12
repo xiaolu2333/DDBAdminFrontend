@@ -424,11 +424,11 @@ const routes = [
                         children: []
                     },
                     {
-                        name: "sortInVXETable",
-                        path: "/learning/vxe-table/sortInVXETable",
-                        component: () => import("@/views/learn/vxe-table/sortInVXETable/index.vue"),
+                        name: "sortAndFilter",
+                        path: "/learning/vxe-table/sortAndFilter",
+                        component: () => import("@/views/learn/vxe-table/sortAndFilter/index.vue"),
                         meta: {
-                            title: "VXETable排序",
+                            title: "排序与过滤",
                         },
                         children: []
                     },

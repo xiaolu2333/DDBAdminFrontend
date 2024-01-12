@@ -1,16 +1,17 @@
 <template>
-  <div>
+  <el-card>
+    前端排序
     <vxe-table
         border
         class="my-sort"
-        ref="xTable"
+        ref="xTable1"
         height="300"
-        :data="tableData"
+        :data="tableData1"
         :row-config="{isCurrent: true, isHover: true}"
         :column-config="{resizable: true}"
         :sort-config="{showIcon: false, multiple: true}"
         @header-cell-click="headerCellClickEvent"
-        @sort-change="sortChangeEvent"
+        @sort-change="sortChangeEvent1"
     >
       <vxe-column type="seq" width="60"></vxe-column>
       <vxe-column field="name" title="Name" sortable>
@@ -59,14 +60,59 @@
         </template>
       </vxe-column>
     </vxe-table>
-  </div>
+  </el-card>
+  <el-card>
+    后端排序
+    <vxe-table
+        border
+        :data="tableData2"
+        align="center"
+        height="400"
+        :sort-config="{remote: true}"
+        @sort-change="sortChangeEvent2">
+      >
+      <vxe-column type="seq" width="60"></vxe-column>
+      <vxe-column
+          v-for="(head, index) in tableHeader"
+          :key="index"
+          :field="head.field"
+          :title="head.title"
+          :sortable="canSort(head.field)"
+      >
+        <template #default="{ row, column }">
+          <template v-if="head.fieldType === 'select'">
+            <span>{{ row[head.field].join('，') }}</span>
+            <!--            <vxe-select v-model="head.field" disabled>-->
+            <!--              <vxe-option-->
+            <!--                  v-for="option in head.options"-->
+            <!--                  :key="option.id"-->
+            <!--                  :value="option.value"-->
+            <!--                  :label="option.label"-->
+            <!--              />-->
+            <!--            </vxe-select>-->
+          </template>
+          <template v-else><span>{{ row[head.field] }}</span></template>
+        </template>
+      </vxe-column>
+      <vxe-column title="操作" width="150">
+        <el-button disabled>1</el-button>
+        <el-button disabled>2</el-button>
+      </vxe-column>
+    </vxe-table>
+  </el-card>
 </template>
 
 <script lang="ts" setup>
-import {ref} from 'vue'
+import {onBeforeMount, ref} from 'vue'
 import {VxeTableInstance, VxeColumnPropTypes, VxeTableEvents} from 'vxe-table'
 import XEUtils from 'xe-utils'
 
+import {
+  getGeneralTableHeaderApi,
+  getGeneralTableDataApi
+} from '@/api/learn/vxeTable'
+
+/**************************************** 前端排序与过滤 ****************************************/
 interface RowVO {
   id: number
   name: string
@@ -79,9 +125,8 @@ interface RowVO {
   address: string
 }
 
-const xTable = ref<VxeTableInstance>()
-
-const tableData = ref<RowVO[]>([
+const xTable1 = ref<VxeTableInstance>()
+const tableData1 = ref<RowVO[]>([
   {
     id: 10001,
     name: '张三',
@@ -104,7 +149,6 @@ const tableData = ref<RowVO[]>([
     salary: 34500,
     department: 'Test'
   },
-
   {
     id: 10003,
     name: '王五',
@@ -172,7 +216,6 @@ const tableData = ref<RowVO[]>([
     department: 'Development'
   },
 ])
-
 const sexOptions = ref([
   {label: 'Women', value: 'Women'},
   {label: 'Man', value: 'Man'}
@@ -181,7 +224,6 @@ const roleList = ref(['', 'Develop', 'PM', 'Test', 'Designer'])
 const roleOptions = ref([
   {data: ''}
 ])
-
 const departmentOptions = ref([
   {data: ''}
 ])
@@ -192,7 +234,7 @@ const headerCellClickEvent: VxeTableEvents.HeaderCellClick = ({
                                                                 triggerSort,
                                                                 triggerFilter
                                                               }) => {
-  const $table = xTable.value
+  const $table = xTable1.value
   if ($table) {
     // 如果触发了列的其他功能按钮
     if (column.sortable && !(triggerResizable || triggerSort || triggerFilter)) {
@@ -208,7 +250,7 @@ const headerCellClickEvent: VxeTableEvents.HeaderCellClick = ({
 }
 
 // @ts-ignore
-const sortChangeEvent: VxeTableEvents.SortChange<RowVO> = ({sortList}) => {
+const sortChangeEvent1: VxeTableEvents.SortChange<RowVO> = ({sortList}) => {
   console.info(sortList.map((item) => `${item.field},${item.order}`).join('; '))
 }
 
@@ -227,6 +269,32 @@ const filterDepartmentRecoverMethod: VxeColumnPropTypes.FilterRecoverMethod<RowV
   // 如果是自定义筛选模板，当为点击确认时，该选项将被恢复为默认值
   option.data = ''
 }
+
+
+/**************************************** 后端排序与过滤 ****************************************/
+const tableHeader = ref([])
+const tableData2 = ref([])
+
+const canSort = (field) => {
+  const canSortField = ['id', 'name', 'number', 'price', 'manu', 'date', 'time', 'datetime']
+  return canSortField.includes(field)
+}
+
+const sortChangeEvent2 = async ({field, order}) => {
+  await getList(field, order)
+}
+
+const getList = async (field, order) => {
+  const res2 = await getGeneralTableDataApi(field, order)
+  tableData2.value = res2.data.data
+}
+
+onBeforeMount(async () => {
+  const res1 = await getGeneralTableHeaderApi()
+  tableHeader.value = res1.data.data
+
+  await getList("", "")
+})
 </script>
 
 <style>
