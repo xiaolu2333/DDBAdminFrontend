@@ -361,6 +361,22 @@ const routes = [
                         meta: {
                             title: "使用进度条"
                         }
+                    },
+                    {
+                        name: 'useMenu',
+                        path: '/learning/element-plus/useMenu',
+                        component: () => import("@/views/learn/element-plus/useMenu/index.vue"),
+                        meta: {
+                            title: "使用菜单"
+                        }
+                    },
+                    {
+                        name: 'useCheckbox',
+                        path: '/learning/element-plus/useCheckbox',
+                        component: () => import("@/views/learn/element-plus/useCheckbox/index.vue"),
+                        meta: {
+                            title: "使用Checkbox"
+                        }
                     }
                 ]
             },
