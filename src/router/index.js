@@ -693,6 +693,15 @@ const routes = [
                     //     },
                     //     children: []
                     // }
+                    {
+                        name: "JavaScript代码片段",
+                        path: "/learning/learnJS/JavaScriptCodeSnippet",
+                        component: () => import("@/views/learn/learnJS/JavaScriptCodeSnippet/index.vue"),
+                        meta: {
+                            title: "JavaScript代码片段",
+                        },
+                        children: []
+                    }
                 ]
             },
             {
@@ -788,7 +797,33 @@ const routes = [
                         }
                     }
                 ]
-            }
+            },
+            // {
+            //     name: "learnHttpRequestAndResponse",
+            //     path: "/learning/learnHttpRequestAndResponse",
+            //     component: () => import("@/views/learn/learnHttpRequestAndResponse/index.vue"),
+            //     meta: {
+            //         title: "HTTP&HTTPS",
+            //     },
+            //     children: [
+            //         {
+            //             name: "axiosBase",
+            //             path: "/learning/learnHttpRequestAndResponse/axiosBase",
+            //             component: () => import("@/views/learn/learnHttpRequestAndResponse/axiosBase/index.vue"),
+            //             meta: {
+            //                 title: "axios基础",
+            //             }
+            //         },
+            //         {
+            //             name: "handleRepeatRequest",
+            //             path: "/learning/learnHttpRequestAndResponse/handleRepeatRequest",
+            //             component: () => import("@/views/learn/learnHttpRequestAndResponse/handleRepeatRequest/index.vue"),
+            //             meta: {
+            //                 title: "处理重复请求",
+            //             }
+            //         }
+            //     ]
+            // }
         ]
     },
 

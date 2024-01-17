@@ -34,9 +34,7 @@ const {} = toRefs(state)
  * 在爷爷调用孙子的函数获取数据时，充当中间人的角色
  */
 const middleMethod = () => {
-  console.log('proxy:', proxy)
-  console.log('refs:', proxy.$refs)
-  return 'testtest'
+  return grandsonRef.value.sendDataToGrandpa2()
 }
 defineExpose({
   middleMethod
