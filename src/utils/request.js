@@ -11,6 +11,10 @@ const service = axios.create({
     timeout: 30000,
 });
 
+// 变量用于保存之前的请求
+let pendingRequest = null;
+
+
 // 创建请求拦截器
 service.interceptors.request.use(
     function (config) {
