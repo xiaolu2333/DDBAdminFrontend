@@ -41,14 +41,16 @@
       </el-table-column>
       <el-table-column prop="enable" label="是否启用">
         <template #default="{row}">
-          <el-switch v-model="row.enable" active-color="#13ce66" inactive-color="#ff4949"
-                     @change="handleEnableChange(row)"></el-switch>
+          <el-switch
+              v-model="row.enable" active-color="#13ce66" inactive-color="#ff4949"
+              @change="handleEnableChange(row)"></el-switch>
         </template>
       </el-table-column>
       <el-table-column prop="hidden" label="是否隐藏">
         <template #default="{row}">
-          <el-switch v-model="row.hidden" active-color="#13ce66" inactive-color="#ff4949"
-                     @change="handlehiddenChange(row)"></el-switch>
+          <el-switch
+              v-model="row.hidden" active-color="#13ce66" inactive-color="#ff4949"
+              @change="handlehiddenChange(row)"></el-switch>
         </template>
       </el-table-column>
     </el-table>
@@ -153,11 +155,25 @@ import {GetMenuList, GetMenuDetail, CreateMenu, UpdateMenu, DeleteMenu} from '..
 
 interface MenuData {
   id?: number,
+  // 菜单名称
   name: string,
+  // 菜单路径
   path: string,
-  parent: string,
+  // 上级菜单
+  parent?: string,
+  // 页面类型 1-主目录/模块 2-路由
+  pageType: number,
+  // 菜单类型 1-用户页面 2-系统管理 3-安全管理 4-审计管理 5-运维管理
+  menuType: number,
+  // 授权类型 1-公开 2-角色授权
+  authType: number,
+  // 是否启用
   enable: boolean,
+  // 是否隐藏
+  hidden: boolean,
+  // 创建时间
   createTime?: string,
+  // 更新时间
   updateTime?: string,
 }
 
@@ -170,7 +186,9 @@ const state = reactive({
     visible: false,
   },
   formData: {
+    authType: 2,
     enable: true,
+    hidden: false,
   } as any,
   rules: {
     name: [

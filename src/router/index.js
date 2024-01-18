@@ -76,16 +76,16 @@ const routes = [
 
     // System Management
     {
-        path: "/system",
         name: "System",
+        path: "/system",
         meta: {
             title: "系统管理",
         },
         component: () => import("@/layout/index.vue"),
         children: [
             {
-                path: "/organization",
                 name: "Organization",
+                path: "/organization",
                 meta: {
                     title: "机构管理",
                 },
@@ -93,8 +93,8 @@ const routes = [
                 children: []
             },
             {
-                path: "/department",
                 name: "Department",
+                path: "/department",
                 meta: {
                     title: "部门管理",
                 },
@@ -102,8 +102,8 @@ const routes = [
                 children: []
             },
             {
-                path: "/dict",
                 name: "Dict",
+                path: "/dict",
                 meta: {
                     title: "字典管理",
                 },
@@ -111,8 +111,8 @@ const routes = [
                 children: []
             },
             {
-                path: "/user",
                 name: "User",
+                path: "/user",
                 meta: {
                     title: "用户管理",
                 },
@@ -175,25 +175,16 @@ const routes = [
 
     // Data Management
     {
-        path: "/dataManage",
         name: "DataManage",
+        path: "/dataManage",
         meta: {
             title: "数据管理",
         },
         component: () => import("@/layout/index.vue"),
         children: [
             {
-                path: "/dataManage/dataTree",
-                name: "DataTree",
-                component: () => import("@/views/dataManage/dataTree/index.vue"),
-                meta: {
-                    title: "数据树",
-                },
-                children: []
-            },
-            {
-                path: "/dataManage/registerCenter",
                 name: "RegisterCenter",
+                path: "/dataManage/registerCenter",
                 component: () => import("@/views/dataManage/registerCenter/index.vue"),
                 meta: {
                     title: "注册中心",
@@ -201,8 +192,8 @@ const routes = [
                 children: []
             },
             {
-                path: "/dataManage/configCenter",
                 name: "ConfigCenter",
+                path: "/dataManage/configCenter",
                 component: () => import("@/views/dataManage/configCenter/index.vue"),
                 meta: {
                     title: "配置中心",
@@ -210,19 +201,19 @@ const routes = [
                 children: []
             },
             {
-                path: "/dataManage/subNodeManagement",
                 name: "SubNodeManagement",
+                path: "/dataManage/subNodeManagement",
                 component: () => import("@/views/dataManage/subNodeManagement/index.vue"),
                 meta: {
                     title: "子库管理",
                 },
             },
             {
-                path: "/dataManage/proxyManagement",
                 name: "ProxyManagement",
-                component: () => import("@/views/dataManage/proxyManagement/index.vue"),
+                path: "/dataManage/proxyConfiguration",
+                component: () => import("@/views/dataManage/proxyConfiguration/index.vue"),
                 meta: {
-                    title: "代理管理",
+                    title: "代理配置",
                 },
             }
         ]
@@ -230,16 +221,25 @@ const routes = [
 
     // Data Service
     {
-        path: "/dataService",
         name: "DataService",
+        path: "/dataService",
         meta: {
             title: "数据服务",
         },
         component: () => import("@/layout/index.vue"),
         children: [
             {
-                path: "/dataService/ERD",
+                name: "DataTree",
+                path: "/dataService/dataOperation",
+                component: () => import("@/views/dataService/dataOperation/index.vue"),
+                meta: {
+                    title: "数据操作",
+                },
+                children: []
+            },
+            {
                 name: "ERD",
+                path: "/dataService/ERD",
                 component: () => import("@/views/dataService/ERD/index.vue"),
                 meta: {
                     title: "ERD",
@@ -251,24 +251,24 @@ const routes = [
 
     // 学习
     {
-        path: "/learning",
         name: "Learning",
+        path: "/learning",
         meta: {
             title: "学习",
         },
         component: () => import("@/layout/index.vue"),
         children: [
             {
-                path: "/learning/web-api",
                 name: "web-api",
+                path: "/learning/web-api",
                 component: () => import("@/views/learn/web-api/index.vue"),
                 meta: {
                     title: "web-api",
                 },
                 children: [
                     {
-                        path: "/learning/web-api/broadcast",
                         name: "broadcast",
+                        path: "/learning/web-api/broadcast",
                         component: () => import("@/views/learn/web-api/broadcast/index.vue"),
                         meta: {
                             title: "广播",
@@ -276,8 +276,8 @@ const routes = [
                         children: []
                     },
                     {
-                        path: "/learning/web-api/openWindow",
                         name: "openWindow",
+                        path: "/learning/web-api/openWindow",
                         component: () => import("@/views/learn/web-api/openWindow/index.vue"),
                         meta: {
                             title: "打开新窗口",
@@ -287,8 +287,8 @@ const routes = [
                 ]
             },
             {
-                path: "/learning/element-plus",
                 name: "element-plus",
+                path: "/learning/element-plus",
                 component: () => import("@/views/learn/element-plus/index.vue"),
                 meta: {
                     title: "element-plus",
@@ -405,16 +405,16 @@ const routes = [
                 ]
             },
             {
-                path: "/learning/vxe-table",
                 name: "vxe-table",
+                path: "/learning/vxe-table",
                 component: () => import("@/views/learn/vxe-table/index.vue"),
                 meta: {
                     title: "vxe-table",
                 },
                 children: [
                     {
-                        path: "/learning/vxe-table/tablePerms",
                         name: "tablePerms",
+                        path: "/learning/vxe-table/tablePerms",
                         component: () => import("@/views/learn/vxe-table/tablePerms/index.vue"),
                         meta: {
                             title: "数据表授权",
@@ -422,8 +422,8 @@ const routes = [
                         children: []
                     },
                     {
-                        path: "/learning/vxe-table/saveLocalInVXETable",
                         name: "saveLocalInVXETable",
+                        path: "/learning/vxe-table/saveLocalInVXETable",
                         component: () => import("@/views/learn/vxe-table/saveLocalInVXETable/index.vue"),
                         meta: {
                             title: "VXETable局部更新",
@@ -439,8 +439,8 @@ const routes = [
                     //     }
                     // },
                     {
-                        path: "/learning/vxe-table/mergeInVXETable",
                         name: "mergeInVXETable",
+                        path: "/learning/vxe-table/mergeInVXETable",
                         component: () => import("@/views/learn/vxe-table/mergeInVXETable/index.vue"),
                         meta: {
                             title: "VXETable合并",
@@ -852,24 +852,24 @@ const routes = [
     },
 
     {
-        path: "/visual",
         name: "visual",
+        path: "/visual",
         meta: {
             title: "visual",
         },
         component: () => import("@/layout/index.vue"),
         children: [
             {
-                path: "/visual/AircraftPage",
                 name: "AircraftPage",
+                path: "/visual/AircraftPage",
                 component: () => import("@/views/visual/AircraftPage/index.vue"),
                 meta: {
                     title: "飞机",
                 },
                 children: [
                     {
-                        path: "/visual/AircraftPage/aircraftPage",
                         name: "aircraftPage",
+                        path: "/visual/AircraftPage/aircraftPage",
                         component: () => import("@/views/visual/AircraftPage/index.vue"),
                         meta: {
                             title: "飞机",
@@ -879,16 +879,16 @@ const routes = [
                 ]
             },
             {
-                path: "/visual/MissilePage",
                 name: "MissilePage",
+                path: "/visual/MissilePage",
                 component: () => import("@/views/visual/MissilePage/index.vue"),
                 meta: {
                     title: "导弹",
                 },
                 children: [
                     {
-                        path: "/visual/MissilePage/missilePage",
                         name: "missilePage",
+                        path: "/visual/MissilePage/missilePage",
                         component: () => import("@/views/visual/MissilePage/index.vue"),
                         meta: {
                             title: "导弹",
@@ -898,16 +898,16 @@ const routes = [
                 ]
             },
             {
-                path: "/visual/StatisticsPage",
                 name: "StatisticsPage",
+                path: "/visual/StatisticsPage",
                 component: () => import("@/views/visual/StatisticsPage/index.vue"),
                 meta: {
                     title: "统计数据",
                 },
                 children: [
                     {
-                        path: "/visual/StatisticsPage/statisticsPage",
                         name: "missilePage",
+                        path: "/visual/StatisticsPage/statisticsPage",
                         component: () => import("@/views/visual/StatisticsPage/index.vue"),
                         meta: {
                             title: "统计",
