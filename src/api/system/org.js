@@ -15,6 +15,20 @@ export async function GetOrgList() {
 }
 
 /**
+ * 获取机构数据树
+ */
+export async function GetOrgTree() {
+    try {
+        return await service.request({
+            url: "/framework/organizations/getOrganizationTree",
+            method: "get",
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+/**
  * 获取机构数据详情
  */
 export async function GetOrgDetail(id) {

@@ -65,7 +65,7 @@ import {h, onMounted, reactive, ref, toRefs} from 'vue'
 import {ElForm, ElMessage, ElMessageBox, ElTag} from 'element-plus'
 import {VXETable, VxeTableInstance} from 'vxe-table'
 
-import {GetOrgList} from '../../../api/system/org.js'
+import {GetOrgList, GetOrgTree} from '../../../api/system/org.js'
 import {GetDeptList, GetDeptDetail, CreateDept, UpdateDept, DeleteDept} from '../../../api/system/dept.js'
 
 const orgTreeRef = ref('orgTreeRef')
@@ -165,11 +165,16 @@ function formatData(data) {
 
 
 function init() {
-  // 获取机构列表
-  GetOrgList().then(res => {
-    state.orgTree = formatData(res.data.dataList)
+  // 获取机构树
+  GetOrgTree().then(res => {
+    state.orgTree = res.data.dataList
     console.log("orgTree:", state.orgTree)
   })
+  // // 获取机构列表
+  // GetOrgList().then(res => {
+  //   state.orgTree = formatData(res.data.dataList)
+  //   console.log("orgTree:", state.orgTree)
+  // })
 }
 
 onMounted(async () => {
