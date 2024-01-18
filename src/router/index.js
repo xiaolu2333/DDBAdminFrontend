@@ -134,17 +134,41 @@ const routes = [
                 path: '/resource',
                 component: () => import("@/views/system/resource/index.vue"),
                 meta: {
-                    title: "资源管理"
+                    title: "菜单管理"
                 },
                 children: []
             },
             {
-                name: 'DictManagement',
-                path: '/dictManagement',
-                component: () => import("@/views/system/dictManagement/index.vue"),
+                name: 'roleUser',
+                path: '/roleUser',
+                component: () => import("@/views/system/roleUser/index.vue"),
                 meta: {
-                    title: "字典管理"
-                }
+                    title: "角色用户管理"
+                },
+            },
+            {
+                name: 'roleMenu',
+                path: '/roleMenu',
+                component: () => import("@/views/system/roleMenu/index.vue"),
+                meta: {
+                    title: "角色菜单管理"
+                },
+            },
+            {
+                name: 'serviceAudit',
+                path: '/serviceAudit',
+                component: () => import("@/views/system/serviceAudit/index.vue"),
+                meta: {
+                    title: "服务审计"
+                },
+            },
+            {
+                name: 'loginAudit',
+                path: '/loginAudit',
+                component: () => import("@/views/system/loginAudit/index.vue"),
+                meta: {
+                    title: "访问审计"
+                },
             }
         ],
     },

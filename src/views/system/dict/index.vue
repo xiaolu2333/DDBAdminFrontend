@@ -1,215 +1,174 @@
 <template>
-  <el-row :gutter="24">
-    <el-col :span="8">
-      <el-card>
-        <el-select
-            v-model="currentResource"
-            placeholder="请选择"
-            clearable
-            filterable
-            :default-first-option="false"
-            @change="handleDictResourceChange"
-        >
-          <el-option
-              v-for="item in dictResource"
-              :key="item.id"
-              :label="item.name"
-              :value="item"
+  <el-tabs type="border-card" class="demo-tabs">
+    <el-tab-pane label="数据字典管理">
+      <el-row :gutter="20">
+        <el-col :xs="8" :sm="8" :md="8" :lg="6" :xl="6">
+          <el-button-group>
+            <el-button type="primary" :icon="CirclePlus" size="small">新增</el-button>
+            <el-button type="success" :icon="Edit" size="small">编辑</el-button>
+            <el-button type="danger" :icon="Delete" size="small">删除</el-button>
+            <el-button type="warning" :icon="Refresh" size="small">刷新</el-button>
+          </el-button-group>
+          <el-input v-model="filterText" placeholder="Filter keyword"/>
+          <el-tree
+              ref="dataDictTreeRef"
+              :data="data"
+              :props="defaultProps"
+              :highlight-current="true"
+              :filter-node-method="filterNode"
+              @node-click="handleNodeClick"
           />
-        </el-select>
-        <el-button type="primary" icon="el-icon-plus" @click="handleAdd">新增</el-button>
-        <el-button type="danger" icon="el-icon-delete" @click="handleDelete">删除</el-button>
-        <el-tree
-            :data="dictType"
-            :props="{
-              children: 'children',
-              label: 'name',
-              value: 'name'
-            }"
-            node-key="name"
-            :default-expand-all="true"
-            :highlight-current="true"
-            @node-click="handleDictTypeClick"
-        >
-        </el-tree>
-      </el-card>
-    </el-col>
-    <el-col :span="16">
-      <el-card>
-        <template #header>
-          <el-button type="primary" icon="el-icon-plus" @click="handleAdd">新增</el-button>
-          <el-button type="success" icon="el-icon-edit" @click="handleUpload">新增</el-button>
-          <el-button type="danger" icon="el-icon-delete" @click="handleDelete">删除</el-button>
-        </template>
-        <el-table
-            row-key="id"
-            :data="dictData"
-            :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
-            :highlight-current="true"
-            @row-click="handleDictDataClick"
-        >
-          <el-table-column label="名称" prop="name"/>
-          <el-table-column label="编码" prop="code"/>
-        </el-table>
-      </el-card>
-    </el-col>
-  </el-row>
-
+        </el-col>
+        <el-col :xs="16" :sm="15" :md="15" :lg="18" :xl="18">
+          <el-table :data="tableData" stripe border>
+            <el-table-column type="index" width="50"/>
+            <el-table-column prop="name" label="姓名" width="180"/>
+            <el-table-column prop="address" label="地址"/>
+            <el-table-column prop="date" label="日期"/>
+          </el-table>
+        </el-col>
+      </el-row>
+    </el-tab-pane>
+    <el-tab-pane label="系统常量管理">系统常量管理</el-tab-pane>
+  </el-tabs>
 </template>
-<script setup>
-import {reactive, toRefs} from "vue";
 
-const state = reactive({
-  loading: true,
-  dictResource: [
-    {
-      id: 1,
-      name: "数据库1",
-      code: "db1",
-    },
-    {
-      id: 2,
-      name: "数据库2",
-      code: "db2",
-    },
-    {
-      id: 3,
-      name: "数据库3",
-      code: "db3",
-    }
-  ],
-  dictType: [
-    {
-      id: 1,
-      name: "类型1",
-      code: "type1",
-      children: [
-        {
-          id: 4,
-          name: "类型1-1",
-          code: "type1-1",
-        },
-        {
-          id: 5,
-          name: "类型1-2",
-          code: "type1-2",
-        },
-        {
-          id: 6,
-          name: "类型1-3",
-          code: "type1-3",
-        }
-      ]
-    },
-    {
-      id: 2,
-      name: "类型2",
-      code: "type2",
-    },
-    {
-      id: 3,
-      name: "类型3",
-      code: "type3",
-    }
-  ],
-  dictData: [
-    {
-      id: 1,
-      name: "数据1",
-      code: "data1",
-    },
-    {
-      id: 2,
-      name: "数据2",
-      code: "data2",
-      children: [
-        {
-          id: 4,
-          name: "数据1-1",
-          code: "data1-1",
-        },
-        {
-          id: 5,
-          name: "数据1-2",
-          code: "data1-2",
-        },
-        {
-          id: 6,
-          name: "数据1-3",
-          code: "data1-3",
-        }
-      ]
-    },
-    {
-      id: 3,
-      name: "数据3",
-      code: "data3",
-      children: [
-        {
-          id: 7,
-          name: "数据3-1",
-          code: "data3-1",
-        },
-        {
-          id: 8,
-          name: "数据3-2",
-          code: "data3-2",
-        },
-        {
-          id: 9,
-          name: "数据3-3",
-          code: "data3-3",
-          children: [
-            {
-              id: 10,
-              name: "数据3-3-1",
-              code: "data3-3-1",
-            },
-            {
-              id: 11,
-              name: "数据3-3-2",
-              code: "data3-3-2",
-            },
-            {
-              id: 12,
-              name: "数据3-3-3",
-              code: "data3-3-3",
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  currentResource: null,  // 初始设置必须为null，否则会el-select会默认选中数组中最后一个
-  currentType: null,
-  currentData: null,
+
+<script lang="ts" setup>
+import {ref, watch} from "vue";
+import {
+  Calendar,
+  CirclePlus,
+  Edit,
+  Delete,
+  Refresh,
+} from '@element-plus/icons-vue'
+import {ElTree} from 'element-plus'
+
+/*************************************** 树形数据 ***************************************/
+interface Tree {
+  label: string
+  children?: Tree[]
+}
+
+const dataDictTreeRef = ref<InstanceType<typeof ElTree>>()
+const filterText = ref('')
+watch(filterText, (val) => {
+  dataDictTreeRef.value!.filter(val)
 })
-
-const {
-  loading,
-  dictResource,
-  dictType,
-  dictData,
-  currentResource,
-  currentType,
-  currentData,
-} = toRefs(state);
-
-// 选中字典源
-function handleDictResourceChange(val) {
-  console.log("选中字典源：", val)
-  state.currentResource = val
+const filterNode = (value: string, data: Tree) => {
+  if (!value) return true
+  return data.label.includes(value)
 }
 
-// 选中字典类型
-function handleDictTypeClick(data, node, self) {
-  console.log("选中字典源：", data)
-  state.currentType = data
+const data: Tree[] = [
+  {
+    label: 'Level one 1',
+    children: [
+      {
+        label: 'Level two 1-1',
+        children: [
+          {
+            label: 'Level three 1-1-1',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    label: 'Level one 2',
+    children: [
+      {
+        label: 'Level two 2-1',
+        children: [
+          {
+            label: 'Level three 2-1-1',
+          },
+        ],
+      },
+      {
+        label: 'Level two 2-2',
+        children: [
+          {
+            label: 'Level three 2-2-1',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    label: 'Level one 3',
+    children: [
+      {
+        label: 'Level two 3-1',
+        children: [
+          {
+            label: 'Level three 3-1-1',
+          },
+        ],
+      },
+      {
+        label: 'Level two 3-2',
+        children: [
+          {
+            label: 'Level three 3-2-1',
+          },
+        ],
+      },
+    ],
+  },
+]
+const defaultProps = {
+  children: 'children',
+  label: 'label',
 }
 
-// 选中字典数据
-function handleDictDataClick(row, column, event) {
-  console.log("选中字典数据：", row)
-  state.currentData = row
+/*************************************** 表格数据 ***************************************/
+const tableData = [
+  {
+    name: '王小虎',
+    address: '上海市普陀区金沙江路 1518 弄',
+    date: '2016-05-02',
+  },
+  {
+    name: '王小鸡',
+    address: '上海市普陀区金沙江路 1517 弄',
+    date: '2016-05-04',
+  },
+  {
+    name: '王小狗',
+    address: '上海市普陀区金沙江路 1519 弄',
+    date: '2016-05-01',
+  },
+  {
+    name: '王小猫',
+    address: '上海市普陀区金沙江路 1516 弄',
+    date: '2016-05-03',
+  }
+]
+
+
+/*************************************** 事件 ***************************************/
+const handleNodeClick = (data: Tree) => {
+  console.log(data)
 }
+
+
 </script>
+<style>
+.demo-tabs > .el-tabs__content {
+  padding: 32px;
+  color: #6b778c;
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.demo-tabs .custom-tabs-label .el-icon {
+  vertical-align: middle;
+}
+
+.demo-tabs .custom-tabs-label span {
+  vertical-align: middle;
+  margin-left: 4px;
+}
+</style>
