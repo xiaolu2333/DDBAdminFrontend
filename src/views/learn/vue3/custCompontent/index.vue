@@ -5,14 +5,22 @@
     <span v-else>关闭 loading</span>
   </el-button>
   <div class="container">
-      <MyLoading :loading="loading"></MyLoading>
+    <MyLoading :loading="loading"></MyLoading>
   </div>
+
+  <el-card>
+    <p>多组件中复用鼠标追踪器</p>
+    <p>当前鼠标位置：({{ x }}, {{ y }})</p>
+  </el-card>
 </template>
 
 <script setup>
 import {defineProps, ref, reactive, toRefs, watch} from 'vue'
 
 import {MyLoading} from '@/components/common/index'
+import {useMousePositionDisplay} from '@/hooks/useMousePositionDisplay.js'
+
+const {x, y} = useMousePositionDisplay()
 
 
 const state = reactive({
@@ -28,8 +36,6 @@ const handleClick = () => {
 </script>
 
 <style lang="less" scoped>
-//.container {
-//  background-color: #96b1eb;
-//}
+
 </style>
 

@@ -229,7 +229,7 @@ const routes = [
         component: () => import("@/layout/index.vue"),
         children: [
             {
-                name: "DataTree",
+                name: "DataOperation",
                 path: "/dataService/dataOperation",
                 component: () => import("@/views/dataService/dataOperation/index.vue"),
                 meta: {
@@ -560,6 +560,14 @@ const routes = [
                         component: () => import("@/views/learn/vue3/dataBetweenCompontent/index.vue"),
                         meta: {
                             title: "组件间数据传递",
+                        }
+                    },
+                    {
+                        name: 'CompositionFunction',
+                        path: '/learning/vue3/compositionFunction',
+                        component: () => import("@/views/learn/vue3/compositionFunction/index.vue"),
+                        meta: {
+                            title: "使用组合函数——hooks"
                         }
                     }
                 ]
