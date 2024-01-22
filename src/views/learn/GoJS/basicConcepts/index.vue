@@ -11,6 +11,11 @@ const {} = toRefs(state)
 
 
 /***************************** diagram 初始化 ******************************/
+function showMessage(s) {
+  console.log(s)
+}
+
+
 function init() {
   let $ = go.GraphObject.make;
   let myDiagram = $(go.Diagram, "myDiagramDiv");
@@ -39,11 +44,14 @@ function init() {
     {key: "Epsilon", loc: "150 30"}
   ];
   var linkDataArray = [
-    {from: "Alpha", to: "Beta"},      // 在具体的链接上设置routing
-    {from: "Alpha", to: "Gamma"},
-    {from: "Beta", to: "Beta"},
+    {from: "Alpha", to: "Beta", key: "Alpha_to_Beta"},
+    {from: "Alpha", to: "Gamma", key: "Alpha_to_Gamma"},
+    {from: "Beta", to: "Beta", key: "Beta_to_Beta"},
   ];
   myDiagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
+
+  // 设置布局
+  myDiagram.layout = new go.LayeredDigraphLayout();
 
   /*********************************** 画布属性配置 ***********************************/
   // 1，显示网格
@@ -52,6 +60,18 @@ function init() {
   myDiagram.toolManager.draggingTool.isGridSnapEnabled = true;
   // 3，置大小时对齐网格
   myDiagram.toolManager.resizingTool.isGridSnapEnabled = true;
+
+  // 对象点击事件，获取对象信息
+  myDiagram.addDiagramListener("ObjectSingleClicked",
+      function (e) {
+        let part = e.subject.part;
+        if (part instanceof go.Node) {
+          console.log('node', part.data.key)
+        }
+        if (part instanceof go.Link) {
+          console.log('link', part.data.key)
+        }
+      });
 }
 
 onMounted(() => {
