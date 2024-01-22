@@ -25,7 +25,7 @@
 <script setup>
 import {ref, onMounted, onUnmounted} from 'vue'
 
-import {useMousePositionDisplay} from '@/hooks/useMousePositionDisplay.js'
+import {useMousePositionDisplay} from '@/hooks/mouse.js'
 
 const {x, y} = useMousePositionDisplay()
 
