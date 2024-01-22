@@ -569,6 +569,14 @@ const routes = [
                         meta: {
                             title: "使用组合函数——hooks"
                         }
+                    },
+                    {
+                        name: 'vueuseExample',
+                        path: '/learning/vue3/vueuseExample',
+                        component: () => import("@/views/learn/vue3/vueuseExample/index.vue"),
+                        meta: {
+                            title: "vueuse使用示例"
+                        }
                     }
                 ]
             },
@@ -733,6 +741,14 @@ const routes = [
                             title: "JavaScript代码片段",
                         },
                         children: []
+                    },
+                    {
+                        name: "JavaScriptFunctions",
+                        path: "/learning/learnJS/JavaScriptFunctions",
+                        component: () => import("@/views/learn/learnJS/JavaScriptFunctions/index.vue"),
+                        meta: {
+                            title: "JavaScript函数",
+                        }
                     }
                 ]
             },
