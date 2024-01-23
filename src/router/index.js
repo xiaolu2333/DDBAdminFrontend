@@ -577,6 +577,14 @@ const routes = [
                         meta: {
                             title: "vueuse使用示例"
                         }
+                    },
+                    {
+                        name: '分离业务逻辑与UI逻辑',
+                        path: '/learning/vue3/separateBusinessAndUI',
+                        component: () => import("@/views/learn/vue3/separateBusinessAndUI/index.vue"),
+                        meta: {
+                            title: "分离业务逻辑与UI逻辑"
+                        }
                     }
                 ]
             },
@@ -756,6 +764,14 @@ const routes = [
                         component: () => import("@/views/learn/learnJS/unitTest/index.vue"),
                         meta: {
                             title: "javascript单元测试"
+                        }
+                    },
+                    {
+                        name: "classInJS",
+                        path: "/learning/learnJS/classInJS",
+                        component: () => import("@/views/learn/learnJS/classInJS/index.vue"),
+                        meta: {
+                            title: "JavaScript中的类"
                         }
                     }
                 ]
