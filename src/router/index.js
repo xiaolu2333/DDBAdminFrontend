@@ -5,7 +5,7 @@ import {createRouter, createWebHashHistory} from "vue-router";
 
 // 静态路由表
 const routes = [
-    // vue router默认跳转到根路由 / ，这里我们将它重定向到 /home/dashboard
+    // 默认启动后重定向到根路由 /
     {
         path: "/",
         name: "Root",
@@ -748,6 +748,14 @@ const routes = [
                         component: () => import("@/views/learn/learnJS/JavaScriptFunctions/index.vue"),
                         meta: {
                             title: "JavaScript函数",
+                        }
+                    },
+                    {
+                        name: "unitTest",
+                        path: "/learning/learnJS/unitTest",
+                        component: () => import("@/views/learn/learnJS/unitTest/index.vue"),
+                        meta: {
+                            title: "javascript单元测试"
                         }
                     }
                 ]
