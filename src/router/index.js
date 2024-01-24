@@ -750,30 +750,30 @@ const routes = [
                         },
                         children: []
                     },
-                    {
-                        name: "JavaScriptFunctions",
-                        path: "/learning/learnJS/JavaScriptFunctions",
-                        component: () => import("@/views/learn/learnJS/JavaScriptFunctions/index.vue"),
-                        meta: {
-                            title: "JavaScript函数",
-                        }
-                    },
-                    {
-                        name: "unitTest",
-                        path: "/learning/learnJS/unitTest",
-                        component: () => import("@/views/learn/learnJS/unitTest/index.vue"),
-                        meta: {
-                            title: "javascript单元测试"
-                        }
-                    },
-                    {
-                        name: "classInJS",
-                        path: "/learning/learnJS/classInJS",
-                        component: () => import("@/views/learn/learnJS/classInJS/index.vue"),
-                        meta: {
-                            title: "JavaScript中的类"
-                        }
-                    }
+                    // {
+                    //     name: "JavaScriptFunctions",
+                    //     path: "/learning/learnJS/JavaScriptFunctions",
+                    //     component: () => import("@/views/learn/learnJS/JavaScriptFunctions/index.vue"),
+                    //     meta: {
+                    //         title: "JavaScript函数",
+                    //     }
+                    // },
+                    // {
+                    //     name: "unitTest",
+                    //     path: "/learning/learnJS/unitTest",
+                    //     component: () => import("@/views/learn/learnJS/unitTest/index.vue"),
+                    //     meta: {
+                    //         title: "javascript单元测试"
+                    //     }
+                    // },
+                    // {
+                    //     name: "classInJS",
+                    //     path: "/learning/learnJS/classInJS",
+                    //     component: () => import("@/views/learn/learnJS/classInJS/index.vue"),
+                    //     meta: {
+                    //         title: "JavaScript中的类"
+                    //     }
+                    // }
                 ]
             },
             {
