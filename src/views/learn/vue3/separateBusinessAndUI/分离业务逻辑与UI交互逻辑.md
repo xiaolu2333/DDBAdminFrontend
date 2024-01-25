@@ -275,6 +275,9 @@ class Order extends Model {
 - [前端分层：把业务逻辑从交互代码中解救出来](https://cloud.tencent.com/developer/article/1915979)
 - [Vue3下业务逻辑分离 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/558632274)
 - [【工作小记】关于业务组件的思考](https://juejin.cn/post/7046263753213968421)
+- [前端开发中业务代码和视图分离的思考](https://juejin.cn/post/6914222524700196872)
+- [谈谈react hooks UI与业务逻辑分离的必要性与技术方案](https://segmentfault.com/a/1190000042779477)
+- [Service - 业务与 UI 分离](https://nosaid.com/article/service-separate-logic-ui#%E4%B8%9A%E5%8A%A1%E4%B8%8E%20UI%20%E5%88%86%E7%A6%BB)
 
 
 
