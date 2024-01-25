@@ -15,6 +15,20 @@ export async function GetMenuList() {
 }
 
 /**
+ * 获取菜单数据树
+ */
+export async function GetMenuTree() {
+    try {
+        return await service.request({
+            url: "/framework/resources/getMenuTree",
+            method: "get",
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+/**
  * 获取菜单数据详情
  */
 export async function GetMenuDetail(id) {

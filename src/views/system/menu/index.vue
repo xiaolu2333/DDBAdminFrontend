@@ -83,7 +83,7 @@
       <el-form-item label="页面类型" prop='pageType' label-width='140px'>
         <el-radio-group v-model='formData.pageType'>
           <el-radio :label="1">主目录/模块</el-radio>
-          <el-radio :label="2">路由</el-radio>
+          <el-radio :label="2">路由/页面</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="菜单类型" prop='menuType' label-width='140px'>
@@ -151,7 +151,14 @@ import {
   Plus, Delete, Edit, Document, Checked, WarningFilled, QuestionFilled
 } from '@element-plus/icons-vue'
 
-import {GetMenuList, GetMenuDetail, CreateMenu, UpdateMenu, DeleteMenu} from '../../../api/system/resource.js'
+import {
+  GetMenuList,
+  GetMenuTree,
+  GetMenuDetail,
+  CreateMenu,
+  UpdateMenu,
+  DeleteMenu
+} from '../../../api/system/resource.js'
 
 interface MenuData {
   id?: number,
@@ -159,23 +166,32 @@ interface MenuData {
   name: string,
   // 菜单路径
   path: string,
+  // 组件路径
+  component: string,
   // 上级菜单
   parent?: string,
+  parentId?: string,
   // 页面类型 1-主目录/模块 2-路由
   pageType: number,
   // 菜单类型 1-用户页面 2-系统管理 3-安全管理 4-审计管理 5-运维管理
   menuType: number,
   // 授权类型 1-公开 2-角色授权
   authType: number,
+  // 图标名称
+  icon: string,
   // 是否启用
   enable: boolean,
   // 是否隐藏
   hidden: boolean,
+  // 排序
+  sort: number,
   // 创建时间
   createTime?: string,
   // 更新时间
   updateTime?: string,
 }
+
+const dataFormRef = ref()
 
 const state = reactive({
   menuOptions: undefined as any,
@@ -189,10 +205,13 @@ const state = reactive({
     authType: 2,
     enable: true,
     hidden: false,
-  } as any,
+  } as MenuData,
   rules: {
     name: [
       {required: true, message: '请输入名称', trigger: 'blur'},
+    ],
+    component: [
+      {validator: checkComponent, trigger: 'blur'},
     ],
   },
 })
@@ -204,6 +223,7 @@ const {
   formData,
   rules,
 } = toRefs(state)
+
 
 /************************ table ************************/
 // tree table 行点击事件
@@ -247,17 +267,19 @@ function handleUpdate() {
 }
 
 // 提交表单
-async function submitForm() {
+function submitForm() {
   console.log("state.formData:", state.formData)
 
   if (state.formData.id) {
     // 修改
-    await UpdateMenu(state.formData).then(res => {
+    UpdateMenu(state.formData).then(res => {
       console.log("res:", res)
       ElMessage.success('修改成功')
       state.dialog.visible = false
       state.formData = {
+        authType: 2,
         enable: true,
+        hidden: false,
       } as any
 
       // 刷新表格
@@ -267,16 +289,21 @@ async function submitForm() {
       ElMessage.error('修改失败')
     })
   } else {
-    await CreateMenu(state.formData).then(res => {
-      console.log("res:", res)
-      ElMessage.success('创建成功')
-      state.dialog.visible = false
-      state.formData = {
-        enable: true,
-      } as any
+    CreateMenu(state.formData).then(res => {
+      if (res.data.code === 200) {
+        ElMessage.success('创建成功')
+        state.dialog.visible = false
+        state.formData = {
+          authType: 2,
+          enable: true,
+          hidden: false,
+        } as MenuData
 
-      // 刷新表格
-      init()
+        // 刷新表格
+        init()
+      } else {
+        ElMessage.error(res.data.msg)
+      }
     }).catch(err => {
       console.log("err:", err)
       ElMessage.error('创建失败')
@@ -385,10 +412,26 @@ function loadMenuOptions() {
   })
 }
 
+// 校验组件路径
+function checkComponent(rule: any, value: any, callback: any) {
+  if (state.formData.pageType === 2) {
+    if (!value) {
+      callback(new Error('请输入组件路径'))
+    }
+  }
+}
+
+
+/************************ init ************************/
 function init() {
   // 获取菜单列表
   GetMenuList().then(res => {
     state.tableData = listToTree(res.data.dataList)
+  })
+
+  // 获取菜单树
+  GetMenuTree().then(res => {
+    console.log("菜单树：", res.data.menuData)
   })
 }
 

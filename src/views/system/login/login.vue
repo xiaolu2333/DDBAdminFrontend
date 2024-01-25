@@ -14,6 +14,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">登录</el-button>
+        <el-button type="primary" @click="onSubmitTest">测试登录</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -72,6 +73,72 @@ const onSubmit = () => {
       })
     }
   })
+}
+
+const onSubmitTest = () => {
+  // 获取路由树信息
+  const routes = [
+    {
+      "id": 2,
+      "name": "数据服务",
+      "path": "/dataService",
+      "pageType": 1,
+      "menuType": 1,
+      "authType": 2,
+      "component": "",
+      "icon": null,
+      "parentId": 0,
+      "parentCode": 0,
+      "enable": true,
+      "sort": 1,
+      "createTime": "2024-01-18T04:22:46.812Z",
+      "updateTime": "2024-01-18T12:29:48.535Z",
+      "children": [
+        {
+          "id": 3,
+          "name": "数据操作",
+          "path": "/dataService/dataOperation",
+          "pageType": 2,
+          "menuType": 1,
+          "authType": 2,
+          "component": "@/views/dataService/dataOperation/index.vue",
+          "icon": null,
+          "parentId": 2,
+          "parentCode": 2,
+          "enable": true,
+          "sort": 1,
+          "createTime": "2024-01-18T04:29:30.106Z",
+          "updateTime": "2024-01-18T04:29:30.106Z",
+          "children": []
+        },
+        {
+          "id": 12,
+          "name": "ERD",
+          "path": "/dataService/ERD",
+          "pageType": 2,
+          "menuType": 1,
+          "authType": 2,
+          "component": "@/views/dataService/ERD/index.vue",
+          "icon": null,
+          "parentId": 2,
+          "parentCode": 2,
+          "enable": true,
+          "sort": 2,
+          "createTime": "2024-01-18T04:39:30.106Z",
+          "updateTime": "2024-01-18T04:39:30.106Z",
+          "children": []
+        }
+      ]
+    }
+  ]
+
+  // // 是否使用动态路由
+  // if (appStore.getDynamicRouter) {
+  //   await permissionStore.generateRoutesFromServer().catch(() => {
+  //   })
+  // } else {
+  //   await permissionStore.generateRoutes('admin', [] as AppCustomRouteRecordRaw[])
+  // }
 }
 
 onMounted(() => {
