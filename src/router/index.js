@@ -283,6 +283,14 @@ const routes = [
                             title: "打开新窗口",
                         },
                         children: []
+                    },
+                    {
+                        name: '前端埋点与监控',
+                        path: '/learning/vue3/monitor',
+                        component: () => import("@/views/learn/web-api/monitor/index.vue"),
+                        meta: {
+                            title: "前端埋点与监控"
+                        }
                     }
                 ]
             },
