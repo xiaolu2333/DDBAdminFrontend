@@ -593,7 +593,15 @@ const routes = [
                         meta: {
                             title: "分离业务逻辑与UI逻辑"
                         }
-                    }
+                    },
+                    // {
+                    //     name: 'watch与watchEffect',
+                    //     path: '/learning/vue3/watchAndWatchEffect',
+                    //     component: () => import("@/views/learn/vue3/watchAndWatchEffect/index.vue"),
+                    //     meta: {
+                    //         title: "watch与watchEffect"
+                    //     }
+                    // }
                 ]
             },
             {
@@ -758,6 +766,22 @@ const routes = [
                         },
                         children: []
                     },
+                    {
+                        name: "JavaScript数组操作",
+                        path: "/learning/learnJS/JavaScriptArrayOperation",
+                        component: () => import("@/views/learn/learnJS/JavaScriptArrayOperation/index.vue"),
+                        meta: {
+                            title: "JavaScript数组操作",
+                        },
+                    }
+                    // {
+                    //     name: "JavaScriptDesignPattern",
+                    //     path: "/learning/learnJS/JavaScriptDesignPattern",
+                    //     component: () => import("@/views/learn/learnJS/JavaScriptDesignPattern/index.vue"),
+                    //     meta: {
+                    //         title: "JavaScript设计模式",
+                    //     },
+                    // }
                     // {
                     //     name: "JavaScriptFunctions",
                     //     path: "/learning/learnJS/JavaScriptFunctions",
@@ -900,6 +924,24 @@ const routes = [
                         component: () => import("@/views/learn/learnHttpRequestAndResponse/handleRepeatRequest/index.vue"),
                         meta: {
                             title: "处理重复请求",
+                        }
+                    }
+                ]
+            },
+            {
+                name: '第三方库',
+                path: '/learning/thirdPartyLibraries',
+                component: () => import("@/views/learn/thirdPartyLibraries/index.vue"),
+                meta: {
+                    title: "第三方库"
+                },
+                children: [
+                    {
+                        name: '使用JsonServer',
+                        path: '/learning/thirdPartyLibraries/useJsonServer',
+                        component: () => import("@/views/learn/thirdPartyLibraries/useJsonServer/index.vue"),
+                        meta: {
+                            title: "使用JsonServer"
                         }
                     }
                 ]
