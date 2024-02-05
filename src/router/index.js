@@ -594,14 +594,14 @@ const routes = [
                             title: "分离业务逻辑与UI逻辑"
                         }
                     },
-                    // {
-                    //     name: 'watch与watchEffect',
-                    //     path: '/learning/vue3/watchAndWatchEffect',
-                    //     component: () => import("@/views/learn/vue3/watchAndWatchEffect/index.vue"),
-                    //     meta: {
-                    //         title: "watch与watchEffect"
-                    //     }
-                    // }
+                    {
+                        name: 'watch与watchEffect',
+                        path: '/learning/vue3/watchAndWatchEffect',
+                        component: () => import("@/views/learn/vue3/watchAndWatchEffect/index.vue"),
+                        meta: {
+                            title: "watch与watchEffect"
+                        }
+                    }
                 ]
             },
             {
