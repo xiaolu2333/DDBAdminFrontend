@@ -601,6 +601,22 @@ const routes = [
                         meta: {
                             title: "watch与watchEffect"
                         }
+                    },
+                    {
+                        name: '单向数据流',
+                        path: '/learning/vue3/oneWayDataFlow',
+                        component: () => import("@/views/learn/vue3/oneWayDataFlow/index.vue"),
+                        meta: {
+                            title: "单向数据流"
+                        }
+                    },
+                    {
+                        name: '图片资源',
+                        path: '/learning/vue3/imageResource',
+                        component: () => import("@/views/learn/vue3/imageResource/index.vue"),
+                        meta: {
+                            title: "图片资源"
+                        }
                     }
                 ]
             },

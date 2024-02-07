@@ -75,13 +75,13 @@
       </el-col>
     </el-row>
     <div class="width-drag-container">
-      <div style="background-color: #48ff32">
-        <img
-            ref="resizeRef"
-            v-width-resize="handelWidthResize"
-            src="./src/assets/images/logo.svg"
-        >
-      </div>
+      <!--      <div style="background-color: #48ff32">-->
+      <!--        <img-->
+      <!--            ref="resizeRef"-->
+      <!--            v-width-resize="handelWidthResize"-->
+      <!--            src="./src/assets/images/logo.svg"-->
+      <!--        >-->
+      <!--      </div>-->
 
     </div>
   </el-card>
