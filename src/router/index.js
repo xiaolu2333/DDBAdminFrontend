@@ -617,6 +617,14 @@ const routes = [
                         meta: {
                             title: "图片资源"
                         }
+                    },
+                    {
+                        name: '集成高德地图',
+                        path: '/learning/vue3/integrateGaodeMap',
+                        component: () => import("@/views/learn/vue3/integrateGaodeMap/index.vue"),
+                        meta: {
+                            title: "集成百度地图"
+                        }
                     }
                 ]
             },
