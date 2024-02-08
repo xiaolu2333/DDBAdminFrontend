@@ -625,6 +625,14 @@ const routes = [
                         meta: {
                             title: "集成百度地图"
                         }
+                    },
+                    {
+                        name: '分步复杂表单',
+                        path: '/learning/vue3/stepsComplexForm',
+                        component: () => import("@/views/learn/vue3/stepsComplexForm/index.vue"),
+                        meta: {
+                            title: "分步复杂表单"
+                        }
                     }
                 ]
             },
@@ -837,7 +845,7 @@ const routes = [
                 path: "/learning/debug",
                 component: () => import("@/views/learn/debug/index.vue"),
                 meta: {
-                    title: "调试",
+                    title: "调试与重构",
                 },
                 children: [
                     {
@@ -855,7 +863,15 @@ const routes = [
                         meta: {
                             title: "调试Python",
                         }
-                    }
+                    },
+                    // {
+                    //     name: "refactor",
+                    //     path: "/learning/debug/refactor",
+                    //     component: () => import("@/views/learn/debug/refactor/index.vue"),
+                    //     meta: {
+                    //         title: "重构概述",
+                    //     }
+                    // }
                 ]
             },
             {
