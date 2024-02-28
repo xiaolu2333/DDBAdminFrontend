@@ -662,6 +662,14 @@ const routes = [
                         },
                         children: []
                     },
+                    {
+                        name: "uploadBigFileSlice",
+                        path: "/learning/udData/uploadBigFileSlice",
+                        component: () => import("@/views/learn/udData/uploadBigFileSlice/index.vue"),
+                        meta: {
+                            title: "大文件分片上传",
+                        },
+                    }
                 ]
             },
             {
@@ -1054,6 +1062,30 @@ const routes = [
                     },
                 ]
             },
+            {
+                name: "IncidentEmergencyResponse",
+                path: "/visual/IncidentEmergencyResponse",
+                component: () => import("@/views/visual/IncidentEmergencyResponse/index.vue"),
+                meta: {
+                    title: "应急响应",
+                },
+            },
+            {
+                name: "GeneralDisposition",
+                path: "/visual/GeneralDisposition",
+                component: () => import("@/views/visual/GeneralDisposition/index.vue"),
+                meta: {
+                    title: "通用处置程序",
+                },
+            },
+            {
+                name: "IncidentReport",
+                path: "/visual/IncidentReport",
+                component: () => import("@/views/visual/IncidentReport/index.vue"),
+                meta: {
+                    title: "速报表",
+                },
+            }
         ]
     },
 ];

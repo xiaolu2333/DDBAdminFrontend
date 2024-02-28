@@ -67,6 +67,52 @@ export async function getStatisticsData() {
     }
 }
 
+export async function uploadImg(formData) {
+    try {
+        return await service.request({
+            url: '/test_app/visual_data/upload_img',
+            method: 'post',
+            data: formData
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function getImg() {
+    try {
+        return await service.request({
+            url: '/test_app/visual_data/get_img',
+            method: 'get'
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function uploadVideo(formData) {
+    try {
+        return await service.request({
+            url: '/test_app/visual_data/upload_video',
+            method: 'post',
+            data: formData
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function getVideo() {
+    try {
+        return await service.request({
+            url: '/test_app/visual_data/get_video',
+            method: 'get'
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 
 // export async function getStatisticsData() {
 //     // 随机生成50个100以内的正整数
