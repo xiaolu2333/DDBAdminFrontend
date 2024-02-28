@@ -62,7 +62,10 @@
     <p>在上面的示例中， <code>throttle</code> 函数接受一个需要执行的函数和时间间隔作为参数，并返回一个新的函数。这个新函数使用
       <code>setTimeout</code> 来延迟函数的执行，并通过设置和清除 <code>timer</code> 变量来控制函数的执行频率。
       请注意，上述示例只是一个简单的节流函数实现，并且可能需要根据具体的使用场景进行适当的调整和改进。</p>
-
+  </el-card>
+  <br>
+  <el-card>
+    <template #header>浅拷贝与深拷贝</template>
   </el-card>
 </template>
 
