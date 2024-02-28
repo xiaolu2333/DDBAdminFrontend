@@ -5,16 +5,22 @@
         <template #header>
           【大文件分片上传】
         </template>
-        选择文件<input type="file" ref="" @change="handleFileChange">
+        选择文件<input type="file" @change="handleFileChange">
         <el-button type="primary" @click="startUploadFile">开始分片上传大文件</el-button>
         <el-progress :percentage="state.percentage" :status="state.progressStatus"/>
       </el-card>
+      <el-table :data="state.fileSliceList" height="550" style="width: 100%">
+        <el-table-column type="index" width="50"/>
+        <el-table-column prop="start" label="切片起点"/>
+        <el-table-column prop="end" label="切片终点"/>
+        <el-table-column prop="size" label="切片大小"/>
+      </el-table>
     </el-card>
   </div>
 </template>
 
 <script setup>
-import {onMounted, reactive, ref, toRefs} from 'vue'
+import {onMounted, reactive, ref} from 'vue'
 
 import {uploadBigFileSliceApi} from "@/api/learn/udData/uploadBigFileSlice.js";
 
@@ -22,6 +28,8 @@ const file = ref("file")
 const state = reactive({
   // 文件对象
   fileObj: undefined,
+  // 文件切片列表
+  fileSliceList: [],
   // 进度条
   percentage: 0,
   // 进度条状态
@@ -30,8 +38,47 @@ const state = reactive({
 
 /*************************** 大文件分片上传 ***************************/
 function handleFileChange(event) {
+  console.log('event:', event)
   state.fileObj = event.target.files[0];
+
+  // 切片
+  sliceFileObj()
 }
+
+// 文件对象切片
+const sliceFileObj = () => {
+  const fileName = state.fileObj.name
+  const fileSize = state.fileObj.size
+  const fileType = state.fileObj.type
+
+  let chunkSize = 1024 * 1024 * 2; // 每个切片的大小（2MB）
+  let start = 0; // 切片的起始位置
+  let chunk = 0; // 切片大小
+
+  state.fileSliceList = []
+
+  while (start < fileSize) {
+
+    if (start + chunkSize <= fileSize) {
+      state.fileSliceList.push({
+        start: start,
+        end: start + chunkSize,
+        size: chunkSize,
+        obj: state.fileObj.slice(start, start + chunkSize)
+      })
+    } else {
+      state.fileSliceList.push({
+        start: start,
+        end: fileSize,
+        size: fileSize - start,
+        obj: state.fileObj.slice(start, fileSize - start)
+      })
+    }
+
+    start += chunkSize
+  }
+}
+
 
 function startUploadFile() {
   handleUploadBigFileSlice()
