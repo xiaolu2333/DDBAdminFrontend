@@ -813,6 +813,14 @@ const routes = [
                         meta: {
                             title: "JavaScript数组操作",
                         },
+                    },
+                    {
+                        name: "JavaScriptWebWorker",
+                        path: "/learning/learnJS/JavaScriptWebWorker",
+                        component: () => import("@/views/learn/learnJS/JavaScriptWebWorker/index.vue"),
+                        meta: {
+                            title: "Web Worker",
+                        },
                     }
                     // {
                     //     name: "JavaScriptDesignPattern",
