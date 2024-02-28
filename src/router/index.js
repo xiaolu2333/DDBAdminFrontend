@@ -999,7 +999,15 @@ const routes = [
                         meta: {
                             title: "使用JsonServer"
                         }
-                    }
+                    },
+                    {
+                        name: '使用axios',
+                        path: '/learning/thirdPartyLibraries/useAxios',
+                        component: () => import("@/views/learn/thirdPartyLibraries/useAxios/index.vue"),
+                        meta: {
+                            title: "使用axios"
+                        }
+                    },
                 ]
             }
         ]
