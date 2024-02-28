@@ -61,5 +61,9 @@ export default defineConfig({
     build: {
         // 修改大小，kb
         chunkSizeWarningLimit: 5000,
-    }
+    },
+    server: {
+        host: '0.0.0.0',
+        port: 5174,
+    },
 });
