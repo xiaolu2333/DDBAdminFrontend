@@ -21,6 +21,7 @@
 
 <script setup>
 import {onMounted, reactive, ref} from 'vue'
+import SparkMD5 from 'spark-md5'
 
 import {uploadBigFileSliceApi} from "@/api/learn/udData/uploadBigFileSlice.js";
 
@@ -36,6 +37,16 @@ const state = reactive({
   progressStatus: ''
 })
 
+// interface FileSliceType {
+//   start: number
+//   end: number
+//   size: number
+//   index: number
+//   obj: any
+//   hash: string
+//   fileName: string
+// }
+
 /*************************** 大文件分片上传 ***************************/
 function handleFileChange(event) {
   console.log('event:', event)
@@ -43,35 +54,43 @@ function handleFileChange(event) {
 
   // 切片
   sliceFileObj()
+
+  // 计算 hash
+  calculateHash()
 }
 
 // 文件对象切片
 const sliceFileObj = () => {
   const fileName = state.fileObj.name
   const fileSize = state.fileObj.size
-  const fileType = state.fileObj.type
 
   let chunkSize = 1024 * 1024 * 2; // 每个切片的大小（2MB）
   let start = 0; // 切片的起始位置
   let chunk = 0; // 切片大小
+  let fileSliceIndex = 0; // 当前分片索引
 
   state.fileSliceList = []
 
   while (start < fileSize) {
+    fileSliceIndex++
 
     if (start + chunkSize <= fileSize) {
       state.fileSliceList.push({
         start: start,
         end: start + chunkSize,
         size: chunkSize,
-        obj: state.fileObj.slice(start, start + chunkSize)
+        index: fileSliceIndex,
+        obj: state.fileObj.slice(start, start + chunkSize),
+        fileName: fileName
       })
     } else {
       state.fileSliceList.push({
         start: start,
         end: fileSize,
         size: fileSize - start,
-        obj: state.fileObj.slice(start, fileSize - start)
+        index: fileSliceIndex,
+        obj: state.fileObj.slice(start, fileSize - start),
+        fileName: fileName
       })
     }
 
@@ -79,55 +98,73 @@ const sliceFileObj = () => {
   }
 }
 
+const calculateHash = () => {
+  // 分片 hash，直接读取文件内容来生成 md5 值
+  state.fileSliceList.forEach((item) => {
+    let sparkMD5 = new SparkMD5()
+    let reader = new FileReader()
+    reader.readAsText(item.obj)
+    reader.onload = (event) => {
+      console.log('event:', event)
 
-function startUploadFile() {
-  handleUploadBigFileSlice()
+      //获取文件MD5
+      let str = event.target.result
+      sparkMD5.append(str)
+      item.hash = sparkMD5.end()
+    }
+  })
 }
 
-async function handleUploadBigFileSlice() {
-  const fileName = state.fileObj.name;
-  const fileSize = state.fileObj.size;
-  let chunkSize = 1024 * 1024; // 每个分块的大小（2MB）
-  let start = 0; // 分块的起始位置
 
-  while (start < fileSize) {
+const startUploadFile = async () => {
+  console.log(state.fileSliceList)
 
-    if (start + chunkSize >= fileSize) {
-      chunkSize = fileSize - start + 1;
-      const chunk = state.fileObj.slice(start, start + chunkSize);
-      const formData = new FormData();
-      formData.append('file', chunk);
-      formData.append('filename', fileName);
-      formData.append('chunkSize', chunkSize.toString());
+  let concurrent = 2 // 并发数
+  let index = 0 // 当前上传的索引
+  let len = state.fileSliceList.length // 文件切片的长度
+  let promiseList = []
 
-      const response = await uploadBigFileSliceApi(formData, start, chunkSize, fileSize);
-      console.log('response: ', response)
+  while (index < len) {
 
-      if (response.data.code === 200) {
-        // 文件上传完成
-        state.percentage = 100;
-        state.progressStatus = 'success'
-        break;
-      }
-    }
-
-    const chunk = state.fileObj.slice(start, start + chunkSize);
     const formData = new FormData();
-    formData.append('file', chunk);
-    formData.append('filename', fileName);
-    formData.append('chunkSize', chunkSize.toString());
 
-    const response = await uploadBigFileSliceApi(formData, start, chunkSize, fileSize);
+    formData.append('start', state.fileSliceList[index].start);
+    formData.append('end', state.fileSliceList[index].end);
+    formData.append('size', state.fileSliceList[index].size);
+    formData.append('index', state.fileSliceList[index].index);
+    formData.append('file', state.fileSliceList[index].obj);
+    formData.append('hash', state.fileSliceList[index].hash);
+    formData.append('fileName', state.fileSliceList[index].fileName);
 
-    if (response.data.code === 308) {
-      state.percentage = Number(((start + chunkSize) / fileSize * 100).toFixed(2))
-      // 获取下一块的起始位置
-      start = parseInt(response.headers.range.split('=')[1].split('-')[0]);
-    } else {
-      // 文件上传完成
-      break;
+    let promise = uploadBigFileSliceApi(formData)
+    promiseList.push(promise)
+
+    if (promiseList.length === concurrent || index === len - 1) {
+      Promise.all(promiseList).then((res) => {
+        console.log('res:', res)
+      })
+
+      promiseList = []
     }
+
+    index++
   }
+
+  // state.fileSliceList.forEach(item => {
+  //   const formData = new FormData();
+  //   formData.append('file', item.chunk);
+  //   formData.append('filename', item.fileName);
+  //   formData.append('chunkSize', item.chunkSize.toString());
+  //
+  //   uploadBigFileSliceApi(formData, start, chunkSize, fileSize).then(res => {
+  //     console.log('response: ', response)
+  //     if (response.data.code === 200) {
+  //       // 文件上传完成
+  //       state.percentage = 100;
+  //       state.progressStatus = 'success'
+  //     }
+  //   })
+  // })
 }
 
 
