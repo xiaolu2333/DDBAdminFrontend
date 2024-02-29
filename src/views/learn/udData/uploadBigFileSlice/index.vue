@@ -8,6 +8,7 @@
         选择文件<input type="file" @change="handleFileChange">
         <el-button type="primary" @click="startUploadFile">开始分片上传大文件</el-button>
         <el-progress :percentage="state.percentage" :status="state.progressStatus"/>
+        <el-button type="primary" @click="startMergeFile">合并文件分片</el-button>
       </el-card>
       <el-table :data="state.fileSliceList" height="550" style="width: 100%">
         <el-table-column type="index" width="50"/>
@@ -23,7 +24,11 @@
 import {onMounted, reactive, ref} from 'vue'
 import SparkMD5 from 'spark-md5'
 
-import {uploadBigFileSliceApi} from "@/api/learn/udData/uploadBigFileSlice.js";
+import {
+  uploadBigFileSliceApi,
+  mergeBigFileSliceApi
+} from "@/api/learn/udData/uploadBigFileSlice.js";
+import {ElMessage} from "element-plus";
 
 const file = ref("file")
 const state = reactive({
@@ -142,6 +147,7 @@ const startUploadFile = async () => {
     if (promiseList.length === concurrent || index === len - 1) {
       Promise.all(promiseList).then((res) => {
         console.log('res:', res)
+        state.percentage = Number((index + 1) * 2 / state.fileSliceList.length)
       })
 
       promiseList = []
@@ -168,6 +174,12 @@ const startUploadFile = async () => {
 }
 
 
+const startMergeFile = () => {
+  console.log('state.fileSliceList[0].fileName:', state.fileSliceList[0].fileName)
+  mergeBigFileSliceApi({fileName: state.fileSliceList[0].fileName}).then(res => {
+    ElMessage.success('合并成功')
+  })
+}
 /*************************** 初始化 ***************************/
 onMounted(() => {
 })
