@@ -291,6 +291,14 @@ const routes = [
                         meta: {
                             title: "前端埋点与监控"
                         }
+                    },
+                    {
+                        name: 'DragAndDrop',
+                        path: '/learning/web-api/elementDragAndDrop',
+                        component: () => import("@/views/learn/web-api/elementDragAndDrop/index.vue"),
+                        meta: {
+                            title: "元素拖放"
+                        }
                     }
                 ]
             },
