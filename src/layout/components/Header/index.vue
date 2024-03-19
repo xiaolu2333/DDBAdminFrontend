@@ -8,13 +8,14 @@
         <Fold/>
       </el-icon>
     </span>
-    <div class="module-list">
-      <span class="module"><router-link :to="{ path: '/home/dashboard' }">首页</router-link></span>
-      <span class="module"><router-link :to="{ path: '/home/dashboard' }">功能模块一</router-link></span>
-      <span class="module"><router-link :to="{ path: '/home/dashboard' }">功能模块二</router-link></span>
-      <span class="module"><router-link :to="{ path: '/home/dashboard' }">功能模块三</router-link></span>
-      <span class="module"><router-link :to="{ path: '/home/dashboard' }">功能模块四</router-link></span>
-    </div>
+    <div style="flex: 1"></div>
+<!--    <div class="module-list">-->
+<!--      <span class="module"><router-link :to="{ path: '/home/dashboard' }">首页</router-link></span>-->
+<!--      <span class="module"><router-link :to="{ path: '/home/dashboard' }">功能模块一</router-link></span>-->
+<!--      <span class="module"><router-link :to="{ path: '/home/dashboard' }">功能模块二</router-link></span>-->
+<!--      <span class="module"><router-link :to="{ path: '/home/dashboard' }">功能模块三</router-link></span>-->
+<!--      <span class="module"><router-link :to="{ path: '/home/dashboard' }">功能模块四</router-link></span>-->
+<!--    </div>-->
     <div class="user-info">
       <el-dropdown>
                 <span class="el-dropdown-link" style="margin-right: 10px">

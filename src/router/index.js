@@ -626,20 +626,28 @@ const routes = [
                             title: "图片资源"
                         }
                     },
-                    {
-                        name: '集成高德地图',
-                        path: '/learning/vue3/integrateGaodeMap',
-                        component: () => import("@/views/learn/vue3/integrateGaodeMap/index.vue"),
-                        meta: {
-                            title: "集成百度地图"
-                        }
-                    },
+                    // {
+                    //     name: '集成高德地图',
+                    //     path: '/learning/vue3/integrateGaodeMap',
+                    //     component: () => import("@/views/learn/vue3/integrateGaodeMap/index.vue"),
+                    //     meta: {
+                    //         title: "集成百度地图"
+                    //     }
+                    // },
                     {
                         name: '分步复杂表单',
                         path: '/learning/vue3/stepsComplexForm',
                         component: () => import("@/views/learn/vue3/stepsComplexForm/index.vue"),
                         meta: {
                             title: "分步复杂表单"
+                        }
+                    },
+                    {
+                        name: '组件抽象一',
+                        path: '/learning/vue3/componentAbstraction1',
+                        component: () => import("@/views/learn/vue3/componentAbstraction1/index.vue"),
+                        meta: {
+                            title: "组件抽象——tab下的tables"
                         }
                     }
                 ]
