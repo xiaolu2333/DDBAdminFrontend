@@ -525,7 +525,15 @@ const routes = [
                             title: "使用Grid2",
                         },
                         children: []
-                    }
+                    },
+                    // {
+                    //     name: "动态表格高度",
+                    //     path: "/learning/vxe-table/dynamicTableHeight",
+                    //     component: () => import("@/views/learn/vxe-table/dynamicTableHeight/index.vue"),
+                    //     meta: {
+                    //         title: "动态表格高度",
+                    //     },
+                    // }
                 ]
             },
             {
@@ -870,6 +878,24 @@ const routes = [
                     //         title: "JavaScript中的类"
                     //     }
                     // }
+                ]
+            },
+            {
+                name: "learnTS",
+                path: "/learning/learnTS",
+                component: () => import("@/views/learn/learnTS/index.vue"),
+                meta: {
+                    title: "学习TS",
+                },
+                children: [
+                    {
+                        name: "基础内容",
+                        path: "/learning/learnTS/basicContent",
+                        component: () => import("@/views/learn/learnTS/basicContent/index.vue"),
+                        meta: {
+                            title: "基础内容",
+                        },
+                    }
                 ]
             },
             {
