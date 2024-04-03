@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        @keyframes scan {
+            0% {
+                top: 10%;
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(255, 255, 0, 1);
+            }
+            100% {
+                top: 90%;
+            }
+        }
+
+        @keyframes scan2 {
+            0% {
+                left: 10%;
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(255, 255, 0, 1);
+            }
+            100% {
+                left: 90%;
+            }
+        }
+
+        .target {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            padding: 10px;
+            background: linear-gradient(to left, #908f8f, #908f8f) left top no-repeat,
+            linear-gradient(to bottom, #908f8f, #908f8f) left top no-repeat,
+            linear-gradient(to left, #908f8f, #908f8f) right top no-repeat,
+            linear-gradient(to bottom, #908f8f, #908f8f) right top no-repeat,
+            linear-gradient(to left, #908f8f, #908f8f) left bottom no-repeat,
+            linear-gradient(to bottom, #908f8f, #908f8f) left bottom no-repeat,
+            linear-gradient(to left, #908f8f, #908f8f) right bottom no-repeat,
+            linear-gradient(to left, #908f8f, #908f8f) right bottom no-repeat;
+            background-size: 1px 20px, 20px 1px, 1px 20px, 20px 1px;
+        }
+
+        .scan {
+            width: calc(100% - 20px);
+            height: 2px;
+            background-color: #79fa4a;
+            position: absolute;
+            animation: scan 2s infinite ease-in-out alternate;
+            /* 水平居中 */
+            top: 50%;
+        }
+
+        .scan2 {
+            width: 2px;
+            height: calc(100% - 20px);
+            background-color: #ff5151;
+            position: absolute;
+            animation: scan2 2s infinite ease-in-out alternate;
+            /* 垂直居中 */
+            left: 50%;
+        }
+    </style>
+</head>
+<body>
+<div class="target">
+    <div class="scan"></div>
+    <div class="scan2"></div>
+</div>
+</body>
+</html>

@@ -764,6 +764,14 @@ const routes = [
                         meta: {
                             title: "处理文字",
                         }
+                    },
+                    {
+                        name: "CSS动画",
+                        path: "/learning/learnCSS/CSSAnimation",
+                        component: () => import("@/views/learn/learnCSS/CSSAnimation/index.vue"),
+                        meta: {
+                            title: "CSS动画",
+                        }
                     }
                 ]
             },
