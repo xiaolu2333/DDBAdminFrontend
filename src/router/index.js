@@ -299,6 +299,14 @@ const routes = [
                         meta: {
                             title: "元素拖放"
                         }
+                    },
+                    {
+                        name: '本地存储',
+                        path: '/learning/web-api/localStorage',
+                        component: () => import("@/views/learn/web-api/localStorage/index.vue"),
+                        meta: {
+                            title: "本地存储"
+                        }
                     }
                 ]
             },
