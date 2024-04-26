@@ -425,6 +425,14 @@ const routes = [
                         meta: {
                             title: "使用Checkbox"
                         }
+                    },
+                    {
+                        name: '表单项增删',
+                        path: '/learning/element-plus/addAndDeleteFormItems',
+                        component: () => import("@/views/learn/element-plus/addAndDeleteFormItems/index.vue"),
+                        meta: {
+                            title: "表单项增删"
+                        }
                     }
                 ]
             },
@@ -1066,6 +1074,14 @@ const routes = [
                             title: "使用axios"
                         }
                     },
+                    {
+                        name: '展示与编辑word文档',
+                        path: '/learning/thirdPartyLibraries/showAndEditWordDoc',
+                        component: () => import("@/views/learn/thirdPartyLibraries/showAndEditWordDoc/index.vue"),
+                        meta: {
+                            title: "展示与编辑word文档"
+                        }
+                    }
                 ]
             }
         ]
